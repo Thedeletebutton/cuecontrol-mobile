@@ -44,12 +44,16 @@ export function AboutModal({ visible, onClose }: AboutModalProps) {
           <View style={styles.content}>
             {/* Logo section */}
             <View style={styles.logo}>
-              <View style={styles.logoIcon}>
-                <Text style={styles.logoIconText}>CC</Text>
-              </View>
+              <Image
+                source={require('../../assets/icon.png')}
+                style={styles.logoIcon}
+              />
               <Text style={styles.appName}>CueControl</Text>
               <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
               <Text style={styles.version}>Version 3.9.0</Text>
+              <TouchableOpacity style={styles.supportButton} onPress={openLink}>
+                <Text style={styles.supportButtonText}>Contact Support</Text>
+              </TouchableOpacity>
             </View>
 
             {/* Card section */}
@@ -88,8 +92,10 @@ const styles = StyleSheet.create({
   headerBar: {
     height: 36,
     backgroundColor: colors.background.main,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
     borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomColor: colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -126,15 +132,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 16,
-    backgroundColor: colors.accent.soft,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: spacing.md,
-  },
-  logoIconText: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.accent.primary,
   },
   appName: {
     fontSize: 28,
@@ -151,6 +149,19 @@ const styles = StyleSheet.create({
   version: {
     fontSize: 12,
     color: colors.text.secondary,
+    marginBottom: spacing.md,
+  },
+  supportButton: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.accent.primary,
+    borderRadius: 8,
+  },
+  supportButtonText: {
+    fontSize: 12,
+    color: colors.accent.primary,
+    fontWeight: '600',
   },
   card: {
     backgroundColor: colors.background.panel,

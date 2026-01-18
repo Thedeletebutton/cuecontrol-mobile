@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
+  Linking,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -90,11 +92,19 @@ export default function ModeSelection() {
 
         <View style={styles.content}>
           <View style={styles.header}>
+            <Image
+              source={require('../assets/icon.png')}
+              style={styles.logoIcon}
+            />
             <Text style={styles.title}>CueControl</Text>
-            <Text style={styles.subtitle}>Live Requests, Without the Chaos</Text>
-            {user?.email && (
-              <Text style={styles.userEmail}>{user.email}</Text>
-            )}
+            <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
+            <Text style={styles.version}>Version 3.9.0</Text>
+            <TouchableOpacity
+              style={styles.supportButton}
+              onPress={() => Linking.openURL('https://linktr.ee/trinitromusic')}
+            >
+              <Text style={styles.supportButtonText}>Contact Support</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.buttons}>
@@ -137,13 +147,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: '#787878',
     borderBottomWidth: 1,
     borderBottomColor: '#787878',
     backgroundColor: colors.background.main,
   },
   headerTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -152,6 +164,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    borderLeftWidth: 1,
+    borderLeftColor: '#787878',
+    paddingLeft: 8,
+    height: '100%',
   },
   aboutButton: {
     width: 24,
@@ -194,28 +210,48 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     padding: spacing.xl,
+    paddingTop: spacing.xxl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: spacing.xxl * 2,
+    marginBottom: spacing.xl,
+  },
+  logoIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    marginBottom: spacing.md,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '700',
     color: colors.text.primary,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   subtitle: {
     fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontStyle: 'italic',
+    marginBottom: spacing.xs,
   },
-  userEmail: {
+  version: {
+    fontSize: typography.sizes.sm,
+    color: colors.text.secondary,
+    marginBottom: spacing.md,
+  },
+  supportButton: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.accent.primary,
+    borderRadius: 8,
+  },
+  supportButtonText: {
     fontSize: typography.sizes.sm,
     color: colors.accent.primary,
-    marginTop: spacing.md,
+    fontWeight: '600',
   },
   setupText: {
     fontSize: typography.sizes.sm,

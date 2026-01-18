@@ -68,7 +68,7 @@ export function RequestCard({
       <View style={[styles.cell, styles.trackCell]}>
         <Text
           style={[styles.track, request.played && styles.trackPlayed]}
-          numberOfLines={1}
+          numberOfLines={3}
         >
           {request.request}
         </Text>
@@ -89,21 +89,21 @@ export function RequestCard({
           style={[styles.actionButton, styles.editButton]}
           onPress={() => onEdit(request)}
         >
-          <Ionicons name="pencil" size={10} color={colors.accent.primary} />
+          <Ionicons name="pencil" size={14} color={colors.accent.primary} />
         </TouchableOpacity>
 
         {(onMoveToNextStream || onMoveFromNextStream) && (
           <TouchableOpacity style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
             <Ionicons
               name={isNextStream ? 'arrow-up' : 'arrow-down'}
-              size={10}
+              size={14}
               color={colors.text.muted}
             />
           </TouchableOpacity>
         )}
 
         <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
-          <Ionicons name="close" size={12} color={colors.status.error} />
+          <Ionicons name="close" size={14} color={colors.status.error} />
         </TouchableOpacity>
       </View>
     </View>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background.row,
-    height: 35,
+    height: 85,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
@@ -130,27 +130,31 @@ const styles = StyleSheet.create({
     borderRightColor: colors.border,
   },
   requesterCell: {
-    width: 115,
+    width: 100,
+    alignItems: 'flex-start',
   },
   trackCell: {
     flex: 1,
+    alignItems: 'flex-start',
   },
   statusCell: {
     width: 75,
     alignItems: 'center',
   },
   optionsCell: {
-    width: 75,
+    width: 95,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
+    justifyContent: 'flex-start',
+    paddingLeft: 6,
+    gap: 6,
     borderRightWidth: 0,
   },
   username: {
     fontSize: 12,
     fontWeight: '700',
     color: colors.text.primary,
+    textAlign: 'left',
   },
   usernamePlayed: {
     color: colors.status.played,
@@ -158,13 +162,14 @@ const styles = StyleSheet.create({
   track: {
     fontSize: 12,
     color: colors.text.primary,
+    textAlign: 'left',
   },
   trackPlayed: {
     color: colors.status.played,
   },
   actionButton: {
-    width: 16,
-    height: 16,
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,

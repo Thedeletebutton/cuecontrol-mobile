@@ -20,7 +20,7 @@ export default function ViewerLayout() {
       <Stack.Screen
         name="request"
         options={{
-          title: 'Request a Song',
+          headerShown: false,
         }}
       />
     </Stack>

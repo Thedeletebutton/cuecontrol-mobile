@@ -38,7 +38,9 @@ export default function RootLayout() {
               headerShown: false,
               contentStyle: { backgroundColor: '#000000' },
             }}
-          />
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+          </Stack>
         </AppModeProvider>
       </LicenseProvider>
     </AuthProvider>

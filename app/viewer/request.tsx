@@ -140,10 +140,10 @@ export default function RequestScreen() {
   };
 
   // Custom header with back and info buttons - matching desktop style
-  const renderHeader = (title: string) => (
+  const renderHeader = () => (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>CueControl</Text>
+        <Text style={styles.headerTitle}>CueControl - Request a Track</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity style={styles.infoButton} onPress={() => setAboutVisible(true)}>
             <Text style={styles.infoButtonText}>i</Text>
@@ -162,7 +162,7 @@ export default function RequestScreen() {
   if (!isAuthenticated) {
     return (
       <View style={styles.container}>
-        {renderHeader('Request a Song')}
+        {renderHeader()}
         <View style={styles.notConnected}>
           <Ionicons name="person-circle-outline" size={64} color={colors.text.muted} />
           <Text style={styles.notConnectedTitle}>Not Signed In</Text>
@@ -181,7 +181,7 @@ export default function RequestScreen() {
   if (submitted) {
     return (
       <View style={styles.container}>
-        {renderHeader('Request Sent')}
+        {renderHeader()}
         <View style={styles.successContainer}>
           <View style={styles.successIcon}>
             <Ionicons name="checkmark-circle" size={80} color={colors.status.success} />
@@ -204,7 +204,7 @@ export default function RequestScreen() {
 
   return (
     <View style={styles.container}>
-      {renderHeader('Request a Song')}
+      {renderHeader()}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -316,12 +316,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
+    borderTopWidth: 1,
+    borderTopColor: '#787878',
     borderBottomWidth: 1,
     borderBottomColor: '#787878',
   },
   headerTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -330,7 +332,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginRight: 4,
+    borderLeftWidth: 1,
+    borderLeftColor: '#787878',
+    paddingLeft: 8,
+    height: '100%',
   },
   infoButton: {
     width: 24,
@@ -379,7 +384,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: spacing.lg,
   },
   form: {
     padding: spacing.xl,
@@ -463,9 +469,10 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     padding: spacing.xl,
+    paddingTop: spacing.xxl,
   },
   successIcon: {
     marginBottom: spacing.lg,

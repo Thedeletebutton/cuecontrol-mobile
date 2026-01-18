@@ -218,7 +218,7 @@ export default function QueueScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerBar}>
         <Text style={styles.headerBarTitle}>
-          {djHandle && <Text style={styles.channelName}>{djHandle}'s </Text>}
+          {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1).toLowerCase()}'s </Text>}
           CueControl
         </Text>
         <View style={styles.headerButtons}>
@@ -268,20 +268,9 @@ export default function QueueScreen() {
     <View style={styles.container}>
       {renderHeader()}
 
-      {/* Top bar with counts and actions - like slim dashboard */}
+      {/* Top bar with title and actions */}
       <View style={styles.topBar}>
-        <View style={styles.summaryRow}>
-          <Text style={styles.sectionTitle}>REQUESTS</Text>
-          <Text style={styles.summaryText}>
-            Total<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{totalCount}</Text>
-          </Text>
-          <Text style={styles.summaryText}>
-            Unplayed<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{unplayedCount}</Text>
-          </Text>
-          <Text style={styles.summaryText}>
-            Played<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{playedCount}</Text>
-          </Text>
-        </View>
+        <Text style={styles.sectionTitle}>REQUESTS:</Text>
         <View style={styles.actionButtons}>
           <TouchableOpacity
             style={[styles.iconButton, styles.addButton]}
@@ -304,19 +293,32 @@ export default function QueueScreen() {
         </View>
       </View>
 
+      {/* Counts row */}
+      <View style={styles.countsRow}>
+        <Text style={styles.summaryText}>
+          Total<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{totalCount}</Text>
+        </Text>
+        <Text style={styles.summaryText}>
+          Unplayed<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{unplayedCount}</Text>
+        </Text>
+        <Text style={styles.summaryText}>
+          Played<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{playedCount}</Text>
+        </Text>
+      </View>
+
       {/* Column Headers - matching slim dashboard */}
       <View style={styles.headerRow}>
         <View style={[styles.headerCell, styles.requesterHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>Requester:</Text>
+          <Text style={styles.headerText} numberOfLines={1}>REQUESTER:</Text>
         </View>
         <View style={[styles.headerCell, styles.trackHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>Artist - Track:</Text>
+          <Text style={styles.headerText} numberOfLines={1}>ARTIST - TRACK:</Text>
         </View>
         <View style={[styles.headerCell, styles.statusHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>Status:</Text>
+          <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
         </View>
         <View style={[styles.headerCell, styles.optionsHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>Options:</Text>
+          <Text style={styles.headerText}>OPTIONS:</Text>
         </View>
       </View>
 
@@ -353,7 +355,9 @@ export default function QueueScreen() {
           <>
             {/* Next Stream Section */}
             <View style={styles.nextStreamHeader}>
-              <Text style={styles.nextStreamTitle}>NEXT STREAM</Text>
+              <Text style={styles.nextStreamTitle}>NEXT STREAM:</Text>
+            </View>
+            <View style={styles.nextStreamCountsRow}>
               <Text style={styles.nextStreamCount}>
                 Total<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamCount}</Text>
               </Text>
@@ -362,16 +366,16 @@ export default function QueueScreen() {
             {/* Next Stream Column Headers */}
             <View style={styles.headerRow}>
               <View style={[styles.headerCell, styles.requesterHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>Requester:</Text>
+                <Text style={styles.headerText} numberOfLines={1}>REQUESTER:</Text>
               </View>
               <View style={[styles.headerCell, styles.trackHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>Artist - Track:</Text>
+                <Text style={styles.headerText} numberOfLines={1}>ARTIST - TRACK:</Text>
               </View>
               <View style={[styles.headerCell, styles.statusHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>Status:</Text>
+                <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
               </View>
               <View style={[styles.headerCell, styles.optionsHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>Options:</Text>
+                <Text style={styles.headerText}>OPTIONS:</Text>
               </View>
             </View>
 
@@ -439,12 +443,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
     borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomColor: colors.border,
   },
   headerBarTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -456,7 +462,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginRight: 4,
+    marginRight: -4,
+    borderLeftWidth: 1,
+    borderLeftColor: colors.border,
+    paddingLeft: 8,
+    height: '100%',
   },
   iconButton: {
     width: 24,
@@ -499,23 +509,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     height: 35,
     backgroundColor: colors.background.main,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  summaryRow: {
+  countsRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
     alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    height: 28,
+    backgroundColor: colors.background.main,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: colors.accent.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   summaryText: {
-    fontSize: 12,
+    fontSize: 14,
     color: colors.text.secondary,
     textTransform: 'uppercase',
     fontWeight: '700',
@@ -524,7 +541,7 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
   },
   colon: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
   },
   actionButtons: {
@@ -532,7 +549,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    marginRight: 4,
+    marginRight: -4,
+    borderLeftWidth: 1,
+    borderLeftColor: colors.border,
+    paddingLeft: 8,
+    height: '100%',
   },
   addButtonText: {
     fontSize: 14,
@@ -608,29 +629,32 @@ const styles = StyleSheet.create({
     borderRightColor: colors.border,
   },
   headerText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: colors.text.primary,
-    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    textAlign: 'left',
   },
   requesterHeader: {
-    width: 115,
+    width: 100,
+    alignItems: 'flex-start',
   },
   trackHeader: {
     flex: 1,
+    alignItems: 'flex-start',
   },
   statusHeader: {
     width: 75,
     alignItems: 'center',
   },
   optionsHeader: {
-    width: 75,
-    alignItems: 'center',
+    width: 95,
+    alignItems: 'flex-start',
     borderRightWidth: 0,
   },
   nextStreamHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: spacing.sm,
     height: 35,
@@ -639,17 +663,26 @@ const styles = StyleSheet.create({
     borderTopColor: colors.border,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-    marginTop: spacing.md,
+  },
+  nextStreamCountsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    height: 28,
+    backgroundColor: colors.background.main,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   nextStreamTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     color: colors.accent.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   nextStreamCount: {
-    fontSize: 12,
+    fontSize: 14,
     color: colors.text.secondary,
     textTransform: 'uppercase',
     fontWeight: '700',

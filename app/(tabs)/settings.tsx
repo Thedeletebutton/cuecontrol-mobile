@@ -178,21 +178,24 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Custom header with back and info buttons */}
+      {/* Custom header matching desktop style */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-              <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
+          <Text style={styles.headerTitle}>CueControl Settings</Text>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity
+              style={[styles.headerButton, styles.infoButton]}
+              onPress={() => setAboutVisible(true)}
+            >
+              <Text style={styles.infoButtonText}>i</Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Settings</Text>
+            <TouchableOpacity
+              style={[styles.headerButton, styles.closeButton]}
+              onPress={handleBack}
+            >
+              <Text style={styles.closeButtonText}>✕</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => setAboutVisible(true)}
-          >
-            <Ionicons name="information-circle-outline" size={24} color={colors.text.primary} />
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
@@ -254,17 +257,6 @@ export default function SettingsScreen() {
                 {saving ? 'Saving...' : 'Save License Key'}
               </Text>
             </TouchableOpacity>
-
-            {licenseKey && isValidFormat && (
-              <>
-                <View style={styles.divider} />
-                <Text style={styles.shareLabel}>Share with viewers:</Text>
-                <TouchableOpacity style={styles.copyButton} onPress={handleCopyLicenseKey}>
-                  <Ionicons name="copy-outline" size={18} color={colors.accent.primary} />
-                  <Text style={styles.copyButtonText}>{licenseKey}</Text>
-                </TouchableOpacity>
-              </>
-            )}
 
             {!licenseKey && (
               <>
@@ -386,35 +378,56 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   safeArea: {
-    backgroundColor: colors.background.panel,
+    backgroundColor: colors.background.main,
   },
   header: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    backgroundColor: colors.background.panel,
+    paddingHorizontal: spacing.sm,
+    backgroundColor: colors.background.main,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  backButton: {
-    padding: spacing.sm,
-    marginRight: spacing.xs,
-    marginLeft: -spacing.sm,
-  },
   headerTitle: {
-    fontSize: typography.sizes.xl,
+    fontFamily: 'Helvetica Neue',
+    fontSize: 13,
     fontWeight: '700',
     color: colors.text.primary,
+    letterSpacing: 1,
   },
-  iconButton: {
-    padding: spacing.sm,
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  headerButton: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
+  },
+  infoButton: {
+    borderColor: colors.accent.primary,
+  },
+  infoButtonText: {
+    color: colors.accent.primary,
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  closeButton: {
+    borderColor: colors.status.error,
+  },
+  closeButtonText: {
+    color: colors.status.error,
+    fontSize: 12,
+    fontWeight: '700',
   },
   tabBar: {
     flexDirection: 'row',

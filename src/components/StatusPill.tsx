@@ -1,6 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { colors, typography, spacing } from '../constants/theme';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { colors } from '../constants/theme';
 
 interface StatusPillProps {
   played: boolean;
@@ -16,43 +16,28 @@ export function StatusPill({ played, onPress, disabled, isPending }: StatusPillP
     return styles.pillQueued;
   };
 
-  const getPillTextStyle = () => {
-    if (isPending) return styles.pillTextPending;
-    if (played) return styles.pillTextPlayed;
-    return styles.pillTextQueued;
-  };
-
-  const getIcon = () => {
-    if (isPending) return null;
-    if (played) return '✓';
-    return '‖';
+  const getTextStyle = () => {
+    if (isPending) return styles.textPending;
+    if (played) return styles.textPlayed;
+    return styles.textQueued;
   };
 
   const getLabel = () => {
-    if (isPending) return 'Pending';
-    if (played) return 'Played';
-    return 'Queued';
+    if (isPending) return 'PENDING';
+    if (played) return 'PLAYED';
+    return 'QUEUED';
   };
 
   return (
     <TouchableOpacity
-      style={[
-        styles.pill,
-        getPillStyle(),
-        disabled && styles.pillDisabled,
-      ]}
+      style={[styles.pill, getPillStyle(), disabled && styles.disabled]}
       onPress={onPress}
       disabled={disabled || isPending}
       activeOpacity={0.7}
     >
-      <View style={styles.pillContent}>
-        {getIcon() && (
-          <Text style={[styles.pillIcon, getPillTextStyle()]}>{getIcon()}</Text>
-        )}
-        <Text style={[styles.pillText, getPillTextStyle()]}>
-          {getLabel()}
-        </Text>
-      </View>
+      <Text style={[styles.text, getTextStyle()]}>
+        {getLabel()}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -66,15 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  pillContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-  },
-  pillIcon: {
-    fontSize: 8,
-    fontWeight: '700',
-  },
   pillQueued: {
     backgroundColor: colors.accent.soft,
     borderColor: colors.accent.primary,
@@ -87,21 +63,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(247, 227, 138, 0.15)',
     borderColor: '#f7e38a',
   },
-  pillDisabled: {
+  disabled: {
     opacity: 0.5,
   },
-  pillText: {
-    fontSize: 9,
-    fontWeight: '600',
+  text: {
+    fontSize: 11,
+    fontWeight: '700',
     textTransform: 'uppercase',
   },
-  pillTextQueued: {
+  textQueued: {
     color: colors.accent.primary,
   },
-  pillTextPlayed: {
+  textPlayed: {
     color: colors.status.played,
   },
-  pillTextPending: {
+  textPending: {
     color: '#f7e38a',
   },
 });
