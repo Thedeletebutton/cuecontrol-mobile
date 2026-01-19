@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nextStreamEmptyText: {
-    fontSize: typography.sizes.sm,
+    fontSize: 17,
     color: colors.text.muted,
     textAlign: 'center',
   },
