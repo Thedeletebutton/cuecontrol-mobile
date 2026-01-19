@@ -199,7 +199,7 @@ export default function NextStreamScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              No requests saved for next stream
+              NO TRACKS SAVED FOR NEXT STREAM
             </Text>
           </View>
         }
@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   emptyText: {
-    fontSize: typography.sizes.md,
+    fontSize: 17,
+    fontWeight: '700',
     color: colors.text.muted,
     textAlign: 'center',
   },

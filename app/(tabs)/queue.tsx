@@ -391,7 +391,7 @@ export default function QueueScreen() {
             {nextStreamRequests.length === 0 ? (
               <View style={styles.nextStreamEmptyContainer}>
                 <Text style={styles.nextStreamEmptyText}>
-                  No requests saved for next stream
+                  NO TRACKS SAVED FOR NEXT STREAM
                 </Text>
               </View>
             ) : (
@@ -614,6 +614,7 @@ const styles = StyleSheet.create({
   },
   emptyListText: {
     fontSize: 16,
+    fontWeight: '700',
     color: colors.text.secondary,
     textAlign: 'center',
   },
@@ -735,6 +736,7 @@ const styles = StyleSheet.create({
   },
   nextStreamEmptyText: {
     fontSize: 17,
+    fontWeight: '700',
     color: colors.text.muted,
     textAlign: 'center',
   },
