@@ -391,7 +391,7 @@ export default function QueueScreen() {
             {nextStreamRequests.length === 0 ? (
               <View style={styles.nextStreamEmptyContainer}>
                 <Text style={styles.nextStreamEmptyText}>
-                  Move tracks here to save them for your next stream
+                  No requests saved for next stream
                 </Text>
               </View>
             ) : (
