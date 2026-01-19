@@ -198,10 +198,8 @@ export default function NextStreamScreen() {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="time-outline" size={64} color={colors.text.muted} />
-            <Text style={styles.emptyTitle}>No Tracks Saved</Text>
             <Text style={styles.emptyText}>
-              Move tracks here from the queue to save them for your next stream
+              No requests saved for next stream
             </Text>
           </View>
         }
