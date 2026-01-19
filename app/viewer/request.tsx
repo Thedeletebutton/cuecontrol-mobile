@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../src/context/AuthContext';
 import { useAppModeContext } from '../../src/context/AppModeContext';
 import { AboutModal } from '../../src/components/AboutModal';
+import { ViewerSettingsModal } from '../../src/components/ViewerSettingsModal';
 import { sendRequestByHandle } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
 
@@ -24,10 +25,12 @@ const DJ_HANDLE_STORAGE = '@cuecontrol_viewer_dj_handle';
 const USERNAME_STORAGE_KEY = '@cuecontrol_username';
 const SAVE_DJ_HANDLE_KEY = '@cuecontrol_save_dj_handle';
 const SAVE_USERNAME_KEY = '@cuecontrol_save_username';
+const LABEL_FONT_SIZE_KEY = '@cuecontrol_viewer_label_font_size';
+const INPUT_FONT_SIZE_KEY = '@cuecontrol_viewer_input_font_size';
 
 export default function RequestScreen() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const { clearMode } = useAppModeContext();
 
   const [djHandle, setDjHandle] = useState('');
@@ -38,10 +41,13 @@ export default function RequestScreen() {
   const [queuePosition, setQueuePosition] = useState(0);
   const [djDisplayName, setDjDisplayName] = useState('');
   const [aboutVisible, setAboutVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [saveDjHandle, setSaveDjHandle] = useState(true);
   const [saveUsername, setSaveUsername] = useState(true);
+  const [labelFontSize, setLabelFontSize] = useState(12);
+  const [inputFontSize, setInputFontSize] = useState(14);
 
-  // Load saved DJ handle and username on mount
+  // Load saved settings on mount
   useEffect(() => {
     const loadSavedData = async () => {
       try {
@@ -49,17 +55,45 @@ export default function RequestScreen() {
         const savedUsername = await AsyncStorage.getItem(USERNAME_STORAGE_KEY);
         const savedSaveDjHandle = await AsyncStorage.getItem(SAVE_DJ_HANDLE_KEY);
         const savedSaveUsername = await AsyncStorage.getItem(SAVE_USERNAME_KEY);
+        const savedLabelFontSize = await AsyncStorage.getItem(LABEL_FONT_SIZE_KEY);
+        const savedInputFontSize = await AsyncStorage.getItem(INPUT_FONT_SIZE_KEY);
 
         if (savedDjHandle) setDjHandle(savedDjHandle);
         if (savedUsername) setUsername(savedUsername);
         if (savedSaveDjHandle !== null) setSaveDjHandle(savedSaveDjHandle === 'true');
         if (savedSaveUsername !== null) setSaveUsername(savedSaveUsername === 'true');
+        if (savedLabelFontSize) setLabelFontSize(parseInt(savedLabelFontSize, 10));
+        if (savedInputFontSize) setInputFontSize(parseInt(savedInputFontSize, 10));
       } catch (error) {
         console.error('Failed to load saved data:', error);
       }
     };
     loadSavedData();
   }, []);
+
+  const handleSignOut = async () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            // Clear saved credentials to prevent auto-login
+            await AsyncStorage.multiRemove([
+              'cuecontrol_saved_credentials',
+              'cuecontrol_stay_signed_in',
+            ]);
+            await logout();
+            await clearMode();
+            router.replace('/auth/login');
+          },
+        },
+      ]
+    );
+  };
 
   // Format handle as user types (lowercase, no special chars except underscore)
   const handleDjHandleChange = (text: string) => {
@@ -68,20 +102,39 @@ export default function RequestScreen() {
   };
 
   const handleBack = async () => {
-    await clearMode();
-    router.replace('/');
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            // Clear saved credentials to prevent auto-login
+            await AsyncStorage.multiRemove([
+              'cuecontrol_saved_credentials',
+              'cuecontrol_stay_signed_in',
+            ]);
+            await logout();
+            await clearMode();
+            router.replace('/auth/login');
+          },
+        },
+      ]
+    );
   };
 
   const handleSubmit = async () => {
     const handle = djHandle.toLowerCase().trim();
 
     if (!handle) {
-      Alert.alert('DJ Handle Required', 'Please enter the DJ\'s handle');
+      Alert.alert('Stream ID Required', 'Please enter the Stream ID');
       return;
     }
 
     if (handle.length < 3) {
-      Alert.alert('Invalid Handle', 'DJ handle must be at least 3 characters');
+      Alert.alert('Invalid Stream ID', 'Stream ID must be at least 3 characters');
       return;
     }
 
@@ -122,7 +175,7 @@ export default function RequestScreen() {
       setSubmitted(true);
     } catch (error: any) {
       if (error.message?.includes('DJ not found')) {
-        Alert.alert('DJ Not Found', 'No DJ found with that handle. Please check and try again.');
+        Alert.alert('Stream Not Found', 'No stream found with that ID. Please check and try again.');
       } else if (error.message?.includes('PERMISSION_DENIED')) {
         Alert.alert('Error', 'Failed to submit request. Please try again.');
       } else {
@@ -148,8 +201,8 @@ export default function RequestScreen() {
           <TouchableOpacity style={styles.infoButton} onPress={() => setAboutVisible(true)}>
             <Text style={styles.infoButtonText}>i</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.modeButton} onPress={handleBack}>
-            <Text style={styles.modeButtonText}>⇄</Text>
+          <TouchableOpacity style={styles.settingsButton} onPress={() => setSettingsVisible(true)}>
+            <Ionicons name="settings-sharp" size={14} color={colors.text.muted} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.closeButton} onPress={handleBack}>
             <Text style={styles.closeButtonText}>✕</Text>
@@ -174,6 +227,34 @@ export default function RequestScreen() {
           </TouchableOpacity>
         </View>
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <ViewerSettingsModal
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+          saveDjHandle={saveDjHandle}
+          saveUsername={saveUsername}
+          onToggleSaveDjHandle={async () => {
+            const newValue = !saveDjHandle;
+            setSaveDjHandle(newValue);
+            await AsyncStorage.setItem(SAVE_DJ_HANDLE_KEY, newValue.toString());
+          }}
+          onToggleSaveUsername={async () => {
+            const newValue = !saveUsername;
+            setSaveUsername(newValue);
+            await AsyncStorage.setItem(SAVE_USERNAME_KEY, newValue.toString());
+          }}
+          labelFontSize={labelFontSize}
+          inputFontSize={inputFontSize}
+          onLabelFontSizeChange={async (size) => {
+            setLabelFontSize(size);
+            await AsyncStorage.setItem(LABEL_FONT_SIZE_KEY, size.toString());
+          }}
+          onInputFontSizeChange={async (size) => {
+            setInputFontSize(size);
+            await AsyncStorage.setItem(INPUT_FONT_SIZE_KEY, size.toString());
+          }}
+          userEmail={user?.email || null}
+          onSignOut={handleSignOut}
+        />
       </View>
     );
   }
@@ -198,6 +279,34 @@ export default function RequestScreen() {
           </TouchableOpacity>
         </View>
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <ViewerSettingsModal
+          visible={settingsVisible}
+          onClose={() => setSettingsVisible(false)}
+          saveDjHandle={saveDjHandle}
+          saveUsername={saveUsername}
+          onToggleSaveDjHandle={async () => {
+            const newValue = !saveDjHandle;
+            setSaveDjHandle(newValue);
+            await AsyncStorage.setItem(SAVE_DJ_HANDLE_KEY, newValue.toString());
+          }}
+          onToggleSaveUsername={async () => {
+            const newValue = !saveUsername;
+            setSaveUsername(newValue);
+            await AsyncStorage.setItem(SAVE_USERNAME_KEY, newValue.toString());
+          }}
+          labelFontSize={labelFontSize}
+          inputFontSize={inputFontSize}
+          onLabelFontSizeChange={async (size) => {
+            setLabelFontSize(size);
+            await AsyncStorage.setItem(LABEL_FONT_SIZE_KEY, size.toString());
+          }}
+          onInputFontSizeChange={async (size) => {
+            setInputFontSize(size);
+            await AsyncStorage.setItem(INPUT_FONT_SIZE_KEY, size.toString());
+          }}
+          userEmail={user?.email || null}
+          onSignOut={handleSignOut}
+        />
       </View>
     );
   }
@@ -216,14 +325,14 @@ export default function RequestScreen() {
         >
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>DJ Handle *</Text>
+              <Text style={[styles.label, { fontSize: labelFontSize }]}>Stream ID *</Text>
               <View style={styles.handleInputContainer}>
-                <Text style={styles.handlePrefix}>@</Text>
+                <Text style={[styles.handlePrefix, { fontSize: inputFontSize }]}>@</Text>
                 <TextInput
-                  style={styles.handleInput}
+                  style={[styles.handleInput, { fontSize: inputFontSize }]}
                   value={djHandle}
                   onChangeText={handleDjHandleChange}
-                  placeholder="dj_name"
+                  placeholder="stream_id"
                   placeholderTextColor={colors.text.muted}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -241,14 +350,14 @@ export default function RequestScreen() {
                 >
                   {saveDjHandle && <Text style={styles.checkmark}>✓</Text>}
                 </TouchableOpacity>
-                <Text style={styles.checkboxLabel}>Save DJ Handle</Text>
+                <Text style={styles.checkboxLabel}>Save Stream ID</Text>
               </View>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your Username *</Text>
+              <Text style={[styles.label, { fontSize: labelFontSize }]}>Your Username *</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { fontSize: inputFontSize }]}
                 value={username}
                 onChangeText={setUsername}
                 placeholder="Enter your username"
@@ -271,9 +380,9 @@ export default function RequestScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Song Request *</Text>
+              <Text style={[styles.label, { fontSize: labelFontSize }]}>Song Request *</Text>
               <TextInput
-                style={[styles.input, styles.trackInput]}
+                style={[styles.input, styles.trackInput, { fontSize: inputFontSize }]}
                 value={track}
                 onChangeText={setTrack}
                 placeholder="Artist - Track Name"
@@ -297,6 +406,34 @@ export default function RequestScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
       <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <ViewerSettingsModal
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+        saveDjHandle={saveDjHandle}
+        saveUsername={saveUsername}
+        onToggleSaveDjHandle={async () => {
+          const newValue = !saveDjHandle;
+          setSaveDjHandle(newValue);
+          await AsyncStorage.setItem(SAVE_DJ_HANDLE_KEY, newValue.toString());
+        }}
+        onToggleSaveUsername={async () => {
+          const newValue = !saveUsername;
+          setSaveUsername(newValue);
+          await AsyncStorage.setItem(SAVE_USERNAME_KEY, newValue.toString());
+        }}
+        labelFontSize={labelFontSize}
+        inputFontSize={inputFontSize}
+        onLabelFontSizeChange={async (size) => {
+          setLabelFontSize(size);
+          await AsyncStorage.setItem(LABEL_FONT_SIZE_KEY, size.toString());
+        }}
+        onInputFontSizeChange={async (size) => {
+          setInputFontSize(size);
+          await AsyncStorage.setItem(INPUT_FONT_SIZE_KEY, size.toString());
+        }}
+        userEmail={user?.email || null}
+        onSignOut={handleSignOut}
+      />
     </View>
   );
 }
@@ -350,18 +487,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
-  modeButton: {
+  settingsButton: {
     width: 24,
     height: 24,
     borderWidth: 1,
-    borderColor: colors.accent.primary,
+    borderColor: colors.text.muted,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  modeButtonText: {
-    color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
   },
   closeButton: {
     width: 24,
@@ -385,18 +517,18 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'flex-start',
-    paddingTop: spacing.lg,
+    paddingTop: spacing.md,
   },
   form: {
-    padding: spacing.xl,
+    padding: spacing.md,
   },
   inputGroup: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
   },
   label: {
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
     textTransform: 'uppercase',
     fontWeight: '600',
   },
@@ -404,13 +536,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.row,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: spacing.lg,
-    fontSize: typography.sizes.lg,
+    borderRadius: 8,
+    padding: spacing.md,
+    fontSize: typography.sizes.md,
     color: colors.text.primary,
   },
   trackInput: {
-    minHeight: 80,
+    minHeight: 60,
     textAlignVertical: 'top',
   },
   hint: {
@@ -425,9 +557,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.sm,
     backgroundColor: colors.accent.primary,
-    borderRadius: 12,
-    padding: spacing.lg,
-    marginTop: spacing.lg,
+    borderRadius: 8,
+    padding: spacing.md,
+    marginTop: spacing.md,
   },
   submitButtonDisabled: {
     opacity: 0.5,
@@ -528,25 +660,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.row,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
+    borderRadius: 8,
   },
   handlePrefix: {
-    paddingLeft: spacing.lg,
-    fontSize: typography.sizes.lg,
+    paddingLeft: spacing.md,
+    fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontWeight: '600',
   },
   handleInput: {
     flex: 1,
-    padding: spacing.lg,
+    padding: spacing.md,
     paddingLeft: spacing.xs,
-    fontSize: typography.sizes.lg,
+    fontSize: typography.sizes.md,
     color: colors.text.primary,
   },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   checkbox: {
     width: 20,

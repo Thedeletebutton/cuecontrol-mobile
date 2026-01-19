@@ -235,13 +235,13 @@ export default function QueueScreen() {
             <Ionicons name="reload" size={14} color={colors.text.grey} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.iconButton, styles.modeButton]}
+            style={[styles.iconButton, styles.closeButton]}
             onPress={async () => {
               await clearMode();
               router.replace('/');
             }}
           >
-            <Text style={styles.modeButtonText}>⇄</Text>
+            <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -256,8 +256,15 @@ export default function QueueScreen() {
           <Ionicons name="key-outline" size={64} color={colors.text.muted} />
           <Text style={styles.emptyTitle}>License Key Required</Text>
           <Text style={styles.emptyText}>
-            Go to Settings and enter your CueControl license key to start receiving requests
+            Enter your CueControl license key to start receiving requests
           </Text>
+          <TouchableOpacity
+            style={styles.goToSettingsButton}
+            onPress={handleSettings}
+          >
+            <Ionicons name="settings-sharp" size={18} color={colors.text.primary} />
+            <Text style={styles.goToSettingsText}>Go to Settings</Text>
+          </TouchableOpacity>
         </View>
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
       </View>
@@ -345,10 +352,11 @@ export default function QueueScreen() {
         }
         ListEmptyComponent={
           <View style={styles.emptyListContainer}>
-            <Text style={styles.emptyListTitle}>No Requests Yet</Text>
+            <Text style={styles.emptyListTitle}>NO REQUESTS YET</Text>
             <Text style={styles.emptyListText}>
-              Requests will appear here when viewers use the request command
+              SEND YOUR REQUESTS IN CHAT USING
             </Text>
+            <Text style={styles.emptyListCommand}>!request - Artist/Track</Text>
           </View>
         }
         ListFooterComponent={
@@ -499,6 +507,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
+  closeButton: {
+    borderColor: colors.status.error,
+  },
+  closeButtonText: {
+    color: colors.status.error,
+    fontSize: 12,
+    fontWeight: '700',
+  },
   addButton: {
     borderColor: colors.accent.primary,
   },
@@ -583,12 +599,30 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   emptyListContainer: {
-    padding: spacing.xl,
+    padding: 12,
     alignItems: 'center',
   },
   emptyList: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 0,
+  },
+  emptyListTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text.secondary,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  emptyListText: {
+    fontSize: 16,
+    color: colors.text.secondary,
+    textAlign: 'center',
+  },
+  emptyListCommand: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.status.error,
+    textAlign: 'center',
+    marginTop: spacing.xs,
   },
   emptyTitle: {
     fontSize: typography.sizes.lg,
@@ -602,16 +636,21 @@ const styles = StyleSheet.create({
     color: colors.text.muted,
     textAlign: 'center',
   },
-  emptyListTitle: {
-    fontSize: typography.sizes.lg,
-    fontWeight: '700',
-    color: colors.text.primary,
-    marginBottom: spacing.sm,
+  goToSettingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.accent.primary,
+    borderRadius: 8,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
+    marginTop: spacing.lg,
+    gap: spacing.sm,
   },
-  emptyListText: {
+  goToSettingsText: {
+    color: colors.text.primary,
     fontSize: typography.sizes.md,
-    color: colors.text.muted,
-    textAlign: 'center',
+    fontWeight: '600',
   },
   headerRow: {
     flexDirection: 'row',
@@ -633,15 +672,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 0.5,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   requesterHeader: {
     width: 100,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   trackHeader: {
     flex: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   statusHeader: {
     width: 75,
@@ -649,7 +688,7 @@ const styles = StyleSheet.create({
   },
   optionsHeader: {
     width: 95,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     borderRightWidth: 0,
   },
   nextStreamHeader: {

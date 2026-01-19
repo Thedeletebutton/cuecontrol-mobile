@@ -61,24 +61,21 @@ export function LicenseProvider({ children }: { children: ReactNode }) {
 
   // Format input as user types (auto-add dashes)
   const formatLicenseKey = (input: string): string => {
-    // Remove all non-alphanumeric characters and convert to uppercase
-    const cleaned = input.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // Remove all non-alphanumeric characters except dashes, and convert to uppercase
+    const cleaned = input.toUpperCase().replace(/[^A-Z0-9-]/g, '');
 
-    // Add DJRQ prefix if not present
-    let formatted = cleaned;
-    if (!formatted.startsWith('DJRQ')) {
-      if (formatted.length > 0) {
-        // User is typing, prepend DJRQ
-        formatted = 'DJRQ' + formatted;
-      }
-    }
+    // Remove existing dashes to reformat
+    const noDashes = cleaned.replace(/-/g, '');
+
+    // Limit to 16 characters (DJRQ + 12 more)
+    const limited = noDashes.slice(0, 16);
 
     // Insert dashes at appropriate positions
     const parts: string[] = [];
-    if (formatted.length > 0) parts.push(formatted.slice(0, 4)); // DJRQ
-    if (formatted.length > 4) parts.push(formatted.slice(4, 8));
-    if (formatted.length > 8) parts.push(formatted.slice(8, 12));
-    if (formatted.length > 12) parts.push(formatted.slice(12, 16));
+    if (limited.length > 0) parts.push(limited.slice(0, 4)); // DJRQ
+    if (limited.length > 4) parts.push(limited.slice(4, 8));
+    if (limited.length > 8) parts.push(limited.slice(8, 12));
+    if (limited.length > 12) parts.push(limited.slice(12, 16));
 
     return parts.join('-');
   };

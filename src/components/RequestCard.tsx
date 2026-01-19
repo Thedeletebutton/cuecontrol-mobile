@@ -131,11 +131,11 @@ const styles = StyleSheet.create({
   },
   requesterCell: {
     width: 100,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   trackCell: {
     flex: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   statusCell: {
     width: 75,
@@ -145,8 +145,7 @@ const styles = StyleSheet.create({
     width: 95,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingLeft: 6,
+    justifyContent: 'center',
     gap: 6,
     borderRightWidth: 0,
   },
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     color: colors.text.primary,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   usernamePlayed: {
     color: colors.status.played,
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
   track: {
     fontSize: 12,
     color: colors.text.primary,
-    textAlign: 'left',
+    textAlign: 'center',
   },
   trackPlayed: {
     color: colors.status.played,

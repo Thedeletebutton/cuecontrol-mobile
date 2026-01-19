@@ -8,8 +8,10 @@ import {
   SafeAreaView,
   Linking,
   Image,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../src/context/AuthContext';
 import { useAppModeContext } from '../src/context/AppModeContext';
@@ -42,10 +44,28 @@ export default function ModeSelection() {
     router.push('/viewer/request');
   };
 
-  const handleLogout = async () => {
-    await logout();
-    await clearMode();
-    router.replace('/auth/login');
+  const handleLogout = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            // Clear saved credentials to prevent auto-login
+            await AsyncStorage.multiRemove([
+              'cuecontrol_saved_credentials',
+              'cuecontrol_stay_signed_in',
+            ]);
+            await logout();
+            await clearMode();
+            router.replace('/auth/login');
+          },
+        },
+      ]
+    );
   };
 
   if (authLoading || modeLoading) {

@@ -4,10 +4,13 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Modal,
   Linking,
   Image,
+  ScrollView,
+  Modal,
+  SafeAreaView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
 
 interface AboutModalProps {
@@ -23,108 +26,110 @@ export function AboutModal({ visible, onClose }: AboutModalProps) {
   return (
     <Modal
       visible={visible}
-      transparent
       animationType="fade"
+      transparent={false}
       onRequestClose={onClose}
     >
-      <TouchableOpacity
-        style={styles.modalOverlay}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <View style={styles.container} onStartShouldSetResponder={() => true}>
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
           {/* Header bar */}
-          <View style={styles.headerBar}>
+          <View style={styles.header}>
             <Text style={styles.headerTitle}>CueControl</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeText}>✕</Text>
+            <View style={styles.headerButtons}>
+              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          {/* Centered Logo Section */}
+          <View style={styles.logoSection}>
+            <Image
+              source={require('../../assets/icon.png')}
+              style={styles.logoIcon}
+            />
+            <Text style={styles.appName}>CueControl</Text>
+            <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
+            <Text style={styles.version}>Version 3.9.0</Text>
+          </View>
+
+          {/* Card with Credits and Support */}
+          <View style={styles.card}>
+            <View style={styles.credits}>
+              <Text style={styles.creatorText}>Created & Designed by</Text>
+              <Text style={styles.creatorName}>Andrew Keim / Trinitro</Text>
+              <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
+              <TouchableOpacity onPress={openLink}>
+                <Text style={styles.socialLink}>@trinitromusic</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.supportButton} onPress={openLink}>
+              <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
+              <Text style={styles.supportButtonText}>Contact Support</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.content}>
-            {/* Logo section */}
-            <View style={styles.logo}>
-              <Image
-                source={require('../../assets/icon.png')}
-                style={styles.logoIcon}
-              />
-              <Text style={styles.appName}>CueControl</Text>
-              <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 3.9.0</Text>
-              <TouchableOpacity style={styles.supportButton} onPress={openLink}>
-                <Text style={styles.supportButtonText}>Contact Support</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Card section */}
-            <View style={styles.card}>
-              <View style={styles.credits}>
-                <Text style={styles.creatorText}>Created & Designed by Andrew Keim / Trinitro</Text>
-                <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
-                <TouchableOpacity onPress={openLink}>
-                  <Text style={styles.socialLink}>@trinitromusic</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <Text style={styles.copyright}>Copyright © 2025</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+          <Text style={styles.copyright}>Copyright © 2025</Text>
+        </ScrollView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
+    flex: 1,
     backgroundColor: colors.background.main,
-    borderRadius: 0,
-    width: '90%',
-    maxWidth: 400,
-    overflow: 'hidden',
   },
-  headerBar: {
-    height: 36,
+  safeArea: {
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  },
+  header: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.sm,
+    backgroundColor: colors.background.main,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   headerTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: 13,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 1,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   closeButton: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     borderWidth: 1,
     borderColor: colors.status.error,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  closeText: {
+  closeButtonText: {
     color: colors.status.error,
     fontSize: 12,
     fontWeight: '700',
   },
-  content: {
-    padding: spacing.xl,
-    alignItems: 'center',
+  scrollView: {
+    flex: 1,
   },
-  logo: {
+  scrollContent: {
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  logoSection: {
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
@@ -135,67 +140,72 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   appName: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '700',
     color: colors.text.primary,
-    marginBottom: spacing.xs,
+    marginBottom: 4,
   },
   tagline: {
-    fontSize: 13,
+    fontSize: typography.sizes.sm,
     color: colors.text.muted,
     fontStyle: 'italic',
-    marginBottom: spacing.xs,
+    marginBottom: 4,
   },
   version: {
-    fontSize: 12,
+    fontSize: typography.sizes.sm,
     color: colors.text.secondary,
-    marginBottom: spacing.md,
-  },
-  supportButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.accent.primary,
-    borderRadius: 8,
-  },
-  supportButtonText: {
-    fontSize: 12,
-    color: colors.accent.primary,
-    fontWeight: '600',
   },
   card: {
     backgroundColor: colors.background.panel,
-    borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: 16,
     padding: spacing.lg,
     width: '100%',
-    alignItems: 'center',
     marginBottom: spacing.lg,
   },
   credits: {
     alignItems: 'center',
+    marginBottom: spacing.lg,
   },
   creatorText: {
-    fontSize: 13,
+    fontSize: typography.sizes.sm,
+    color: colors.text.secondary,
+    marginBottom: 2,
+  },
+  creatorName: {
+    fontSize: typography.sizes.md,
     color: colors.text.primary,
     fontWeight: '600',
-    textAlign: 'center',
     marginBottom: spacing.md,
   },
   followText: {
-    fontSize: 12,
+    fontSize: typography.sizes.sm,
     color: colors.text.secondary,
-    textAlign: 'center',
     marginBottom: spacing.xs,
+    textAlign: 'center',
   },
   socialLink: {
-    fontSize: 13,
+    fontSize: typography.sizes.md,
+    color: colors.accent.primary,
+    fontWeight: '600',
+  },
+  supportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.accent.primary,
+    borderRadius: 8,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  supportButtonText: {
+    fontSize: typography.sizes.md,
     color: colors.accent.primary,
     fontWeight: '600',
   },
   copyright: {
-    fontSize: 11,
+    fontSize: typography.sizes.sm,
     color: colors.text.muted,
+    textAlign: 'center',
   },
 });

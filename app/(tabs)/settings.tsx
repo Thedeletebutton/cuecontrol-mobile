@@ -14,6 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../src/context/AuthContext';
 import { useAppModeContext } from '../../src/context/AppModeContext';
 import { useLicense } from '../../src/context/LicenseContext';
@@ -21,7 +22,11 @@ import { AboutModal } from '../../src/components/AboutModal';
 import { setCurrentLicenseKey, registerDJHandle, getDJHandle } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
 
-type SettingsTab = 'license' | 'account';
+type SettingsTab = 'license' | 'display' | 'account';
+
+const DJ_HEADER_FONT_SIZE_KEY = '@cuecontrol_dj_header_font_size';
+const DJ_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_dj_requester_font_size';
+const DJ_TRACK_FONT_SIZE_KEY = '@cuecontrol_dj_track_font_size';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -36,6 +41,29 @@ export default function SettingsScreen() {
   const [djHandle, setDjHandle] = useState('');
   const [handleInput, setHandleInput] = useState('');
   const [savingHandle, setSavingHandle] = useState(false);
+
+  // Display settings
+  const [headerFontSize, setHeaderFontSize] = useState(11);
+  const [requesterFontSize, setRequesterFontSize] = useState(12);
+  const [trackFontSize, setTrackFontSize] = useState(12);
+
+  // Load display settings
+  useEffect(() => {
+    const loadDisplaySettings = async () => {
+      try {
+        const savedHeaderSize = await AsyncStorage.getItem(DJ_HEADER_FONT_SIZE_KEY);
+        const savedRequesterSize = await AsyncStorage.getItem(DJ_REQUESTER_FONT_SIZE_KEY);
+        const savedTrackSize = await AsyncStorage.getItem(DJ_TRACK_FONT_SIZE_KEY);
+
+        if (savedHeaderSize) setHeaderFontSize(parseInt(savedHeaderSize, 10));
+        if (savedRequesterSize) setRequesterFontSize(parseInt(savedRequesterSize, 10));
+        if (savedTrackSize) setTrackFontSize(parseInt(savedTrackSize, 10));
+      } catch (error) {
+        console.error('Failed to load display settings:', error);
+      }
+    };
+    loadDisplaySettings();
+  }, []);
 
   useEffect(() => {
     if (licenseKey) {
@@ -63,6 +91,18 @@ export default function SettingsScreen() {
     setLicenseInput(formatted);
   };
 
+  const handleValidateLicense = async () => {
+    const formatted = licenseInput.toUpperCase().trim();
+    const regex = /^DJRQ-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
+    if (!regex.test(formatted)) {
+      Alert.alert('Invalid Format', 'Please enter a valid license key in the format DJRQ-XXXX-XXXX-XXXX');
+      return;
+    }
+
+    Alert.alert('Valid Format', 'License key format is valid. Click Save to activate.');
+  };
+
   const handleSaveLicense = async () => {
     const formatted = licenseInput.toUpperCase().trim();
     const regex = /^DJRQ-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
@@ -76,7 +116,7 @@ export default function SettingsScreen() {
     try {
       await setLicenseKey(formatted);
       setCurrentLicenseKey(formatted);
-      Alert.alert('Saved!', 'Your license key has been saved. Share this with viewers so they can send you requests.');
+      Alert.alert('Saved!', 'Your license key has been saved.');
     } catch (error) {
       Alert.alert('Error', 'Failed to save license key');
     } finally {
@@ -93,19 +133,19 @@ export default function SettingsScreen() {
 
   const handleSaveHandle = async () => {
     if (!licenseKey || !isValidFormat) {
-      Alert.alert('License Key Required', 'Please save your license key first before setting a DJ handle.');
+      Alert.alert('License Key Required', 'Please save your license key first before setting a Stream ID.');
       return;
     }
 
     const handle = handleInput.toLowerCase().trim();
 
     if (!handle || handle.length < 3) {
-      Alert.alert('Invalid Handle', 'Handle must be at least 3 characters.');
+      Alert.alert('Invalid Stream ID', 'Stream ID must be at least 3 characters.');
       return;
     }
 
     if (!/^[a-z0-9_]+$/.test(handle)) {
-      Alert.alert('Invalid Handle', 'Handle can only contain letters, numbers, and underscores.');
+      Alert.alert('Invalid Stream ID', 'Stream ID can only contain letters, numbers, and underscores.');
       return;
     }
 
@@ -113,9 +153,9 @@ export default function SettingsScreen() {
     try {
       await registerDJHandle(handle, licenseKey, user?.email?.split('@')[0]);
       setDjHandle(handle);
-      Alert.alert('Saved!', `Your DJ handle "@${handle}" has been saved. Share this with viewers so they can send you requests!`);
+      Alert.alert('Saved!', `Your Stream ID "@${handle}" has been saved. Share this with viewers so they can send you requests!`);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to save handle');
+      Alert.alert('Error', error.message || 'Failed to save Stream ID');
     } finally {
       setSavingHandle(false);
     }
@@ -124,7 +164,7 @@ export default function SettingsScreen() {
   const handleCopyHandle = async () => {
     if (djHandle) {
       await Clipboard.setStringAsync(djHandle);
-      Alert.alert('Copied!', `Your handle "@${djHandle}" has been copied. Share it with viewers!`);
+      Alert.alert('Copied!', `Your Stream ID "@${djHandle}" has been copied. Share it with viewers!`);
     }
   };
 
@@ -138,6 +178,11 @@ export default function SettingsScreen() {
           text: 'Sign Out',
           style: 'destructive',
           onPress: async () => {
+            // Clear saved credentials to prevent auto-login
+            await AsyncStorage.multiRemove([
+              'cuecontrol_saved_credentials',
+              'cuecontrol_stay_signed_in',
+            ]);
             await logout();
             await clearMode();
             router.replace('/auth/login');
@@ -145,11 +190,6 @@ export default function SettingsScreen() {
         },
       ]
     );
-  };
-
-  const handleSwitchMode = async () => {
-    await clearMode();
-    router.replace('/');
   };
 
   const handleBack = () => {
@@ -206,7 +246,15 @@ export default function SettingsScreen() {
           onPress={() => setActiveTab('license')}
         >
           <Text style={[styles.tabText, activeTab === 'license' && styles.tabTextActive]}>
-            License & Handle
+            License
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'display' && styles.tabActive]}
+          onPress={() => setActiveTab('display')}
+        >
+          <Text style={[styles.tabText, activeTab === 'display' && styles.tabTextActive]}>
+            Display
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -233,7 +281,7 @@ export default function SettingsScreen() {
 
               <View style={styles.licenseContainer}>
             <Text style={styles.licenseLabel}>
-              Enter your CueControl license key from the desktop app:
+              Enter your CueControl license key:
             </Text>
 
             <TextInput
@@ -245,41 +293,47 @@ export default function SettingsScreen() {
               autoCapitalize="characters"
               autoCorrect={false}
               maxLength={19}
+              editable={true}
+              selectTextOnFocus={true}
             />
 
-            <TouchableOpacity
-              style={[styles.saveButton, saving && styles.buttonDisabled]}
-              onPress={handleSaveLicense}
-              disabled={saving}
-            >
-              <Ionicons name="save-outline" size={18} color={colors.text.primary} />
-              <Text style={styles.saveButtonText}>
-                {saving ? 'Saving...' : 'Save License Key'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.licenseButtonRow}>
+              <TouchableOpacity
+                style={styles.validateButton}
+                onPress={handleValidateLicense}
+              >
+                <Text style={styles.validateButtonText}>Validate</Text>
+              </TouchableOpacity>
 
-            {!licenseKey && (
-              <>
-                <View style={styles.divider} />
-                <Text style={styles.requestLabel}>Don't have a license key?</Text>
-                <TouchableOpacity style={styles.requestButton} onPress={handleRequestLicenseKey}>
-                  <Ionicons name="mail-outline" size={18} color={colors.text.primary} />
-                  <Text style={styles.requestButtonText}>Request a License Key</Text>
-                </TouchableOpacity>
-              </>
-            )}
+              <TouchableOpacity
+                style={[styles.licenseRowSaveButton, saving && styles.buttonDisabled]}
+                onPress={handleSaveLicense}
+                disabled={saving}
+              >
+                <Text style={styles.saveButtonText}>
+                  {saving ? 'Saving...' : 'Save'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.divider} />
+            <Text style={styles.requestLabel}>Don't have a license key?</Text>
+            <TouchableOpacity style={styles.requestButton} onPress={handleRequestLicenseKey}>
+              <Ionicons name="mail-outline" size={18} color={colors.text.primary} />
+              <Text style={styles.requestButtonText}>Request a License Key</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
         {licenseKey && isValidFormat && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Your DJ Handle</Text>
+              <Text style={styles.sectionTitle}>Your Stream ID</Text>
             </View>
 
             <View style={styles.licenseContainer}>
               <Text style={styles.licenseLabel}>
-                Set a handle that viewers can use to find you (instead of sharing your license key):
+                Set a Stream ID that viewers can use to find you (instead of sharing your license key):
               </Text>
 
               <View style={styles.handleInputContainer}>
@@ -288,7 +342,7 @@ export default function SettingsScreen() {
                   style={styles.handleInput}
                   value={handleInput}
                   onChangeText={(text) => setHandleInput(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                  placeholder="your_dj_name"
+                  placeholder="your_stream_id"
                   placeholderTextColor={colors.text.muted}
                   autoCapitalize="none"
                   autoCorrect={false}
@@ -303,7 +357,7 @@ export default function SettingsScreen() {
               >
                 <Ionicons name="save-outline" size={18} color={colors.text.primary} />
                 <Text style={styles.saveButtonText}>
-                  {savingHandle ? 'Saving...' : 'Save Handle'}
+                  {savingHandle ? 'Saving...' : 'Save Stream ID'}
                 </Text>
               </TouchableOpacity>
 
@@ -316,13 +370,106 @@ export default function SettingsScreen() {
                     <Text style={styles.copyButtonText}>@{djHandle}</Text>
                   </TouchableOpacity>
                   <Text style={styles.handleHint}>
-                    Viewers enter this handle in the app to send you requests
+                    Viewers enter this Stream ID in the app to send you requests
                   </Text>
                 </>
               )}
             </View>
           </View>
         )}
+          </>
+        )}
+
+        {activeTab === 'display' && (
+          <>
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Font Sizes</Text>
+              </View>
+
+              <View style={styles.displayContainer}>
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Header Font Size</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(8, headerFontSize - 1);
+                        setHeaderFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{headerFontSize}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(18, headerFontSize + 1);
+                        setHeaderFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Requester Font Size</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(10, requesterFontSize - 1);
+                        setRequesterFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{requesterFontSize}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(20, requesterFontSize + 1);
+                        setRequesterFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Track Font Size</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(10, trackFontSize - 1);
+                        setTrackFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{trackFontSize}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(20, trackFontSize + 1);
+                        setTrackFontSize(newSize);
+                        await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Text style={styles.fontSizeButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
           </>
         )}
 
@@ -353,18 +500,16 @@ export default function SettingsScreen() {
               </View>
             </View>
 
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>App Mode</Text>
-              </View>
-
-              <TouchableOpacity style={styles.switchButton} onPress={handleSwitchMode}>
-                <Ionicons name="swap-horizontal" size={20} color={colors.accent.primary} />
-                <Text style={styles.switchButtonText}>Switch to Request Mode</Text>
-              </TouchableOpacity>
-            </View>
           </>
         )}
+
+        {/* Save Settings Button */}
+        <View style={styles.saveSettingsContainer}>
+          <TouchableOpacity style={styles.saveSettingsButton} onPress={handleBack}>
+            <Ionicons name="checkmark" size={20} color={colors.text.primary} />
+            <Text style={styles.saveSettingsButtonText}>Save Settings</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
       <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
@@ -497,6 +642,33 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginBottom: spacing.md,
   },
+  licenseButtonRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  validateButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: colors.accent.primary,
+    borderRadius: 8,
+    padding: spacing.md,
+  },
+  validateButtonText: {
+    color: colors.accent.primary,
+    fontSize: typography.sizes.md,
+    fontWeight: '600',
+  },
+  licenseRowSaveButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.accent.primary,
+    borderRadius: 8,
+    padding: spacing.md,
+  },
   saveButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -579,17 +751,6 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.md,
     fontWeight: '600',
   },
-  switchButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: spacing.lg,
-    backgroundColor: colors.background.row,
-    gap: spacing.sm,
-  },
-  switchButtonText: {
-    fontSize: typography.sizes.md,
-    color: colors.accent.primary,
-  },
   requestLabel: {
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
@@ -637,5 +798,62 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     textAlign: 'center',
     fontStyle: 'italic',
+  },
+  displayContainer: {
+    padding: spacing.lg,
+    backgroundColor: colors.background.row,
+  },
+  fontSizeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  fontSizeLabel: {
+    fontSize: typography.sizes.md,
+    color: colors.text.primary,
+  },
+  fontSizeControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  fontSizeButton: {
+    width: 32,
+    height: 32,
+    borderWidth: 1,
+    borderColor: colors.accent.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fontSizeButtonText: {
+    color: colors.accent.primary,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  fontSizeValue: {
+    color: colors.text.primary,
+    fontSize: typography.sizes.md,
+    minWidth: 50,
+    textAlign: 'center',
+  },
+  saveSettingsContainer: {
+    padding: spacing.md,
+  },
+  saveSettingsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.accent.primary,
+    borderRadius: 8,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  saveSettingsButtonText: {
+    color: colors.text.primary,
+    fontSize: typography.sizes.md,
+    fontWeight: '600',
   },
 });
