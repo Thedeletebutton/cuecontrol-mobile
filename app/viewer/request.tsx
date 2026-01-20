@@ -101,28 +101,9 @@ export default function RequestScreen() {
     setDjHandle(cleaned);
   };
 
-  const handleBack = async () => {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Sign Out',
-          style: 'destructive',
-          onPress: async () => {
-            // Clear saved credentials to prevent auto-login
-            await AsyncStorage.multiRemove([
-              'cuecontrol_saved_credentials',
-              'cuecontrol_stay_signed_in',
-            ]);
-            await logout();
-            await clearMode();
-            router.replace('/auth/login');
-          },
-        },
-      ]
-    );
+  const handleBack = () => {
+    // Go back to home/mode selection screen
+    router.replace('/');
   };
 
   const handleSubmit = async () => {
@@ -380,9 +361,9 @@ export default function RequestScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={[styles.label, { fontSize: labelFontSize }]}>Song Request *</Text>
+              <Text style={[styles.label, { fontSize: labelFontSize }]}>Track Request *</Text>
               <TextInput
-                style={[styles.input, styles.trackInput, { fontSize: inputFontSize }]}
+                style={[styles.input, { fontSize: inputFontSize }]}
                 value={track}
                 onChangeText={setTrack}
                 placeholder="Artist - Track Name"
@@ -540,10 +521,6 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     fontSize: typography.sizes.md,
     color: colors.text.primary,
-  },
-  trackInput: {
-    minHeight: 60,
-    textAlignVertical: 'top',
   },
   hint: {
     fontSize: typography.sizes.xs,

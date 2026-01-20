@@ -1,15 +1,16 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
+import { initializeApp, FirebaseApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { getDatabase, Database, ref, onValue } from "firebase/database";
-import { FirebaseConfig } from "../types/request";
+import { getDatabase, Database, ref, onValue } from 'firebase/database';
+import { FirebaseConfig } from '../types/request';auth = initializeAuth(firebaseApp, persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
+
 
 let firebaseApp: FirebaseApp | null = null;
 let database: Database | null = null;
 let isConnected = false;
 
 export let auth: ReturnType<typeof initializeAuth> | null = null;
-
 export function initializeFirebase(config: FirebaseConfig): boolean {
   try {
     if (!config || !config.apiKey || !config.projectId || !config.databaseURL) {
@@ -17,13 +18,9 @@ export function initializeFirebase(config: FirebaseConfig): boolean {
       return false;
     }
 
-    console.log("Initializing Firebase...");
+    console.log('Initializing Firebase...');
 
-    firebaseApp = initializeApp(config, "cuecontrol-mobile");
-
-    auth = initializeAuth(firebaseApp, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
+    firebaseApp = initializeApp(config, 'cuecontrol-mobile');
     database = getDatabase(firebaseApp);
 
     isConnected = true;

@@ -169,6 +169,7 @@ export default function LoginScreen() {
           </View>
           <Text style={styles.title}>CueControl</Text>
           <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
+          <Text style={styles.version}>Version 3.9.2</Text>
         </View>
 
       <View style={styles.form}>
@@ -323,6 +324,11 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontStyle: 'italic',
+  },
+  version: {
+    fontSize: typography.sizes.sm,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
   },
   form: {
     backgroundColor: colors.background.panel,

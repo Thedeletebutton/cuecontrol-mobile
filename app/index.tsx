@@ -101,8 +101,8 @@ export default function ModeSelection() {
             <TouchableOpacity style={styles.aboutButton} onPress={() => setAboutVisible(true)}>
               <Text style={styles.aboutButtonText}>i</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutButtonText}>⎋</Text>
+            <TouchableOpacity style={styles.settingsButton} onPress={() => setAboutVisible(true)}>
+              <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
               <Text style={styles.closeButtonText}>✕</Text>
@@ -118,7 +118,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 3.9.0</Text>
+            <Text style={styles.version}>Version 3.9.2</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => Linking.openURL('https://linktr.ee/trinitromusic')}
@@ -202,18 +202,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
-  logoutButton: {
+  settingsButton: {
     width: 24,
     height: 24,
     borderWidth: 1,
     borderColor: colors.text.grey,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: colors.text.grey,
-    fontSize: 12,
-    fontWeight: '700',
   },
   closeButton: {
     width: 24,
