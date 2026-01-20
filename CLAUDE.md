@@ -2,6 +2,18 @@
 
 **Version 3.9.2**
 
+## Recent Changes Log
+
+### January 20, 2026 - Version 3.9.2
+**Session Summary:**
+- Home screen: Changed logout button to gear icon for settings, X button now handles logout
+- Track request screen: Renamed "Song Request" to "Track Request", made input same size as others
+- Track request screen: X button now navigates home instead of logging out
+- Added version number display to login screen
+- Updated version numbers across all app files (package.json, app.json, index.tsx, AboutModal.tsx, login.tsx)
+- Updated CLAUDE.md with UI documentation
+- Built iOS app via EAS and pushed to GitHub
+
 **React Native / Expo mobile companion app for CueControl.** Allows DJs to manage their request queue from mobile, and viewers to submit song requests using DJ handles.
 
 ## Project Overview
