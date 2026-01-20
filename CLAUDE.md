@@ -1,5 +1,7 @@
 # CueControl Mobile
 
+**Version 3.9.2**
+
 **React Native / Expo mobile companion app for CueControl.** Allows DJs to manage their request queue from mobile, and viewers to submit song requests using DJ handles.
 
 ## Project Overview
@@ -8,7 +10,7 @@ This is a companion app to the CueControl desktop application. It provides two m
 - **DJ Mode**: Full queue management (view, mark played, delete, edit, manual entry)
 - **Viewer Mode**: Submit song requests to DJs using their handle (e.g., `@trinitro`)
 
-**Desktop App:** See `/Users/andrewkeim/Downloads/dj-request-system 2` for the Electron desktop app.
+**Desktop App:** See `/Users/andrewkeim/Downloads/dj-request-system 2` for the Electron desktop app (v7.3.28).
 
 ## Architecture
 
@@ -40,7 +42,7 @@ cuecontrol-mobile/
 │   │   ├── StatusPill.tsx        # Queued/Played toggle
 │   │   ├── ManualEntryModal.tsx  # Add request manually
 │   │   ├── EditRequestModal.tsx  # Edit request details
-│   │   └── AboutModal.tsx        # App info modal
+│   │   └── AboutModal.tsx        # App info modal (version, credits, support)
 │   ├── context/
 │   │   ├── AuthContext.tsx       # Firebase auth state
 │   │   └── AppModeContext.tsx    # DJ/Viewer mode state
@@ -146,6 +148,13 @@ sendRequestByHandle(handle, { username, track }): Promise<{
 
 ## Authentication
 
+### Login Screen (`app/auth/login.tsx`)
+- Header bar with CueControl title and info button
+- App logo, title, tagline, and version number
+- Email/password form with Sign In / Sign Up tabs
+- "Remember email" and "Stay signed in" checkboxes
+- Auto-login when "Stay signed in" credentials are saved
+
 ### Flow
 1. App checks for existing Firebase auth session
 2. If not authenticated → Show login screen
@@ -165,6 +174,21 @@ interface AuthContextType {
 ```
 
 ## App Modes
+
+### Mode Selection Screen (`app/index.tsx`)
+After login, users choose between DJ Mode and Viewer Mode.
+
+**Header Bar:**
+- CueControl title on left
+- Info button (i) - opens About modal
+- Settings button (gear icon) - opens About modal (placeholder for future settings)
+- Close button (X) - signs out and returns to login
+
+**Content:**
+- App logo, title, tagline, and version
+- Contact Support button
+- DJ Mode button - enters queue management
+- Request Mode button - enters viewer request submission
 
 ### DJ Mode
 Full queue management with tab navigation:
@@ -191,9 +215,11 @@ Full queue management with tab navigation:
 Single screen for submitting requests:
 
 **Screen:** `app/viewer/request.tsx`
+- Header bar with CueControl title, info button (i), and close button (X)
+- X button navigates back to home/mode selection (does NOT log out)
 - DJ Handle input with `@` prefix
 - Username input (saved for convenience)
-- Track/song input
+- Track Request input (labeled "Track Request *")
 - Submit button
 - Success state shows queue position
 
