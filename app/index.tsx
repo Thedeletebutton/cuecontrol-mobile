@@ -101,7 +101,7 @@ export default function ModeSelection() {
             <TouchableOpacity style={styles.aboutButton} onPress={() => setAboutVisible(true)}>
               <Text style={styles.aboutButtonText}>i</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsButton} onPress={() => setAboutVisible(true)}>
+            <TouchableOpacity style={styles.settingsButton} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
