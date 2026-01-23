@@ -1,0 +1,48 @@
+Last login: Thu Jan 22 21:50:29 on ttys000
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+MacBook:~ andrewkeim$ nano ~/now-playing-control/use-rekordbox.command
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  File: /Users/andrewkeim/now-playing-control/use-rekordbox.command   Modified  
+
+#!/bin/zsh
+osascript "$HOME/now-playing-control/scripts/rb_to_obs.applescript"
+                                                                         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Pg   ^K Cut Text  ^C Cur Pos   
+^X Exit      ^J Justify   ^W Where is  ^V Next Pg   ^U UnCut Text^T To Spell  

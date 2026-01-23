@@ -169,7 +169,7 @@ export default function LoginScreen() {
           </View>
           <Text style={styles.title}>CueControl</Text>
           <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-          <Text style={styles.version}>Version 3.9.2</Text>
+          <Text style={styles.version}>Version 5.0.0</Text>
         </View>
 
       <View style={styles.form}>
