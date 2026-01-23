@@ -1,8 +1,14 @@
 # CueControl Mobile
 
-**Version 5.1.0**
+**Version 5.2.0**
 
 ## Recent Changes Log
+
+### January 23, 2026 - Version 5.2.0
+**Session Summary:**
+- Fixed DJ settings exit navigation to return to queue instead of mode selection
+  - Changed from router.replace to router.push for proper navigation within tabs
+- Updated version to 5.2.0 across all files
 
 ### January 23, 2026 - Version 5.1.0
 **Session Summary:**

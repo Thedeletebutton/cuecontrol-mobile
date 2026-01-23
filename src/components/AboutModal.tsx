@@ -56,7 +56,7 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
             />
             <Text style={styles.appName}>CueControl</Text>
             <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 5.1.0</Text>
+            <Text style={styles.version}>Version 5.2.0</Text>
           </View>
 
           {/* Card with Credits and Support */}
