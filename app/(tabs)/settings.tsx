@@ -193,7 +193,7 @@ export default function SettingsScreen() {
   };
 
   const handleBack = () => {
-    router.replace('/');
+    router.replace('/(tabs)/queue');
   };
 
   const handleRequestLicenseKey = async () => {
