@@ -1,8 +1,16 @@
 # CueControl Mobile
 
-**Version 3.9.2**
+**Version 5.0.0**
 
 ## Recent Changes Log
+
+### January 23, 2026 - Version 5.0.0
+**Session Summary:**
+- Updated About modal and Settings screen headers to match mode selection window style
+  - Height: 36px, font size: 15px, border color: #787878
+  - Added left border divider before header buttons
+- Fixed settings button on mode selection screen to navigate to settings (was opening about modal)
+- Updated version to 5.0.0 across all files
 
 ### January 20, 2026 - Version 3.9.2
 **Session Summary:**
@@ -22,7 +30,7 @@ This is a companion app to the CueControl desktop application. It provides two m
 - **DJ Mode**: Full queue management (view, mark played, delete, edit, manual entry)
 - **Viewer Mode**: Submit song requests to DJs using their handle (e.g., `@trinitro`)
 
-**Desktop App:** See `/Users/andrewkeim/Downloads/dj-request-system 2` for the Electron desktop app (v7.3.28).
+**Desktop App:** See `/Users/andrewkeim/Downloads/dj-request-system 2` for the Electron desktop app (v8.0.0).
 
 ## Architecture
 
@@ -193,7 +201,7 @@ After login, users choose between DJ Mode and Viewer Mode.
 **Header Bar:**
 - CueControl title on left
 - Info button (i) - opens About modal
-- Settings button (gear icon) - opens About modal (placeholder for future settings)
+- Settings button (gear icon) - navigates to Settings screen
 - Close button (X) - signs out and returns to login
 
 **Content:**
