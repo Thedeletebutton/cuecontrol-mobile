@@ -169,7 +169,7 @@ export default function LoginScreen() {
           </View>
           <Text style={styles.title}>CueControl</Text>
           <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-          <Text style={styles.version}>Version 5.0.0</Text>
+          <Text style={styles.version}>Version 5.1.0</Text>
         </View>
 
       <View style={styles.form}>
@@ -249,7 +249,7 @@ export default function LoginScreen() {
       </View>
       </KeyboardAvoidingView>
 
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={null} />
     </SafeAreaView>
   );
 }

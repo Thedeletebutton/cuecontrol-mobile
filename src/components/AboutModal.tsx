@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
+import { SupportModal } from './SupportModal';
 
 interface AboutModalProps {
   visible: boolean;
   onClose: () => void;
+  userEmail?: string | null;
 }
 
-export function AboutModal({ visible, onClose }: AboutModalProps) {
-  const openLink = () => {
+export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
+  const [supportVisible, setSupportVisible] = useState(false);
+
+  const openSocialLink = () => {
     Linking.openURL('https://linktr.ee/trinitromusic');
   };
 
@@ -52,7 +56,7 @@ export function AboutModal({ visible, onClose }: AboutModalProps) {
             />
             <Text style={styles.appName}>CueControl</Text>
             <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 5.0.0</Text>
+            <Text style={styles.version}>Version 5.1.0</Text>
           </View>
 
           {/* Card with Credits and Support */}
@@ -61,11 +65,11 @@ export function AboutModal({ visible, onClose }: AboutModalProps) {
               <Text style={styles.creatorText}>Created & Designed by</Text>
               <Text style={styles.creatorName}>Andrew Keim / Trinitro</Text>
               <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
-              <TouchableOpacity onPress={openLink}>
+              <TouchableOpacity onPress={openSocialLink}>
                 <Text style={styles.socialLink}>@trinitromusic</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.supportButton} onPress={openLink}>
+            <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
               <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
               <Text style={styles.supportButtonText}>Contact Support</Text>
             </TouchableOpacity>
@@ -73,6 +77,12 @@ export function AboutModal({ visible, onClose }: AboutModalProps) {
 
           <Text style={styles.copyright}>Copyright © 2025</Text>
         </ScrollView>
+
+        <SupportModal
+          visible={supportVisible}
+          onClose={() => setSupportVisible(false)}
+          userEmail={userEmail}
+        />
       </View>
     </Modal>
   );

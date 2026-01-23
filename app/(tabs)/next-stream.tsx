@@ -29,7 +29,7 @@ import { Request } from '../../src/types/request';
 
 export default function NextStreamScreen() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { licenseKey, isValidFormat } = useLicense();
   const { mode, clearMode } = useAppModeContext();
 
@@ -143,7 +143,7 @@ export default function NextStreamScreen() {
             Please sign in to access your saved requests
           </Text>
         </View>
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
       </View>
     );
   }
@@ -215,7 +215,7 @@ export default function NextStreamScreen() {
         }}
         onSubmit={handleEditSubmit}
       />
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
     </View>
   );
 }

@@ -1,8 +1,25 @@
 # CueControl Mobile
 
-**Version 5.0.0**
+**Version 5.1.0**
 
 ## Recent Changes Log
+
+### January 23, 2026 - Version 5.1.0
+**Session Summary:**
+- Added SupportModal component for in-app contact support messaging
+  - Users can type a message which opens email client with pre-filled content
+  - Includes user email and app version in the message
+  - Header matches standard style (36px, 15px font, #787878 borders)
+- Updated Contact Support buttons to open SupportModal instead of direct mailto link
+  - Mode selection screen
+  - About modal
+- Fixed ViewerSettingsModal header to match standard style
+  - Height: 36px (was 35px), font size: 15px (was 13px)
+  - Added top border and left divider before header buttons
+- Fixed settings navigation from mode selection screen
+  - Now uses router.replace('/') to properly return to mode selection
+- Made Contact Support buttons consistent across screens (same size, icon, styling)
+- Updated version to 5.1.0 across all files
 
 ### January 23, 2026 - Version 5.0.0
 **Session Summary:**

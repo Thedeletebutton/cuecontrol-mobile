@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../src/context/AuthContext';
 import { useAppModeContext } from '../src/context/AppModeContext';
 import { AboutModal } from '../src/components/AboutModal';
+import { SupportModal } from '../src/components/SupportModal';
 import { colors, typography, spacing } from '../src/constants/theme';
 import { IS_CONFIGURED } from '../src/config/firebase.config';
 
@@ -24,6 +25,7 @@ export default function ModeSelection() {
   const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
   const { setMode, loading: modeLoading, clearMode } = useAppModeContext();
   const [aboutVisible, setAboutVisible] = useState(false);
+  const [supportVisible, setSupportVisible] = useState(false);
 
   useEffect(() => {
     // If Firebase is configured but user is not authenticated, redirect to login
@@ -118,11 +120,12 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 5.0.0</Text>
+            <Text style={styles.version}>Version 5.1.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
-              onPress={() => Linking.openURL('https://linktr.ee/trinitromusic')}
+              onPress={() => setSupportVisible(true)}
             >
+              <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
               <Text style={styles.supportButtonText}>Contact Support</Text>
             </TouchableOpacity>
           </View>
@@ -146,7 +149,12 @@ export default function ModeSelection() {
           </View>
         </View>
 
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
+        <SupportModal
+          visible={supportVisible}
+          onClose={() => setSupportVisible(false)}
+          userEmail={user?.email}
+        />
       </View>
     </SafeAreaView>
   );
@@ -257,14 +265,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   supportButton: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: colors.accent.primary,
     borderRadius: 8,
+    padding: spacing.md,
+    gap: spacing.sm,
   },
   supportButtonText: {
-    fontSize: typography.sizes.sm,
+    fontSize: typography.sizes.md,
     color: colors.accent.primary,
     fontWeight: '600',
   },

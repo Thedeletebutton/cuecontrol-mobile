@@ -40,7 +40,7 @@ import { Request } from '../../src/types/request';
 
 export default function QueueScreen() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const { licenseKey, isValidFormat } = useLicense();
   const { mode, clearMode } = useAppModeContext();
 
@@ -266,7 +266,7 @@ export default function QueueScreen() {
             <Text style={styles.goToSettingsText}>Go to Settings</Text>
           </TouchableOpacity>
         </View>
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
       </View>
     );
   }
@@ -431,7 +431,7 @@ export default function QueueScreen() {
         onSubmit={editingNextStreamRequest ? handleNextStreamEditSubmit : handleEditSubmit}
       />
 
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
     </View>
   );
 }

@@ -193,7 +193,7 @@ export default function SettingsScreen() {
   };
 
   const handleBack = () => {
-    router.back();
+    router.replace('/');
   };
 
   const handleRequestLicenseKey = async () => {
@@ -512,7 +512,7 @@ export default function SettingsScreen() {
         </View>
       </ScrollView>
 
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
     </View>
   );
 }

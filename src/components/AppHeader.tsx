@@ -102,7 +102,7 @@ export function AppHeader({
             </View>
             <View style={styles.aboutBody}>
               <Text style={styles.aboutTitle}>CueControl Mobile</Text>
-              <Text style={styles.aboutVersion}>Version 5.0.0</Text>
+              <Text style={styles.aboutVersion}>Version 5.1.0</Text>
               <TouchableOpacity onPress={openLink}>
                 <Text style={styles.aboutLink}>@trinitromusic</Text>
               </TouchableOpacity>

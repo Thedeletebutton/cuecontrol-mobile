@@ -207,7 +207,7 @@ export default function RequestScreen() {
             <Text style={styles.signInButtonText}>Sign In</Text>
           </TouchableOpacity>
         </View>
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
         <ViewerSettingsModal
           visible={settingsVisible}
           onClose={() => setSettingsVisible(false)}
@@ -259,7 +259,7 @@ export default function RequestScreen() {
             <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
           </TouchableOpacity>
         </View>
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
         <ViewerSettingsModal
           visible={settingsVisible}
           onClose={() => setSettingsVisible(false)}
@@ -386,7 +386,7 @@ export default function RequestScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} />
+      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
       <ViewerSettingsModal
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
