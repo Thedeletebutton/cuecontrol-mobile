@@ -1,6 +1,6 @@
 # CueControl Mobile
 
-**Version 5.2.0**
+**Version 10.5.0**
 
 ## Recent Changes Log
 
