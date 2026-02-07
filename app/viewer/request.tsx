@@ -520,11 +520,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
     fontWeight: '800',
   },
   input: {
+    fontFamily: 'Helvetica Neue',
     backgroundColor: colors.background.row,
     borderWidth: 1,
     borderColor: colors.border,
@@ -532,10 +534,13 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   hint: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xs,
     color: colors.text.muted,
+    letterSpacing: 0.5,
     marginTop: spacing.xs,
     fontStyle: 'italic',
   },
@@ -557,6 +562,7 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     fontSize: typography.sizes.lg,
     fontWeight: '800',
+    letterSpacing: 1,
   },
   notConnected: {
     flex: 1,
@@ -565,15 +571,19 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   notConnectedTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xl,
     fontWeight: '700',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginTop: spacing.lg,
     marginBottom: spacing.sm,
   },
   notConnectedText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.muted,
+    letterSpacing: 0.5,
     textAlign: 'center',
     marginBottom: spacing.xl,
   },
@@ -584,9 +594,11 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   signInButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   successContainer: {
     flex: 1,
@@ -599,14 +611,18 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   successTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xxl,
     fontWeight: '700',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginBottom: spacing.sm,
   },
   successText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginBottom: spacing.xl,
   },
   positionBox: {
@@ -619,15 +635,19 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   positionLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 1,
     textTransform: 'uppercase',
     marginBottom: spacing.xs,
   },
   positionNumber: {
+    fontFamily: 'Helvetica Neue',
     fontSize: 48,
     fontWeight: '700',
     color: colors.accent.primary,
+    letterSpacing: 1,
   },
   newRequestButton: {
     flexDirection: 'row',
@@ -639,9 +659,11 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   newRequestButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   viewQueueButton: {
     flexDirection: 'row',
@@ -655,9 +677,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   viewQueueButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   handleInputContainer: {
     flexDirection: 'row',
@@ -668,17 +692,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   handlePrefix: {
+    fontFamily: 'Helvetica Neue',
     paddingLeft: spacing.md,
     fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   handleInput: {
+    fontFamily: 'Helvetica Neue',
     flex: 1,
     padding: spacing.md,
     paddingLeft: spacing.xs,
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -700,7 +728,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   checkboxLabel: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.secondary,
     fontSize: typography.sizes.sm,
+    letterSpacing: 0.5,
   },
 });

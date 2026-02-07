@@ -35,7 +35,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
 
     const subject = encodeURIComponent('CueControl Support Request');
     const body = encodeURIComponent(
-      `${message.trim()}\n\n---\nSent from: ${userEmail || 'Unknown user'}\nApp Version: 11.5.0`
+      `${message.trim()}\n\n---\nSent from: ${userEmail || 'Unknown user'}\nApp Version: 11.6.0`
     );
     const mailtoUrl = `mailto:Admin@cuecontrolapp.com?subject=${subject}&body=${body}`;
 

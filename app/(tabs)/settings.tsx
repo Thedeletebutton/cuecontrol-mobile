@@ -645,8 +645,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.row,
   },
   licenseLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginBottom: spacing.md,
   },
   licenseInput: {
@@ -677,9 +679,11 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   validateButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   licenseRowSaveButton: {
     flex: 1,
@@ -702,9 +706,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   saveButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   divider: {
     height: 1,
@@ -712,8 +718,10 @@ const styles = StyleSheet.create({
     marginVertical: spacing.lg,
   },
   shareLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginBottom: spacing.sm,
   },
   copyButton: {
@@ -732,6 +740,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.md,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     fontWeight: '600',
+    letterSpacing: 0.5,
   },
   accountContainer: {
     padding: spacing.lg,
@@ -746,13 +755,17 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
   },
   accountEmail: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     fontWeight: '600',
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   accountStatus: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.status.success,
+    letterSpacing: 0.5,
     marginTop: spacing.xs,
   },
   logoutButton: {
@@ -767,13 +780,17 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   logoutButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   requestLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginBottom: spacing.sm,
   },
   requestButton: {
@@ -786,9 +803,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   requestButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   handleInputContainer: {
     flexDirection: 'row',
@@ -800,21 +819,27 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   handlePrefix: {
+    fontFamily: 'Helvetica Neue',
     paddingLeft: spacing.md,
     fontSize: typography.sizes.lg,
     color: colors.text.muted,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   handleInput: {
+    fontFamily: 'Helvetica Neue',
     flex: 1,
     padding: spacing.md,
     paddingLeft: spacing.xs,
     fontSize: typography.sizes.lg,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   handleHint: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xs,
     color: colors.text.muted,
+    letterSpacing: 0.5,
     marginTop: spacing.sm,
     textAlign: 'center',
     fontStyle: 'italic',
@@ -832,8 +857,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   fontSizeLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   fontSizeControls: {
     flexDirection: 'row',
@@ -849,13 +876,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fontSizeButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: 18,
     fontWeight: '700',
+    letterSpacing: 1,
   },
   fontSizeValue: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
+    letterSpacing: 0.5,
     minWidth: 50,
     textAlign: 'center',
   },
@@ -872,8 +903,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   saveSettingsButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 1,
   },
 });
