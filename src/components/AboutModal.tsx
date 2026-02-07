@@ -38,7 +38,7 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
         <View style={styles.container}>
           {/* Header bar */}
           <View style={styles.headerBar}>
-            <Text style={styles.headerBarTitle}>CueControl</Text>
+            <Text style={styles.headerBarTitle}>CueControl - About</Text>
             <View style={styles.headerButtons}>
               <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={onClose}>
                 <Ionicons name="close" size={16} color={colors.status.error} />
@@ -54,9 +54,8 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
               />
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 11.7.0</Text>
+              <Text style={styles.version}>Version 11.8.0</Text>
               <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
-                <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
                 <Text style={styles.supportButtonText}>Contact Support</Text>
               </TouchableOpacity>
             </View>
@@ -68,12 +67,12 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
                 <Text style={styles.creatorName}>Andrew Keim / Trinitro</Text>
                 <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
                 <TouchableOpacity onPress={openSocialLink}>
-                  <Text style={styles.socialLink}>@trinitromusic</Text>
+                  <Text style={styles.socialLink}>@Trinitromusic</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            <Text style={styles.copyright}>Copyright © 2025</Text>
+            <Text style={styles.copyright}>Copyright © 2026</Text>
           </ScrollView>
 
           <SupportModal
@@ -146,17 +145,17 @@ const styles = StyleSheet.create({
   scrollContent: {
     justifyContent: 'flex-start',
     padding: spacing.xl,
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   logoIcon: {
     width: 80,
     height: 80,
     borderRadius: 16,
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
   title: {
     fontFamily: 'Helvetica Neue',
@@ -190,62 +189,65 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.primary,
     borderRadius: 8,
     padding: spacing.md,
-    gap: spacing.sm,
   },
   supportButtonText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     color: colors.accent.primary,
-    fontWeight: '600',
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    letterSpacing: 1,
+    textAlign: 'center',
   },
   card: {
     backgroundColor: colors.background.panel,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 16,
-    padding: spacing.xl,
+    padding: spacing.lg,
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   credits: {
     alignItems: 'center',
   },
   creatorText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
-    letterSpacing: 0.5,
-    marginBottom: 2,
+    letterSpacing: 1,
+    marginBottom: spacing.xs,
   },
   creatorName: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     color: colors.text.primary,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginBottom: spacing.md,
+    fontWeight: '800',
+    letterSpacing: 1,
+    marginBottom: spacing.xs,
   },
   followText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
     textAlign: 'center',
   },
   socialLink: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     color: colors.accent.primary,
-    fontWeight: '600',
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   copyright: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.muted,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     textAlign: 'center',
   },
 });

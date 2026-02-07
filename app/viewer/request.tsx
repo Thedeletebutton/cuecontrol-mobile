@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -45,9 +45,11 @@ export default function RequestScreen() {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [saveDjHandle, setSaveDjHandle] = useState(true);
   const [saveUsername, setSaveUsername] = useState(true);
-  const [labelFontSize, setLabelFontSize] = useState(12);
-  const [inputFontSize, setInputFontSize] = useState(14);
+  const [labelFontSize, setLabelFontSize] = useState(15);
+  const [inputFontSize, setInputFontSize] = useState(15);
   const [pushToken, setPushToken] = useState<string | null>(null);
+  const usernameRef = useRef<TextInput>(null);
+  const trackRef = useRef<TextInput>(null);
 
   // Register for push notifications
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function RequestScreen() {
         const savedLabelFontSize = await AsyncStorage.getItem(LABEL_FONT_SIZE_KEY);
         const savedInputFontSize = await AsyncStorage.getItem(INPUT_FONT_SIZE_KEY);
 
-        if (savedDjHandle) setDjHandle(savedDjHandle);
+        if (savedDjHandle) setDjHandle(savedDjHandle.charAt(0).toUpperCase() + savedDjHandle.slice(1));
         if (savedUsername) setUsername(savedUsername);
         if (savedSaveDjHandle !== null) setSaveDjHandle(savedSaveDjHandle === 'true');
         if (savedSaveUsername !== null) setSaveUsername(savedSaveUsername === 'true');
@@ -108,12 +110,16 @@ export default function RequestScreen() {
   // Format handle as user types (lowercase, no special chars except underscore)
   const handleDjHandleChange = (text: string) => {
     const cleaned = text.toLowerCase().replace(/[^a-z0-9_]/g, '');
-    setDjHandle(cleaned);
+    const capitalized = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    setDjHandle(capitalized);
   };
 
   const handleBack = () => {
-    // Go back to home/mode selection screen
-    router.replace('/');
+    if (submitted) {
+      router.replace('/viewer/dashboard');
+    } else {
+      router.replace('/');
+    }
   };
 
   const handleSubmit = async () => {
@@ -187,7 +193,7 @@ export default function RequestScreen() {
   // Custom header with back and info buttons - matching desktop style
   const renderHeader = () => (
     <View style={styles.headerBar}>
-      <Text style={styles.headerBarTitle}>CueControl - Request a Track</Text>
+      <Text style={styles.headerBarTitle}>CueControl - Submit Request</Text>
       <View style={styles.headerButtons}>
         <TouchableOpacity style={[styles.iconButton, styles.infoButton]} onPress={() => setAboutVisible(true)}>
           <Ionicons name="information" size={16} color={colors.accent.primary} />
@@ -256,24 +262,30 @@ export default function RequestScreen() {
       <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {renderHeader()}
-        <View style={styles.successContainer}>
-          <View style={styles.successIcon}>
-            <Ionicons name="checkmark-circle" size={80} color={colors.status.success} />
+        <View style={styles.successContent}>
+          <View style={styles.successHeader}>
+            <View style={styles.successIconContainer}>
+              <Ionicons name="checkmark-circle" size={48} color={colors.status.success} />
+            </View>
+            <Text style={styles.successTitle}>Request Submitted!</Text>
+            <Text style={styles.successText}>Your track has been added to the queue</Text>
           </View>
-          <Text style={styles.successTitle}>Request Submitted!</Text>
-          <Text style={styles.successText}>Your song has been added to the queue</Text>
+
           <View style={styles.positionBox}>
             <Text style={styles.positionLabel}>Queue Position</Text>
             <Text style={styles.positionNumber}>#{queuePosition}</Text>
           </View>
-          <TouchableOpacity style={styles.newRequestButton} onPress={handleNewRequest}>
-            <Ionicons name="add" size={20} color={colors.text.primary} />
-            <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
-            <Ionicons name="list" size={20} color={colors.accent.primary} />
-            <Text style={styles.viewQueueButtonText}>View Queue</Text>
-          </TouchableOpacity>
+
+          <View style={styles.successButtons}>
+            <TouchableOpacity style={styles.newRequestButton} onPress={handleNewRequest}>
+              <Ionicons name="add" size={20} color={colors.text.primary} />
+              <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
+              <Ionicons name="list" size={20} color={colors.accent.primary} />
+              <Text style={styles.viewQueueButtonText}>View Queue</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
         <ViewerSettingsModal
@@ -322,9 +334,12 @@ export default function RequestScreen() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { fontSize: labelFontSize }]}>Stream ID *</Text>
+          {/* Stream ID Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Stream ID</Text>
+            </View>
+            <View style={styles.sectionContent}>
               <View style={styles.handleInputContainer}>
                 <Text style={[styles.handlePrefix, { fontSize: inputFontSize }]}>@</Text>
                 <TextInput
@@ -333,64 +348,84 @@ export default function RequestScreen() {
                   onChangeText={handleDjHandleChange}
                   placeholder="stream_id"
                   placeholderTextColor={colors.text.muted}
-                  autoCapitalize="none"
+                  autoCapitalize="sentences"
                   autoCorrect={false}
                   maxLength={20}
+                  returnKeyType="next"
+                  onSubmitEditing={() => usernameRef.current?.focus()}
                 />
               </View>
-              <View style={styles.checkboxRow}>
-                <TouchableOpacity
-                  style={styles.checkbox}
-                  onPress={async () => {
-                    const newValue = !saveDjHandle;
-                    setSaveDjHandle(newValue);
-                    await AsyncStorage.setItem(SAVE_DJ_HANDLE_KEY, newValue.toString());
-                  }}
-                >
-                  {saveDjHandle && <Text style={styles.checkmark}>✓</Text>}
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.checkboxRow}
+                onPress={async () => {
+                  const newValue = !saveDjHandle;
+                  setSaveDjHandle(newValue);
+                  await AsyncStorage.setItem(SAVE_DJ_HANDLE_KEY, newValue.toString());
+                }}
+              >
+                <View style={[styles.checkbox, saveDjHandle && styles.checkboxChecked]}>
+                  {saveDjHandle && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                </View>
                 <Text style={styles.checkboxLabel}>Save Stream ID</Text>
-              </View>
+              </TouchableOpacity>
             </View>
+          </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { fontSize: labelFontSize }]}>Your Username *</Text>
+          {/* Username Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Username</Text>
+            </View>
+            <View style={styles.sectionContent}>
               <TextInput
+                ref={usernameRef}
                 style={[styles.input, { fontSize: inputFontSize }]}
                 value={username}
                 onChangeText={setUsername}
-                placeholder="Enter your username"
+                placeholder="Enter Your Username"
                 placeholderTextColor={colors.text.muted}
                 autoCapitalize="words"
+                returnKeyType="next"
+                onSubmitEditing={() => trackRef.current?.focus()}
               />
-              <View style={styles.checkboxRow}>
-                <TouchableOpacity
-                  style={styles.checkbox}
-                  onPress={async () => {
-                    const newValue = !saveUsername;
-                    setSaveUsername(newValue);
-                    await AsyncStorage.setItem(SAVE_USERNAME_KEY, newValue.toString());
-                  }}
-                >
-                  {saveUsername && <Text style={styles.checkmark}>✓</Text>}
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.checkboxRow}
+                onPress={async () => {
+                  const newValue = !saveUsername;
+                  setSaveUsername(newValue);
+                  await AsyncStorage.setItem(SAVE_USERNAME_KEY, newValue.toString());
+                }}
+              >
+                <View style={[styles.checkbox, saveUsername && styles.checkboxChecked]}>
+                  {saveUsername && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                </View>
                 <Text style={styles.checkboxLabel}>Save Username</Text>
-              </View>
+              </TouchableOpacity>
             </View>
+          </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={[styles.label, { fontSize: labelFontSize }]}>Track Request *</Text>
+          {/* Track Request Section */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Artist - Track Request</Text>
+            </View>
+            <View style={styles.sectionContent}>
               <TextInput
+                ref={trackRef}
                 style={[styles.input, { fontSize: inputFontSize }]}
                 value={track}
                 onChangeText={setTrack}
                 placeholder="Artist - Track Name"
                 placeholderTextColor={colors.text.muted}
-                multiline
-                numberOfLines={2}
+                autoCapitalize="words"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
               />
             </View>
+          </View>
 
+          {/* Submit Button */}
+          <View style={styles.submitButtonContainer}>
             <TouchableOpacity
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
@@ -506,24 +541,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
+    paddingBottom: 100,
+  },
+  section: {
+    marginBottom: 0,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingTop: spacing.md,
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: spacing.sm,
+    height: 38,
+    backgroundColor: colors.background.main,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
-  form: {
-    padding: spacing.md,
-  },
-  inputGroup: {
-    marginBottom: spacing.md,
-  },
-  label: {
+  sectionTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
-    color: colors.text.secondary,
-    letterSpacing: 1,
-    marginBottom: spacing.xs,
-    textTransform: 'uppercase',
+    fontSize: 18,
     fontWeight: '800',
+    color: colors.accent.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  sectionContent: {
+    padding: spacing.lg,
+    backgroundColor: colors.background.row,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
   input: {
     fontFamily: 'Helvetica Neue',
@@ -532,17 +578,14 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: spacing.md,
-    fontSize: typography.sizes.md,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
-  hint: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.xs,
-    color: colors.text.muted,
-    letterSpacing: 0.5,
-    marginTop: spacing.xs,
-    fontStyle: 'italic',
+  submitButtonContainer: {
+    padding: spacing.lg,
+    paddingTop: spacing.xl,
   },
   submitButton: {
     flexDirection: 'row',
@@ -552,7 +595,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent.primary,
     borderRadius: 8,
     padding: spacing.md,
-    marginTop: spacing.md,
   },
   submitButtonDisabled: {
     opacity: 0.5,
@@ -560,7 +602,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.lg,
+    fontSize: 18,
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -573,7 +615,7 @@ const styles = StyleSheet.create({
   notConnectedTitle: {
     fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xl,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
     marginTop: spacing.lg,
@@ -596,47 +638,57 @@ const styles = StyleSheet.create({
   signInButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
-  successContainer: {
+  successContent: {
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
     padding: spacing.xl,
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xl,
   },
-  successIcon: {
+  successHeader: {
+    alignItems: 'center',
     marginBottom: spacing.lg,
+  },
+  successIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.accent.soft,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
   },
   successTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.xxl,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
   successText: {
     fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
-    color: colors.text.secondary,
+    color: colors.text.muted,
+    fontStyle: 'italic',
     letterSpacing: 0.5,
-    marginBottom: spacing.xl,
   },
   positionBox: {
-    backgroundColor: colors.accent.soft,
+    backgroundColor: colors.background.panel,
     borderWidth: 1,
-    borderColor: colors.accent.primary,
+    borderColor: colors.border,
     borderRadius: 16,
-    padding: spacing.xl,
+    padding: spacing.lg,
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   positionLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
     textTransform: 'uppercase',
@@ -645,42 +697,44 @@ const styles = StyleSheet.create({
   positionNumber: {
     fontFamily: 'Helvetica Neue',
     fontSize: 48,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.accent.primary,
     letterSpacing: 1,
+  },
+  successButtons: {
+    gap: spacing.lg,
   },
   newRequestButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.sm,
     backgroundColor: colors.accent.primary,
-    borderRadius: 12,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
+    borderRadius: 8,
+    padding: spacing.md,
   },
   newRequestButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   viewQueueButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.sm,
     borderWidth: 2,
     borderColor: colors.accent.primary,
-    borderRadius: 12,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    marginTop: spacing.md,
+    borderRadius: 8,
+    padding: spacing.md,
   },
   viewQueueButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   handleInputContainer: {
@@ -694,9 +748,9 @@ const styles = StyleSheet.create({
   handlePrefix: {
     fontFamily: 'Helvetica Neue',
     paddingLeft: spacing.md,
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     color: colors.text.muted,
-    fontWeight: '600',
+    fontWeight: '800',
     letterSpacing: 1,
   },
   handleInput: {
@@ -704,33 +758,38 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: spacing.md,
     paddingLeft: spacing.xs,
-    fontSize: typography.sizes.md,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: spacing.sm,
+    paddingLeft: spacing.sm,
     marginTop: spacing.xs,
   },
   checkbox: {
     width: 20,
     height: 20,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: colors.accent.primary,
+    borderColor: colors.border,
+    backgroundColor: colors.background.panel,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.sm,
   },
-  checkmark: {
-    color: colors.accent.primary,
-    fontSize: 14,
-    fontWeight: '700',
+  checkboxChecked: {
+    backgroundColor: colors.accent.primary,
+    borderColor: colors.accent.primary,
   },
   checkboxLabel: {
     fontFamily: 'Helvetica Neue',
-    color: colors.text.secondary,
-    fontSize: typography.sizes.sm,
-    letterSpacing: 0.5,
+    color: colors.text.primary,
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
 });

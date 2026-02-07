@@ -8,11 +8,12 @@ import {
   Modal,
   SafeAreaView,
   Alert,
-  Linking,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getDatabase, ref, set } from 'firebase/database';
+import { getFirebaseDatabase, getFirebaseApp } from '../services/firebase';
 import { colors, typography, spacing } from '../constants/theme';
 
 interface SupportModalProps {
@@ -33,27 +34,33 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
 
     setSending(true);
 
-    const subject = encodeURIComponent('CueControl Support Request');
-    const body = encodeURIComponent(
-      `${message.trim()}\n\n---\nSent from: ${userEmail || 'Unknown user'}\nApp Version: 11.7.0`
-    );
-    const mailtoUrl = `mailto:Admin@cuecontrolapp.com?subject=${subject}&body=${body}`;
-
     try {
-      const canOpen = await Linking.canOpenURL(mailtoUrl);
-      if (canOpen) {
-        await Linking.openURL(mailtoUrl);
-        setMessage('');
-        onClose();
-      } else {
-        Alert.alert(
-          'Email Not Available',
-          'Unable to open email client. Please email Admin@cuecontrolapp.com directly.',
-          [{ text: 'OK' }]
-        );
+      let db = getFirebaseDatabase();
+      if (!db) {
+        // Fallback: get database directly from the app instance
+        const app = getFirebaseApp();
+        if (app) {
+          db = getDatabase(app);
+        }
       }
-    } catch (error) {
-      Alert.alert('Error', 'Failed to open email client. Please try again.');
+      if (!db) throw new Error('Firebase not connected');
+
+      const id = Date.now();
+      const messageRef = ref(db, `supportMessages/${id}`);
+      await set(messageRef, {
+        id,
+        message: message.trim(),
+        email: 'admin@cuecontrolapp.com',
+        appVersion: '11.8.0',
+        timestamp: id,
+      });
+
+      setMessage('');
+      Alert.alert('Message Sent', 'Your support message has been sent. We\'ll get back to you soon.');
+      onClose();
+    } catch (error: any) {
+      console.error('Support message error:', error);
+      Alert.alert('Error', `Failed to send message: ${error.message || 'Unknown error'}`);
     } finally {
       setSending(false);
     }
@@ -74,7 +81,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.headerBar}>
-            <Text style={styles.headerBarTitle}>Contact Support</Text>
+            <Text style={styles.headerBarTitle}>CueControl - Contact Support</Text>
             <View style={styles.headerButtons}>
               <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleClose}>
                 <Ionicons name="close" size={16} color={colors.status.error} />
@@ -95,7 +102,6 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
               </View>
 
               <View style={styles.inputSection}>
-                <Text style={styles.label}>Your Message *</Text>
                 <TextInput
                   style={styles.messageInput}
                   value={message}
@@ -115,12 +121,12 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
               >
                 <Ionicons name="send" size={18} color={colors.text.primary} />
                 <Text style={styles.sendButtonText}>
-                  {sending ? 'Opening Email...' : 'Send Message'}
+                  {sending ? 'Sending...' : 'Send Message'}
                 </Text>
               </TouchableOpacity>
 
               <Text style={styles.noteText}>
-                This will open your email app with your message pre-filled.
+                Your message will be sent directly to the CueControl team.
               </Text>
             </View>
           </KeyboardAvoidingView>
@@ -189,32 +195,23 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: spacing.xl,
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xl,
   },
   infoSection: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   infoText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
     textAlign: 'center',
     marginTop: spacing.md,
-    lineHeight: 22,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   inputSection: {
     marginBottom: spacing.lg,
-  },
-  label: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
-    color: colors.text.secondary,
-    marginBottom: spacing.sm,
-    textTransform: 'uppercase',
-    fontWeight: '800',
-    letterSpacing: 1,
   },
   messageInput: {
     fontFamily: 'Helvetica Neue',
@@ -223,9 +220,10 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: spacing.md,
-    fontSize: typography.sizes.md,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     minHeight: 150,
   },
   sendButton: {
@@ -236,7 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent.primary,
     borderRadius: 8,
     padding: spacing.md,
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
   },
   sendButtonDisabled: {
     opacity: 0.5,
@@ -244,16 +242,17 @@ const styles = StyleSheet.create({
   sendButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.lg,
+    fontSize: 18,
     fontWeight: '800',
     letterSpacing: 1,
   },
   noteText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.muted,
     textAlign: 'center',
     fontStyle: 'italic',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
 });

@@ -120,12 +120,11 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 11.7.0</Text>
+            <Text style={styles.version}>Version 11.8.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}
             >
-              <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
               <Text style={styles.supportButtonText}>Contact Support</Text>
             </TouchableOpacity>
           </View>
@@ -269,14 +268,14 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.primary,
     borderRadius: 8,
     padding: spacing.md,
-    gap: spacing.sm,
   },
   supportButtonText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     color: colors.accent.primary,
-    fontWeight: '600',
+    fontWeight: '800',
     letterSpacing: 1,
+    textAlign: 'center',
   },
   setupText: {
     fontSize: typography.sizes.sm,

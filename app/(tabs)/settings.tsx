@@ -404,7 +404,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>-</Text>
+                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{headerFontSize}px</Text>
                     <TouchableOpacity
@@ -415,7 +415,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>+</Text>
+                      <Ionicons name="add" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -431,7 +431,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>-</Text>
+                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{requesterFontSize}px</Text>
                     <TouchableOpacity
@@ -442,7 +442,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>+</Text>
+                      <Ionicons name="add" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -458,7 +458,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>-</Text>
+                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{trackFontSize}px</Text>
                     <TouchableOpacity
@@ -469,7 +469,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Text style={styles.fontSizeButtonText}>+</Text>
+                      <Ionicons name="add" size={16} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -686,8 +686,8 @@ const styles = StyleSheet.create({
   validateButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   licenseRowSaveButton: {
@@ -713,8 +713,8 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   divider: {
@@ -724,9 +724,10 @@ const styles = StyleSheet.create({
   },
   shareLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     marginBottom: spacing.sm,
   },
   copyButton: {
@@ -742,10 +743,10 @@ const styles = StyleSheet.create({
   },
   copyButtonText: {
     color: colors.accent.primary,
-    fontSize: typography.sizes.md,
+    fontSize: 15,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    fontWeight: '600',
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   accountContainer: {
     padding: spacing.lg,
@@ -761,16 +762,17 @@ const styles = StyleSheet.create({
   },
   accountEmail: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   accountStatus: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.status.success,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     marginTop: spacing.xs,
   },
   logoutButton: {
@@ -787,15 +789,16 @@ const styles = StyleSheet.create({
   logoutButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   requestLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.sm,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.secondary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     marginBottom: spacing.sm,
   },
   requestButton: {
@@ -810,8 +813,8 @@ const styles = StyleSheet.create({
   requestButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
   handleInputContainer: {
@@ -828,7 +831,7 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.md,
     fontSize: typography.sizes.lg,
     color: colors.text.muted,
-    fontWeight: '600',
+    fontWeight: '800',
     letterSpacing: 1,
   },
   handleInput: {
@@ -842,9 +845,10 @@ const styles = StyleSheet.create({
   },
   handleHint: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.xs,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.muted,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     marginTop: spacing.sm,
     textAlign: 'center',
     fontStyle: 'italic',
@@ -863,9 +867,10 @@ const styles = StyleSheet.create({
   },
   fontSizeLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.md,
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   fontSizeControls: {
     flexDirection: 'row',
@@ -873,25 +878,21 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   fontSizeButton: {
-    width: 32,
-    height: 32,
-    borderWidth: 1,
+    width: 25,
+    height: 25,
+    borderWidth: 2,
     borderColor: colors.accent.primary,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  fontSizeButtonText: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.accent.primary,
-    fontSize: 18,
-    fontWeight: '700',
-    letterSpacing: 1,
   },
   fontSizeValue: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    letterSpacing: 0.5,
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
     minWidth: 50,
     textAlign: 'center',
   },
@@ -910,8 +911,8 @@ const styles = StyleSheet.create({
   saveSettingsButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 1,
   },
 });

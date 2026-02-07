@@ -50,8 +50,8 @@ export default function ViewerDashboard() {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [saveDjHandle, setSaveDjHandle] = useState(true);
   const [saveUsername, setSaveUsername] = useState(true);
-  const [labelFontSize, setLabelFontSize] = useState(12);
-  const [inputFontSize, setInputFontSize] = useState(14);
+  const [labelFontSize, setLabelFontSize] = useState(15);
+  const [inputFontSize, setInputFontSize] = useState(15);
   const [recentHandles, setRecentHandles] = useState<string[]>([]);
 
   const { requests, loading, totalCount, unplayedCount, playedCount } = useViewerRequests(licenseKey);
