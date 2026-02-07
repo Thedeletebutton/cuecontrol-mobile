@@ -38,7 +38,44 @@ export function subscribeToNextStream(
       const requestsArray = Object.entries(data).map(([key, value]) => ({
         ...(value as Request),
         id: parseInt(key) || (value as Request).id,
-      })).sort((a, b) => a.id - b.id);
+      })).sort((a, b) => {
+        const orderA = a.order !== undefined ? a.order : a.id;
+        const orderB = b.order !== undefined ? b.order : b.id;
+        return orderA - orderB;
+      });
+      callback(requestsArray);
+    } else {
+      callback([]);
+    }
+  });
+
+  return unsubscribe;
+}
+
+export function subscribeToNextStreamByLicenseKey(
+  licenseKey: string,
+  callback: (requests: Request[]) => void
+): () => void {
+  const db = getFirebaseDatabase();
+
+  if (!db) {
+    callback([]);
+    return () => {};
+  }
+
+  const path = `licenses/${licenseKeyToPath(licenseKey)}/nextStream`;
+  const nextStreamRef = ref(db, path);
+  const unsubscribe = onValue(nextStreamRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      const requestsArray = Object.entries(data).map(([key, value]) => ({
+        ...(value as Request),
+        id: parseInt(key) || (value as Request).id,
+      })).sort((a, b) => {
+        const orderA = a.order !== undefined ? a.order : a.id;
+        const orderB = b.order !== undefined ? b.order : b.id;
+        return orderA - orderB;
+      });
       callback(requestsArray);
     } else {
       callback([]);
@@ -50,7 +87,7 @@ export function subscribeToNextStream(
 
 export async function updateNextStreamRequest(
   id: number,
-  updates: { request?: string; notes?: string }
+  updates: { request?: string; notes?: string; starred?: boolean; order?: number }
 ): Promise<void> {
   const db = getFirebaseDatabase();
   if (!db) throw new Error('Not connected to Firebase');
@@ -74,6 +111,18 @@ export async function deleteNextStreamRequest(id: number): Promise<void> {
   const basePath = getLicenseNextStreamPath();
   const requestRef = ref(db, `${basePath}/${id}`);
   await remove(requestRef);
+}
+
+export async function reorderNextStream(orderedIds: number[]): Promise<void> {
+  const db = getFirebaseDatabase();
+  if (!db) throw new Error('Not connected to Firebase');
+
+  const basePath = getLicenseNextStreamPath();
+  const updates: Record<string, number> = {};
+  orderedIds.forEach((id, index) => {
+    updates[`${basePath}/${id}/order`] = index;
+  });
+  await update(ref(db, '/'), updates);
 }
 
 export async function moveFromNextStream(id: number): Promise<void> {

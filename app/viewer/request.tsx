@@ -19,6 +19,7 @@ import { useAppModeContext } from '../../src/context/AppModeContext';
 import { AboutModal } from '../../src/components/AboutModal';
 import { ViewerSettingsModal } from '../../src/components/ViewerSettingsModal';
 import { sendRequestByHandle } from '../../src/services/requests';
+import { registerForPushNotificationsAsync } from '../../src/services/pushNotifications';
 import { colors, typography, spacing } from '../../src/constants/theme';
 
 const DJ_HANDLE_STORAGE = '@cuecontrol_viewer_dj_handle';
@@ -46,6 +47,15 @@ export default function RequestScreen() {
   const [saveUsername, setSaveUsername] = useState(true);
   const [labelFontSize, setLabelFontSize] = useState(12);
   const [inputFontSize, setInputFontSize] = useState(14);
+  const [pushToken, setPushToken] = useState<string | null>(null);
+
+  // Register for push notifications
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {
+      console.log('[PUSH] Viewer push token:', token);
+      if (token) setPushToken(token);
+    });
+  }, []);
 
   // Load saved settings on mount
   useEffect(() => {
@@ -149,6 +159,7 @@ export default function RequestScreen() {
       const result = await sendRequestByHandle(handle, {
         username: username.trim(),
         track: track.trim(),
+        ...(pushToken && { pushToken }),
       });
 
       setQueuePosition(result.queuePosition);
@@ -257,6 +268,10 @@ export default function RequestScreen() {
           <TouchableOpacity style={styles.newRequestButton} onPress={handleNewRequest}>
             <Ionicons name="add" size={20} color={colors.text.primary} />
             <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
+            <Ionicons name="list" size={20} color={colors.accent.primary} />
+            <Text style={styles.viewQueueButtonText}>View Queue</Text>
           </TouchableOpacity>
         </View>
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
@@ -628,6 +643,22 @@ const styles = StyleSheet.create({
   },
   newRequestButtonText: {
     color: colors.text.primary,
+    fontSize: typography.sizes.md,
+    fontWeight: '600',
+  },
+  viewQueueButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    borderWidth: 2,
+    borderColor: colors.accent.primary,
+    borderRadius: 12,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    marginTop: spacing.md,
+  },
+  viewQueueButtonText: {
+    color: colors.accent.primary,
     fontSize: typography.sizes.md,
     fontWeight: '600',
   },

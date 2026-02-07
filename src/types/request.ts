@@ -5,6 +5,9 @@ export interface Request {
   message?: string;
   played: boolean;
   notes?: string;
+  starred?: boolean;
+  order?: number;
+  pushToken?: string;
   platform: 'twitch' | 'youtube' | 'manual' | 'mobile' | 'restream';
   timestamp?: number;
 }

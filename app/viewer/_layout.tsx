@@ -18,6 +18,12 @@ export default function ViewerLayout() {
       }}
     >
       <Stack.Screen
+        name="dashboard"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="request"
         options={{
           headerShown: false,

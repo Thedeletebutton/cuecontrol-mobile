@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
-  FlatList,
   Text,
   StyleSheet,
-  RefreshControl,
   SafeAreaView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useNextStream } from '../../src/hooks/useNextStream';
@@ -22,6 +21,7 @@ import {
   updateNextStreamRequest,
   deleteNextStreamRequest,
   moveFromNextStream,
+  reorderNextStream,
 } from '../../src/services/nextStream';
 import { setCurrentLicenseKey } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
@@ -41,15 +41,9 @@ export default function NextStreamScreen() {
   }, [licenseKey, isValidFormat]);
 
   const { requests, loading, count } = useNextStream(licenseKey);
-  const [refreshing, setRefreshing] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingRequest, setEditingRequest] = useState<Request | null>(null);
   const [aboutVisible, setAboutVisible] = useState(false);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 500);
-  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -69,6 +63,22 @@ export default function NextStreamScreen() {
     updates: { request?: string; notes?: string }
   ) => {
     await updateNextStreamRequest(id, updates);
+  };
+
+  const handleUpdateNotes = async (id: number, notes: string) => {
+    try {
+      await updateNextStreamRequest(id, { notes });
+    } catch (error) {
+      console.error('Failed to update notes:', error);
+    }
+  };
+
+  const handleToggleStar = async (id: number, starred: boolean) => {
+    try {
+      await updateNextStreamRequest(id, { starred });
+    } catch (error) {
+      console.error('Failed to toggle star:', error);
+    }
   };
 
   const handleMoveFromNextStream = async (id: number) => {
@@ -111,12 +121,6 @@ export default function NextStreamScreen() {
             onPress={() => setAboutVisible(true)}
           >
             <Text style={styles.infoButtonText}>i</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.iconButton, styles.reloadButton]}
-            onPress={onRefresh}
-          >
-            <Ionicons name="reload" size={14} color={colors.text.grey} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.iconButton, styles.modeButton]}
@@ -174,28 +178,32 @@ export default function NextStreamScreen() {
         </View>
       </View>
 
-      <FlatList
+      <DraggableFlatList
         data={requests}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <RequestCard
-            request={item}
-            index={index}
-            onMarkPlayed={() => {}}
-            onMarkUnplayed={() => {}}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            onMoveFromNextStream={handleMoveFromNextStream}
-            isNextStream
-          />
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.accent.primary}
-          />
-        }
+        renderItem={({ item, drag, isActive }: RenderItemParams<Request>) => {
+          const idx = requests.indexOf(item);
+          return (
+            <RequestCard
+              request={item}
+              index={idx}
+              onMarkPlayed={() => {}}
+              onMarkUnplayed={() => {}}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+              onUpdateNotes={handleUpdateNotes}
+              onToggleStar={handleToggleStar}
+              onMoveFromNextStream={handleMoveFromNextStream}
+              isNextStream
+              drag={drag}
+              isActive={isActive}
+            />
+          );
+        }}
+        onDragEnd={({ data }) => {
+          const ids = data.map(r => r.id);
+          reorderNextStream(ids);
+        }}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
@@ -203,7 +211,7 @@ export default function NextStreamScreen() {
             </Text>
           </View>
         }
-        contentContainerStyle={requests.length === 0 && styles.emptyList}
+        contentContainerStyle={requests.length === 0 ? styles.emptyList : undefined}
       />
 
       <EditRequestModal
@@ -235,8 +243,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
   headerBarTitle: {
     fontFamily: 'Helvetica Neue',
@@ -256,7 +266,7 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -289,7 +299,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     height: 35,
     backgroundColor: colors.background.main,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   subHeaderTitle: {
@@ -339,14 +349,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background.main,
     height: 35,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   headerCell: {
     height: '100%',
     justifyContent: 'center',
     paddingHorizontal: 8,
-    borderRightWidth: 1,
+    borderRightWidth: 2,
     borderRightColor: colors.border,
   },
   headerText: {
@@ -366,7 +376,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionsHeader: {
-    width: 80,
+    width: 120,
     alignItems: 'center',
     borderRightWidth: 0,
   },

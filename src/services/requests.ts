@@ -45,7 +45,44 @@ export function subscribeToRequests(
       const requestsArray = Object.entries(data).map(([key, value]) => ({
         ...(value as Request),
         id: parseInt(key) || (value as Request).id,
-      })).sort((a, b) => a.id - b.id);
+      })).sort((a, b) => {
+        const orderA = a.order !== undefined ? a.order : a.id;
+        const orderB = b.order !== undefined ? b.order : b.id;
+        return orderA - orderB;
+      });
+      callback(requestsArray);
+    } else {
+      callback([]);
+    }
+  });
+
+  return unsubscribe;
+}
+
+export function subscribeToRequestsByLicenseKey(
+  licenseKey: string,
+  callback: (requests: Request[]) => void
+): () => void {
+  const db = getFirebaseDatabase();
+
+  if (!db) {
+    callback([]);
+    return () => {};
+  }
+
+  const path = `licenses/${licenseKeyToPath(licenseKey)}/requests`;
+  const requestsRef = ref(db, path);
+  const unsubscribe = onValue(requestsRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      const requestsArray = Object.entries(data).map(([key, value]) => ({
+        ...(value as Request),
+        id: parseInt(key) || (value as Request).id,
+      })).sort((a, b) => {
+        const orderA = a.order !== undefined ? a.order : a.id;
+        const orderB = b.order !== undefined ? b.order : b.id;
+        return orderA - orderB;
+      });
       callback(requestsArray);
     } else {
       callback([]);
@@ -89,7 +126,7 @@ export async function updateRequestStatus(id: number, played: boolean): Promise<
 
 export async function updateRequest(
   id: number,
-  updates: { request?: string; notes?: string }
+  updates: { request?: string; notes?: string; starred?: boolean; order?: number }
 ): Promise<void> {
   const db = getFirebaseDatabase();
   if (!db) throw new Error('Not connected to Firebase');
@@ -142,7 +179,7 @@ export async function getQueuePosition(): Promise<number> {
 // Send a request to a specific DJ's queue by their license key
 export async function sendRequestToDJ(
   djLicenseKey: string,
-  request: { username: string; track: string }
+  request: { username: string; track: string; pushToken?: string }
 ): Promise<number> {
   const db = getFirebaseDatabase();
   if (!db) throw new Error('Not connected to Firebase');
@@ -158,6 +195,7 @@ export async function sendRequestToDJ(
     played: false,
     platform: 'mobile',
     timestamp: Date.now(),
+    ...(request.pushToken && { pushToken: request.pushToken }),
   });
 
   return id;
@@ -265,7 +303,7 @@ export async function getDJHandle(licenseKey: string): Promise<string | null> {
 // Send a request to a DJ by their handle (for viewers)
 export async function sendRequestByHandle(
   handle: string,
-  request: { username: string; track: string }
+  request: { username: string; track: string; pushToken?: string }
 ): Promise<{ id: number; queuePosition: number; djDisplayName: string }> {
   const djInfo = await lookupDJByHandle(handle);
   if (!djInfo) {
@@ -280,6 +318,47 @@ export async function sendRequestByHandle(
     queuePosition,
     djDisplayName: djInfo.displayName,
   };
+}
+
+export async function reorderRequests(orderedIds: number[]): Promise<void> {
+  const db = getFirebaseDatabase();
+  if (!db) throw new Error('Not connected to Firebase');
+
+  const basePath = getLicenseRequestsPath();
+  const updates: Record<string, number> = {};
+  orderedIds.forEach((id, index) => {
+    updates[`${basePath}/${id}/order`] = index;
+  });
+  await update(ref(db, '/'), updates);
+}
+
+export function subscribeToCurrentRequester(
+  callback: (requester: { username: string; requestId: number; timestamp: number } | null) => void
+): () => void {
+  const db = getFirebaseDatabase();
+
+  if (!db || !currentLicenseKey) {
+    callback(null);
+    return () => {};
+  }
+
+  const licensePath = licenseKeyToPath(currentLicenseKey);
+  const requesterRef = ref(db, `licenses/${licensePath}/currentRequester`);
+  const unsubscribe = onValue(requesterRef, (snapshot) => {
+    const data = snapshot.val();
+    callback(data || null);
+  });
+
+  return unsubscribe;
+}
+
+export async function clearCurrentRequester(): Promise<void> {
+  const db = getFirebaseDatabase();
+  if (!db || !currentLicenseKey) throw new Error('Not connected');
+
+  const licensePath = licenseKeyToPath(currentLicenseKey);
+  const requesterRef = ref(db, `licenses/${licensePath}/currentRequester`);
+  await remove(requesterRef);
 }
 
 export async function moveToNextStream(id: number): Promise<void> {

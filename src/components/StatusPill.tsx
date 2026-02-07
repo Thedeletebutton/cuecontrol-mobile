@@ -44,10 +44,10 @@ export function StatusPill({ played, onPress, disabled, isPending }: StatusPillP
 
 const styles = StyleSheet.create({
   pill: {
-    width: 65,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1,
+    width: 72,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -67,8 +67,10 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    fontSize: 11,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
     textTransform: 'uppercase',
   },
   textQueued: {

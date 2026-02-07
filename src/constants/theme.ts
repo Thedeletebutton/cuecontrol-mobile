@@ -2,8 +2,8 @@ export const colors = {
   background: {
     main: '#000000',
     panel: '#050505',
-    row: '#0a0a0a',
-    rowAlt: '#1e1e1e',
+    row: '#111111',
+    rowAlt: '#1a1a1a',
   },
   accent: {
     primary: '#2f81ff',
@@ -12,14 +12,17 @@ export const colors = {
   text: {
     primary: '#ffffff',
     secondary: '#c5c5c5',
-    muted: '#787878',
+    muted: '#666666',
     grey: '#888888',
   },
   status: {
-    played: '#7a7a7a',
+    played: '#595959',
     queued: '#2f81ff',
     error: '#ff3b3b',
     success: '#4CAF50',
+  },
+  requester: {
+    name: '#ff3b3b',
   },
   border: '#787878',
 };

@@ -1,4 +1,4 @@
-import { initializeApp, FirebaseApp } from "firebase/app";
+import { initializeApp, getApp, FirebaseApp } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { getDatabase, Database, ref, onValue } from "firebase/database";
@@ -19,11 +19,21 @@ export function initializeFirebase(config: FirebaseConfig): boolean {
 
     console.log("Initializing Firebase...");
 
-    firebaseApp = initializeApp(config, "cuecontrol-mobile");
+    // Try to get existing app first, create if it doesn't exist
+    try {
+      firebaseApp = getApp("cuecontrol-mobile");
+    } catch {
+      firebaseApp = initializeApp(config, "cuecontrol-mobile");
+    }
 
-    auth = initializeAuth(firebaseApp, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
+    try {
+      auth = initializeAuth(firebaseApp, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+      });
+    } catch {
+      // Auth may already be initialized (hot reload / re-init)
+    }
+
     database = getDatabase(firebaseApp);
 
     isConnected = true;

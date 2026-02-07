@@ -2,7 +2,7 @@
   "expo": {
     "name": "CueControl",
     "slug": "cuecontrol-mobile",
-    "version": "10.5.0",
+    "version": "11.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -35,7 +35,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-notifications"
     ],
     "extra": {
       "router": {},

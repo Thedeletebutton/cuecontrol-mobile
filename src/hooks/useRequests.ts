@@ -40,9 +40,11 @@ export function useRequests(licenseKey?: string | null) {
 
   const sortedRequests = useMemo(() => {
     return [...requests].sort((a, b) => {
-      // Unplayed first, then by ID
+      // Unplayed first, then by order field (fallback to id)
       if (a.played !== b.played) return a.played ? 1 : -1;
-      return a.id - b.id;
+      const orderA = a.order !== undefined ? a.order : a.id;
+      const orderB = b.order !== undefined ? b.order : b.id;
+      return orderA - orderB;
     });
   }, [requests]);
 

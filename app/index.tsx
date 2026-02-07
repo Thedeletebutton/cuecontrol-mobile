@@ -43,7 +43,7 @@ export default function ModeSelection() {
 
   const handleViewerMode = async () => {
     await setMode('viewer');
-    router.push('/viewer/request');
+    router.push('/viewer/dashboard');
   };
 
   const handleLogout = () => {
@@ -120,7 +120,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 10.5.0</Text>
+            <Text style={styles.version}>Version 10.6.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}

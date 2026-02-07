@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   View,
   FlatList,
@@ -9,6 +9,7 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useRequests } from '../../src/hooks/useRequests';
@@ -27,14 +28,18 @@ import {
   deleteRequest,
   deleteAllRequests,
   moveToNextStream,
+  reorderRequests,
   setCurrentLicenseKey,
   getDJHandle,
+  subscribeToCurrentRequester,
+  clearCurrentRequester,
 } from '../../src/services/requests';
 import {
   updateNextStreamRequest,
   deleteNextStreamRequest,
   moveFromNextStream,
 } from '../../src/services/nextStream';
+import { sendPushNotification } from '../../src/services/pushNotifications';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { Request } from '../../src/types/request';
 
@@ -71,6 +76,10 @@ export default function QueueScreen() {
 
   const { requests, loading, totalCount, unplayedCount, playedCount } = useRequests(licenseKey);
   const { requests: nextStreamRequests, count: nextStreamCount } = useNextStream(licenseKey);
+
+  const unplayedRequests = useMemo(() => requests.filter(r => !r.played), [requests]);
+  const playedRequests = useMemo(() => requests.filter(r => r.played), [requests]);
+
   const [refreshing, setRefreshing] = useState(false);
   const [manualModalVisible, setManualModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -78,6 +87,17 @@ export default function QueueScreen() {
   const [editingNextStreamRequest, setEditingNextStreamRequest] = useState<Request | null>(null);
   const [aboutVisible, setAboutVisible] = useState(false);
   const [djHandle, setDjHandle] = useState<string | null>(null);
+  const [currentRequester, setCurrentRequester] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
+
+  // Subscribe to current requester
+  useEffect(() => {
+    if (licenseKey && isValidFormat) {
+      const unsubscribe = subscribeToCurrentRequester((requester) => {
+        setCurrentRequester(requester);
+      });
+      return unsubscribe;
+    }
+  }, [licenseKey, isValidFormat]);
 
   // Load DJ handle for branding
   useEffect(() => {
@@ -100,6 +120,16 @@ export default function QueueScreen() {
   const handleMarkPlayed = async (id: number) => {
     try {
       await updateRequestStatus(id, true);
+      // Send push notification to viewer if they have a push token
+      const request = requests.find(r => r.id === id);
+      console.log('[PUSH] Mark played - request pushToken:', request?.pushToken || 'NONE');
+      if (request?.pushToken) {
+        sendPushNotification(
+          request.pushToken,
+          'CueControl',
+          `Your track "${request.request}" is now playing!`
+        );
+      }
     } catch (error) {
       console.error('Failed to mark as played:', error);
     }
@@ -131,6 +161,49 @@ export default function QueueScreen() {
     updates: { request?: string; notes?: string }
   ) => {
     await updateRequest(id, updates);
+  };
+
+  const handleUpdateNotes = async (id: number, notes: string) => {
+    try {
+      await updateRequest(id, { notes });
+    } catch (error) {
+      console.error('Failed to update notes:', error);
+    }
+  };
+
+  const handleNextStreamUpdateNotes = async (id: number, notes: string) => {
+    try {
+      await updateNextStreamRequest(id, { notes });
+    } catch (error) {
+      console.error('Failed to update notes:', error);
+    }
+  };
+
+  const handleToggleStar = async (id: number, starred: boolean) => {
+    try {
+      await updateRequest(id, { starred });
+      // Send push notification when starring (not un-starring)
+      if (starred) {
+        const request = requests.find(r => r.id === id);
+        if (request?.pushToken) {
+          sendPushNotification(
+            request.pushToken,
+            'CueControl',
+            `Your request "${request.request}" is coming up soon!`
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to toggle star:', error);
+    }
+  };
+
+  const handleNextStreamToggleStar = async (id: number, starred: boolean) => {
+    try {
+      await updateNextStreamRequest(id, { starred });
+    } catch (error) {
+      console.error('Failed to toggle star:', error);
+    }
   };
 
   const handleMoveToNextStream = async (id: number) => {
@@ -218,7 +291,7 @@ export default function QueueScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerBar}>
         <Text style={styles.headerBarTitle}>
-          {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1).toLowerCase()}'s </Text>}
+          {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1)}'s </Text>}
           CueControl
         </Text>
         <View style={styles.headerButtons}>
@@ -315,11 +388,8 @@ export default function QueueScreen() {
 
       {/* Column Headers - matching slim dashboard */}
       <View style={styles.headerRow}>
-        <View style={[styles.headerCell, styles.requesterHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>REQUESTER:</Text>
-        </View>
-        <View style={[styles.headerCell, styles.trackHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>ARTIST - TRACK:</Text>
+        <View style={[styles.headerCell, styles.contentHeader]}>
+          <Text style={styles.headerText} numberOfLines={1}>REQUESTER / TRACK:</Text>
         </View>
         <View style={[styles.headerCell, styles.statusHeader]}>
           <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
@@ -329,27 +399,31 @@ export default function QueueScreen() {
         </View>
       </View>
 
-      <FlatList
-        data={requests}
+      <DraggableFlatList
+        data={unplayedRequests}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => (
-          <RequestCard
-            request={item}
-            index={index}
-            onMarkPlayed={handleMarkPlayed}
-            onMarkUnplayed={handleMarkUnplayed}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            onMoveToNextStream={handleMoveToNextStream}
-          />
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.accent.primary}
-          />
-        }
+        renderItem={({ item, drag, isActive }: RenderItemParams<Request>) => {
+          const idx = unplayedRequests.indexOf(item);
+          return (
+            <RequestCard
+              request={item}
+              index={idx}
+              onMarkPlayed={handleMarkPlayed}
+              onMarkUnplayed={handleMarkUnplayed}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+              onUpdateNotes={handleUpdateNotes}
+              onToggleStar={handleToggleStar}
+              onMoveToNextStream={handleMoveToNextStream}
+              drag={drag}
+              isActive={isActive}
+            />
+          );
+        }}
+        onDragEnd={({ data }) => {
+          const ids = data.map(r => r.id);
+          reorderRequests(ids);
+        }}
         ListEmptyComponent={
           <View style={styles.emptyListContainer}>
             <Text style={styles.emptyListTitle}>NO REQUESTS YET</Text>
@@ -361,6 +435,36 @@ export default function QueueScreen() {
         }
         ListFooterComponent={
           <>
+            {/* Played Requests */}
+            {playedRequests.map((item, index) => (
+              <RequestCard
+                key={item.id.toString()}
+                request={item}
+                index={unplayedRequests.length + index}
+                onMarkPlayed={handleMarkPlayed}
+                onMarkUnplayed={handleMarkUnplayed}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                onUpdateNotes={handleUpdateNotes}
+                onToggleStar={handleToggleStar}
+                onMoveToNextStream={handleMoveToNextStream}
+              />
+            ))}
+
+            {/* Requested By Section */}
+            {currentRequester && (
+              <View style={styles.requesterSection}>
+                <Text style={styles.requesterLabel}>Requested By:</Text>
+                <Text style={styles.requesterName}>{currentRequester.username}</Text>
+                <TouchableOpacity
+                  style={styles.requesterClearButton}
+                  onPress={() => clearCurrentRequester()}
+                >
+                  <Text style={styles.requesterClearText}>Clear</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
             {/* Next Stream Section */}
             <View style={styles.nextStreamHeader}>
               <Text style={styles.nextStreamTitle}>NEXT STREAM:</Text>
@@ -404,6 +508,8 @@ export default function QueueScreen() {
                   onMarkUnplayed={() => {}}
                   onDelete={handleNextStreamDelete}
                   onEdit={handleNextStreamEdit}
+                  onUpdateNotes={handleNextStreamUpdateNotes}
+                  onToggleStar={handleNextStreamToggleStar}
                   onMoveFromNextStream={handleMoveFromNextStream}
                   isNextStream
                 />
@@ -411,7 +517,7 @@ export default function QueueScreen() {
             )}
           </>
         }
-        contentContainerStyle={requests.length === 0 ? styles.emptyList : undefined}
+        contentContainerStyle={unplayedRequests.length === 0 ? styles.emptyList : undefined}
       />
 
       <ManualEntryModal
@@ -440,6 +546,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
   },
   safeArea: {
     backgroundColor: colors.background.main,
@@ -449,19 +557,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
+    borderTopWidth: 2,
     borderTopColor: colors.border,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
     fontSize: 15,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 8,
   },
   channelName: {
     color: colors.accent.primary,
@@ -469,19 +578,20 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    marginRight: -4,
-    borderLeftWidth: 1,
+    width: 98,
+    borderLeftWidth: 2,
     borderLeftColor: colors.border,
-    paddingLeft: 8,
+    paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -522,12 +632,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.sm,
     height: 35,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
+    borderTopWidth: 2,
     borderTopColor: colors.border,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   countsRow: {
@@ -537,15 +646,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     height: 28,
     backgroundColor: colors.background.main,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   sectionTitle: {
+    flex: 1,
     fontSize: 14,
     fontWeight: '700',
     color: colors.accent.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    paddingLeft: 8,
   },
   summaryText: {
     fontSize: 14,
@@ -565,10 +676,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    marginRight: -4,
-    borderLeftWidth: 1,
+    width: 98,
+    borderLeftWidth: 2,
     borderLeftColor: colors.border,
-    paddingLeft: 8,
+    paddingHorizontal: 1,
     height: '100%',
   },
   addButtonText: {
@@ -577,9 +688,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   clearButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
+    width: 25,
+    height: 25,
+    borderWidth: 2,
     borderColor: colors.status.error,
     borderRadius: 0,
     backgroundColor: colors.background.main,
@@ -658,37 +769,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.background.main,
     height: 35,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   headerCell: {
     height: '100%',
     justifyContent: 'center',
     paddingHorizontal: 8,
-    borderRightWidth: 1,
+    borderRightWidth: 2,
     borderRightColor: colors.border,
   },
   headerText: {
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: '700',
     color: colors.text.primary,
     letterSpacing: 0.5,
-    textAlign: 'center',
+    textAlign: 'left',
   },
-  requesterHeader: {
-    width: 100,
-    alignItems: 'center',
-  },
-  trackHeader: {
+  contentHeader: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   statusHeader: {
-    width: 75,
+    width: 95,
     alignItems: 'center',
   },
   optionsHeader: {
-    width: 95,
     alignItems: 'center',
     borderRightWidth: 0,
   },
@@ -701,7 +807,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
     borderTopWidth: 2,
     borderTopColor: colors.border,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   nextStreamCountsRow: {
@@ -711,7 +817,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     height: 28,
     backgroundColor: colors.background.main,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   nextStreamTitle: {
@@ -739,5 +845,40 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.text.muted,
     textAlign: 'center',
+  },
+  requesterSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.sm,
+    height: 35,
+    backgroundColor: colors.background.main,
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
+    gap: 8,
+  },
+  requesterLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.text.secondary,
+  },
+  requesterName: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.requester.name,
+    flex: 1,
+  },
+  requesterClearButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderWidth: 2,
+    borderColor: colors.status.error,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
+  },
+  requesterClearText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: colors.status.error,
+    textTransform: 'uppercase',
   },
 });
