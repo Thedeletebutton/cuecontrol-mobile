@@ -49,169 +49,173 @@ export function ViewerSettingsModal({
       transparent={false}
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
           {/* Header bar */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>CueControl Settings</Text>
+          <View style={styles.headerBar}>
+            <Text style={styles.headerBarTitle}>CueControl Settings</Text>
             <View style={styles.headerButtons}>
-              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Text style={styles.closeButtonText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-
-        <ScrollView style={styles.scrollView}>
-          {/* Account Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Account</Text>
-            </View>
-            <View style={styles.sectionContent}>
-              <View style={styles.accountRow}>
-                <Ionicons name="person-circle" size={48} color={colors.accent.primary} />
-                <View style={styles.accountInfo}>
-                  <Text style={styles.accountEmail}>{userEmail || 'Not signed in'}</Text>
-                  <Text style={styles.accountStatus}>Signed in</Text>
-                </View>
-              </View>
-              <TouchableOpacity style={styles.signOutButton} onPress={onSignOut}>
-                <Ionicons name="log-out-outline" size={20} color={colors.status.error} />
-                <Text style={styles.signOutText}>Sign Out</Text>
+              <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={onClose}>
+                <Ionicons name="close" size={16} color={colors.status.error} />
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Display Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Display</Text>
-            </View>
-            <View style={styles.sectionContent}>
-              <View style={styles.fontSizeRow}>
-                <Text style={styles.fontSizeLabel}>Label Font Size</Text>
-                <View style={styles.fontSizeControls}>
-                  <TouchableOpacity
-                    style={styles.fontSizeButton}
-                    onPress={() => onLabelFontSizeChange(Math.max(10, labelFontSize - 1))}
-                  >
-                    <Text style={styles.fontSizeButtonText}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.fontSizeValue}>{labelFontSize}px</Text>
-                  <TouchableOpacity
-                    style={styles.fontSizeButton}
-                    onPress={() => onLabelFontSizeChange(Math.min(20, labelFontSize + 1))}
-                  >
-                    <Text style={styles.fontSizeButtonText}>+</Text>
-                  </TouchableOpacity>
-                </View>
+          <ScrollView style={styles.scrollView}>
+            {/* Account Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Account</Text>
               </View>
-
-              <View style={styles.fontSizeRow}>
-                <Text style={styles.fontSizeLabel}>Input Font Size</Text>
-                <View style={styles.fontSizeControls}>
-                  <TouchableOpacity
-                    style={styles.fontSizeButton}
-                    onPress={() => onInputFontSizeChange(Math.max(12, inputFontSize - 1))}
-                  >
-                    <Text style={styles.fontSizeButtonText}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.fontSizeValue}>{inputFontSize}px</Text>
-                  <TouchableOpacity
-                    style={styles.fontSizeButton}
-                    onPress={() => onInputFontSizeChange(Math.min(24, inputFontSize + 1))}
-                  >
-                    <Text style={styles.fontSizeButtonText}>+</Text>
-                  </TouchableOpacity>
+              <View style={styles.sectionContent}>
+                <View style={styles.accountRow}>
+                  <Ionicons name="person-circle" size={48} color={colors.accent.primary} />
+                  <View style={styles.accountInfo}>
+                    <Text style={styles.accountEmail}>{userEmail || 'Not signed in'}</Text>
+                    <Text style={styles.accountStatus}>Signed in</Text>
+                  </View>
                 </View>
+                <TouchableOpacity style={styles.signOutButton} onPress={onSignOut}>
+                  <Ionicons name="log-out-outline" size={20} color={colors.status.error} />
+                  <Text style={styles.signOutText}>Sign Out</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </View>
 
-          {/* Save Preferences Section */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Save Preferences</Text>
-            </View>
-            <View style={styles.sectionContent}>
-              <TouchableOpacity style={styles.checkboxRow} onPress={onToggleSaveDjHandle}>
-                <View style={styles.checkbox}>
-                  {saveDjHandle && <Text style={styles.checkmark}>✓</Text>}
+            {/* Display Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Display</Text>
+              </View>
+              <View style={styles.sectionContent}>
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Label Font Size</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={() => onLabelFontSizeChange(Math.max(10, labelFontSize - 1))}
+                    >
+                      <Text style={styles.fontSizeButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{labelFontSize}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={() => onLabelFontSizeChange(Math.min(20, labelFontSize + 1))}
+                    >
+                      <Text style={styles.fontSizeButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <Text style={styles.checkboxLabel}>Remember Stream ID</Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity style={styles.checkboxRow} onPress={onToggleSaveUsername}>
-                <View style={styles.checkbox}>
-                  {saveUsername && <Text style={styles.checkmark}>✓</Text>}
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Input Font Size</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={() => onInputFontSizeChange(Math.max(12, inputFontSize - 1))}
+                    >
+                      <Text style={styles.fontSizeButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{inputFontSize}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={() => onInputFontSizeChange(Math.min(24, inputFontSize + 1))}
+                    >
+                      <Text style={styles.fontSizeButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <Text style={styles.checkboxLabel}>Remember Username</Text>
+              </View>
+            </View>
+
+            {/* Save Preferences Section */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Save Preferences</Text>
+              </View>
+              <View style={styles.sectionContent}>
+                <TouchableOpacity style={styles.checkboxRow} onPress={onToggleSaveDjHandle}>
+                  <View style={styles.checkbox}>
+                    {saveDjHandle && <Text style={styles.checkmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Remember Stream ID</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.checkboxRow} onPress={onToggleSaveUsername}>
+                  <View style={styles.checkbox}>
+                    {saveUsername && <Text style={styles.checkmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Remember Username</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Save Button */}
+            <View style={styles.saveButtonContainer}>
+              <TouchableOpacity style={styles.saveButton} onPress={onClose}>
+                <Ionicons name="checkmark" size={20} color={colors.text.primary} />
+                <Text style={styles.saveButtonText}>Save Settings</Text>
               </TouchableOpacity>
             </View>
-          </View>
-
-          {/* Save Button */}
-          <View style={styles.saveButtonContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={onClose}>
-              <Ionicons name="checkmark" size={20} color={colors.text.primary} />
-              <Text style={styles.saveButtonText}>Save Settings</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: colors.background.main,
   },
-  safeArea: {
+  container: {
+    flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
-  header: {
-    height: 36,
+  headerBar: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
-  headerTitle: {
+  headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    justifyContent: 'center',
+    width: 35,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
     height: '100%',
   },
-  closeButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.status.error,
+  iconButton: {
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
   },
-  closeButtonText: {
-    color: colors.status.error,
-    fontSize: 12,
-    fontWeight: '700',
+  closeButton: {
+    borderColor: colors.status.error,
   },
   scrollView: {
     flex: 1,
@@ -227,10 +231,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   sectionTitle: {
-    fontSize: typography.sizes.sm,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.muted,
     textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   sectionContent: {
     padding: spacing.md,
@@ -245,13 +251,17 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
   },
   accountEmail: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     fontWeight: '600',
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   accountStatus: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.status.success,
+    letterSpacing: 0.5,
     marginTop: spacing.xs,
   },
   signOutButton: {
@@ -266,9 +276,11 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   signOutText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
     fontSize: typography.sizes.md,
     fontWeight: '600',
+    letterSpacing: 0.5,
   },
   fontSizeRow: {
     flexDirection: 'row',
@@ -279,8 +291,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   fontSizeLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   fontSizeControls: {
     flexDirection: 'row',
@@ -296,13 +310,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fontSizeButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   fontSizeValue: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
+    letterSpacing: 0.5,
     minWidth: 50,
     textAlign: 'center',
   },
@@ -321,13 +338,16 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   checkmark: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   checkboxLabel: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
   },
   saveButtonContainer: {
     padding: spacing.md,
@@ -342,8 +362,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   saveButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
 });

@@ -35,7 +35,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
 
     const subject = encodeURIComponent('CueControl Support Request');
     const body = encodeURIComponent(
-      `${message.trim()}\n\n---\nSent from: ${userEmail || 'Unknown user'}\nApp Version: 5.1.0`
+      `${message.trim()}\n\n---\nSent from: ${userEmail || 'Unknown user'}\nApp Version: 11.5.0`
     );
     const mailtoUrl = `mailto:Admin@cuecontrolapp.com?subject=${subject}&body=${body}`;
 
@@ -71,144 +71,153 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
       transparent={false}
       onRequestClose={handleClose}
     >
-      <View style={styles.container}>
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Contact Support</Text>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.headerBar}>
+            <Text style={styles.headerBarTitle}>Contact Support</Text>
             <View style={styles.headerButtons}>
-              <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-                <Text style={styles.closeButtonText}>✕</Text>
+              <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleClose}>
+                <Ionicons name="close" size={16} color={colors.status.error} />
               </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}
-        >
-          <View style={styles.content}>
-            <View style={styles.infoSection}>
-              <Ionicons name="mail-outline" size={32} color={colors.accent.primary} />
-              <Text style={styles.infoText}>
-                Send us a message and we'll get back to you as soon as possible.
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
+          >
+            <View style={styles.content}>
+              <View style={styles.infoSection}>
+                <Ionicons name="mail-outline" size={32} color={colors.accent.primary} />
+                <Text style={styles.infoText}>
+                  Send us a message and we'll get back to you as soon as possible.
+                </Text>
+              </View>
+
+              <View style={styles.inputSection}>
+                <Text style={styles.label}>Your Message *</Text>
+                <TextInput
+                  style={styles.messageInput}
+                  value={message}
+                  onChangeText={setMessage}
+                  placeholder="Describe your issue or question..."
+                  placeholderTextColor={colors.text.muted}
+                  multiline
+                  numberOfLines={6}
+                  textAlignVertical="top"
+                />
+              </View>
+
+              <TouchableOpacity
+                style={[styles.sendButton, sending && styles.sendButtonDisabled]}
+                onPress={handleSend}
+                disabled={sending}
+              >
+                <Ionicons name="send" size={18} color={colors.text.primary} />
+                <Text style={styles.sendButtonText}>
+                  {sending ? 'Opening Email...' : 'Send Message'}
+                </Text>
+              </TouchableOpacity>
+
+              <Text style={styles.noteText}>
+                This will open your email app with your message pre-filled.
               </Text>
             </View>
-
-            <View style={styles.inputSection}>
-              <Text style={styles.label}>Your Message *</Text>
-              <TextInput
-                style={styles.messageInput}
-                value={message}
-                onChangeText={setMessage}
-                placeholder="Describe your issue or question..."
-                placeholderTextColor={colors.text.muted}
-                multiline
-                numberOfLines={6}
-                textAlignVertical="top"
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.sendButton, sending && styles.sendButtonDisabled]}
-              onPress={handleSend}
-              disabled={sending}
-            >
-              <Ionicons name="send" size={18} color={colors.text.primary} />
-              <Text style={styles.sendButtonText}>
-                {sending ? 'Opening Email...' : 'Send Message'}
-              </Text>
-            </TouchableOpacity>
-
-            <Text style={styles.noteText}>
-              This will open your email app with your message pre-filled.
-            </Text>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: colors.background.main,
   },
-  safeArea: {
+  container: {
+    flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
-  header: {
-    height: 36,
+  headerBar: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
-  headerTitle: {
+  headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    justifyContent: 'center',
+    width: 35,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
     height: '100%',
   },
-  closeButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.status.error,
+  iconButton: {
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
   },
-  closeButtonText: {
-    color: colors.status.error,
-    fontSize: 12,
-    fontWeight: '700',
+  closeButton: {
+    borderColor: colors.status.error,
   },
   keyboardView: {
     flex: 1,
   },
   content: {
     flex: 1,
-    padding: spacing.lg,
+    padding: spacing.xl,
+    paddingTop: spacing.xxl,
   },
   infoSection: {
     alignItems: 'center',
     marginBottom: spacing.xl,
-    paddingTop: spacing.lg,
   },
   infoText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.secondary,
     textAlign: 'center',
     marginTop: spacing.md,
     lineHeight: 22,
+    letterSpacing: 0.5,
   },
   inputSection: {
     marginBottom: spacing.lg,
   },
   label: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
     marginBottom: spacing.sm,
     textTransform: 'uppercase',
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   messageInput: {
+    fontFamily: 'Helvetica Neue',
     backgroundColor: colors.background.row,
     borderWidth: 1,
     borderColor: colors.border,
@@ -216,6 +225,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
     minHeight: 150,
   },
   sendButton: {
@@ -232,14 +242,18 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   sendButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   noteText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.muted,
     textAlign: 'center',
     fontStyle: 'italic',
+    letterSpacing: 0.5,
   },
 });

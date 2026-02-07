@@ -186,26 +186,25 @@ export default function RequestScreen() {
 
   // Custom header with back and info buttons - matching desktop style
   const renderHeader = () => (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>CueControl - Request a Track</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.infoButton} onPress={() => setAboutVisible(true)}>
-            <Text style={styles.infoButtonText}>i</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.settingsButton} onPress={() => setSettingsVisible(true)}>
-            <Ionicons name="settings-sharp" size={14} color={colors.text.muted} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.closeButton} onPress={handleBack}>
-            <Text style={styles.closeButtonText}>✕</Text>
-          </TouchableOpacity>
-        </View>
+    <View style={styles.headerBar}>
+      <Text style={styles.headerBarTitle}>CueControl - Request a Track</Text>
+      <View style={styles.headerButtons}>
+        <TouchableOpacity style={[styles.iconButton, styles.infoButton]} onPress={() => setAboutVisible(true)}>
+          <Ionicons name="information" size={16} color={colors.accent.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => setSettingsVisible(true)}>
+          <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleBack}>
+          <Ionicons name="close" size={16} color={colors.status.error} />
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 
   if (!isAuthenticated) {
     return (
+      <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {renderHeader()}
         <View style={styles.notConnected}>
@@ -248,11 +247,13 @@ export default function RequestScreen() {
           onSignOut={handleSignOut}
         />
       </View>
+      </SafeAreaView>
     );
   }
 
   if (submitted) {
     return (
+      <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {renderHeader()}
         <View style={styles.successContainer}>
@@ -304,10 +305,12 @@ export default function RequestScreen() {
           onSignOut={handleSignOut}
         />
       </View>
+      </SafeAreaView>
     );
   }
 
   return (
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.container}>
       {renderHeader()}
       <KeyboardAvoidingView
@@ -431,6 +434,7 @@ export default function RequestScreen() {
         onSignOut={handleSignOut}
       />
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -438,71 +442,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   safeArea: {
+    flex: 1,
     backgroundColor: colors.background.main,
   },
-  header: {
-    height: 36,
+  headerBar: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
-  headerTitle: {
+  headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    width: 98,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
+    paddingHorizontal: 1,
     height: '100%',
   },
-  infoButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.accent.primary,
+  iconButton: {
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
   },
-  infoButtonText: {
-    color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
+  infoButton: {
+    borderColor: colors.accent.primary,
   },
   settingsButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.text.muted,
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: colors.text.grey,
   },
   closeButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: '#ff3b3b',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#ff3b3b',
-    fontSize: 12,
-    fontWeight: '700',
+    borderColor: colors.status.error,
   },
   keyboardView: {
     flex: 1,
@@ -522,11 +517,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   label: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
-    fontWeight: '600',
+    fontWeight: '800',
   },
   input: {
     backgroundColor: colors.background.row,
@@ -557,9 +553,10 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   submitButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   notConnected: {
     flex: 1,

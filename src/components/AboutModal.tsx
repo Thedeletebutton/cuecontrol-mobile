@@ -34,120 +34,123 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
       transparent={false}
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
           {/* Header bar */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>CueControl</Text>
+          <View style={styles.headerBar}>
+            <Text style={styles.headerBarTitle}>CueControl</Text>
             <View style={styles.headerButtons}>
-              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Text style={styles.closeButtonText}>✕</Text>
+              <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={onClose}>
+                <Ionicons name="close" size={16} color={colors.status.error} />
               </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
 
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-          {/* Centered Logo Section */}
-          <View style={styles.logoSection}>
-            <Image
-              source={require('../../assets/icon.png')}
-              style={styles.logoIcon}
-            />
-            <Text style={styles.appName}>CueControl</Text>
-            <Text style={styles.tagline}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 10.6.0</Text>
-          </View>
-
-          {/* Card with Credits and Support */}
-          <View style={styles.card}>
-            <View style={styles.credits}>
-              <Text style={styles.creatorText}>Created & Designed by</Text>
-              <Text style={styles.creatorName}>Andrew Keim / Trinitro</Text>
-              <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
-              <TouchableOpacity onPress={openSocialLink}>
-                <Text style={styles.socialLink}>@trinitromusic</Text>
+          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+            <View style={styles.header}>
+              <Image
+                source={require('../../assets/icon.png')}
+                style={styles.logoIcon}
+              />
+              <Text style={styles.title}>CueControl</Text>
+              <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
+              <Text style={styles.version}>Version 11.5.0</Text>
+              <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
+                <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
+                <Text style={styles.supportButtonText}>Contact Support</Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
-              <Ionicons name="help-circle-outline" size={18} color={colors.accent.primary} />
-              <Text style={styles.supportButtonText}>Contact Support</Text>
-            </TouchableOpacity>
-          </View>
 
-          <Text style={styles.copyright}>Copyright © 2025</Text>
-        </ScrollView>
+            {/* Credits Card */}
+            <View style={styles.card}>
+              <View style={styles.credits}>
+                <Text style={styles.creatorText}>Created & Designed by</Text>
+                <Text style={styles.creatorName}>Andrew Keim / Trinitro</Text>
+                <Text style={styles.followText}>Please follow on Facebook, Instagram, and Twitch:</Text>
+                <TouchableOpacity onPress={openSocialLink}>
+                  <Text style={styles.socialLink}>@trinitromusic</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-        <SupportModal
-          visible={supportVisible}
-          onClose={() => setSupportVisible(false)}
-          userEmail={userEmail}
-        />
-      </View>
+            <Text style={styles.copyright}>Copyright © 2025</Text>
+          </ScrollView>
+
+          <SupportModal
+            visible={supportVisible}
+            onClose={() => setSupportVisible(false)}
+            userEmail={userEmail}
+          />
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: colors.background.main,
   },
-  safeArea: {
+  container: {
+    flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
-  header: {
-    height: 36,
+  headerBar: {
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
-  headerTitle: {
+  headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    justifyContent: 'center',
+    width: 35,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
     height: '100%',
   },
-  closeButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.status.error,
+  iconButton: {
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
   },
-  closeButtonText: {
-    color: colors.status.error,
-    fontSize: 12,
-    fontWeight: '700',
+  closeButton: {
+    borderColor: colors.status.error,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    alignItems: 'center',
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.md,
+    justifyContent: 'flex-start',
+    padding: spacing.xl,
+    paddingTop: spacing.xxl,
   },
-  logoSection: {
+  header: {
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xl,
   },
   logoIcon: {
     width: 80,
@@ -155,59 +158,34 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: spacing.md,
   },
-  appName: {
-    fontSize: 24,
-    fontWeight: '700',
+  title: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: 28,
+    fontWeight: '800',
     color: colors.text.primary,
-    marginBottom: 4,
+    letterSpacing: 1,
+    marginBottom: spacing.xs,
   },
-  tagline: {
-    fontSize: typography.sizes.sm,
+  subtitle: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontStyle: 'italic',
-    marginBottom: 4,
+    letterSpacing: 0.5,
+    marginBottom: spacing.xs,
   },
   version: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
-  },
-  card: {
-    backgroundColor: colors.background.panel,
-    borderRadius: 16,
-    padding: spacing.lg,
-    width: '100%',
-    marginBottom: spacing.lg,
-  },
-  credits: {
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  creatorText: {
-    fontSize: typography.sizes.sm,
-    color: colors.text.secondary,
-    marginBottom: 2,
-  },
-  creatorName: {
-    fontSize: typography.sizes.md,
-    color: colors.text.primary,
-    fontWeight: '600',
+    letterSpacing: 0.5,
     marginBottom: spacing.md,
-  },
-  followText: {
-    fontSize: typography.sizes.sm,
-    color: colors.text.secondary,
-    marginBottom: spacing.xs,
-    textAlign: 'center',
-  },
-  socialLink: {
-    fontSize: typography.sizes.md,
-    color: colors.accent.primary,
-    fontWeight: '600',
   },
   supportButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'stretch',
     borderWidth: 1,
     borderColor: colors.accent.primary,
     borderRadius: 8,
@@ -215,13 +193,59 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   supportButtonText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.accent.primary,
     fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  card: {
+    backgroundColor: colors.background.panel,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 16,
+    padding: spacing.xl,
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  credits: {
+    alignItems: 'center',
+  },
+  creatorText: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: typography.sizes.sm,
+    color: colors.text.secondary,
+    letterSpacing: 0.5,
+    marginBottom: 2,
+  },
+  creatorName: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: typography.sizes.md,
+    color: colors.text.primary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginBottom: spacing.md,
+  },
+  followText: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: typography.sizes.sm,
+    color: colors.text.secondary,
+    letterSpacing: 0.5,
+    marginBottom: spacing.xs,
+    textAlign: 'center',
+  },
+  socialLink: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: typography.sizes.md,
+    color: colors.accent.primary,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   copyright: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.muted,
+    letterSpacing: 0.5,
     textAlign: 'center',
   },
 });

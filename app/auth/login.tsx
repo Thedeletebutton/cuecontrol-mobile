@@ -154,7 +154,7 @@ export default function LoginScreen() {
         <Text style={styles.headerTitle}>CueControl</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity style={styles.aboutButton} onPress={() => setAboutVisible(true)}>
-            <Text style={styles.aboutButtonText}>i</Text>
+            <Ionicons name="information" size={16} color={colors.accent.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -169,7 +169,7 @@ export default function LoginScreen() {
           </View>
           <Text style={styles.title}>CueControl</Text>
           <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-          <Text style={styles.version}>Version 11.0.0</Text>
+          <Text style={styles.version}>Version 11.5.0</Text>
         </View>
 
       <View style={styles.form}>
@@ -260,39 +260,52 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   headerBar: {
-    height: 36,
+    height: 35,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    justifyContent: 'space-between',
     backgroundColor: colors.background.main,
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
   headerTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
+    width: 98,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
+    paddingHorizontal: 1,
+    height: '100%',
   },
   aboutButton: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
+    width: 25,
+    height: 25,
+    borderWidth: 2,
     borderColor: colors.accent.primary,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
     justifyContent: 'center',
     alignItems: 'center',
   },
   aboutButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   container: {
     flex: 1,
@@ -315,19 +328,25 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   title: {
+    fontFamily: 'Helvetica Neue',
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
   },
   subtitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontStyle: 'italic',
+    letterSpacing: 0.5,
   },
   version: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginTop: spacing.xs,
   },
   form: {
@@ -338,13 +357,16 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   formTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xl,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginBottom: spacing.lg,
     textAlign: 'center',
   },
   input: {
+    fontFamily: 'Helvetica Neue',
     backgroundColor: colors.background.row,
     borderWidth: 1,
     borderColor: colors.border,
@@ -352,11 +374,14 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     fontSize: typography.sizes.md,
     color: colors.text.primary,
+    letterSpacing: 0.5,
     marginBottom: spacing.md,
   },
   error: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
     fontSize: typography.sizes.sm,
+    letterSpacing: 0.5,
     marginBottom: spacing.md,
     textAlign: 'center',
   },
@@ -371,17 +396,21 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   submitButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   toggleButton: {
     marginTop: spacing.lg,
     alignItems: 'center',
   },
   toggleButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
     fontSize: typography.sizes.sm,
+    letterSpacing: 0.5,
   },
   checkboxGroup: {
     marginBottom: spacing.md,
@@ -407,7 +436,9 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.primary,
   },
   checkboxLabel: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.secondary,
     fontSize: typography.sizes.sm,
+    letterSpacing: 0.5,
   },
 });

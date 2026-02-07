@@ -120,7 +120,7 @@ export default function NextStreamScreen() {
             style={[styles.iconButton, styles.infoButton]}
             onPress={() => setAboutVisible(true)}
           >
-            <Text style={styles.infoButtonText}>i</Text>
+            <Ionicons name="information" size={16} color={colors.accent.primary} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.iconButton, styles.modeButton]}
@@ -129,7 +129,7 @@ export default function NextStreamScreen() {
               router.replace('/');
             }}
           >
-            <Text style={styles.modeButtonText}>⇄</Text>
+            <Ionicons name="close" size={16} color={colors.status.error} />
           </TouchableOpacity>
         </View>
       </View>
@@ -232,6 +232,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   safeArea: {
     backgroundColor: colors.background.main,
@@ -241,7 +246,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
     borderTopWidth: 2,
     borderTopColor: colors.border,
@@ -249,21 +253,28 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    marginRight: 4,
+    width: 98,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
+    paddingHorizontal: 1,
+    height: '100%',
   },
   iconButton: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -274,9 +285,11 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.primary,
   },
   infoButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   settingsButton: {
     borderColor: colors.text.grey,
@@ -288,39 +301,51 @@ const styles = StyleSheet.create({
     borderColor: colors.status.error,
   },
   modeButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   subHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    height: 35,
+    paddingLeft: 5,
+    paddingRight: spacing.sm,
+    height: 38,
     backgroundColor: colors.background.main,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   subHeaderTitle: {
-    fontSize: typography.sizes.sm,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.accent.primary,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   subHeaderCount: {
-    fontSize: typography.sizes.sm,
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
     color: colors.accent.primary,
     textTransform: 'uppercase',
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   subHeaderCountValue: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
     color: colors.accent.primary,
   },
   colon: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   emptyContainer: {
     flex: 1,
@@ -332,38 +357,45 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   emptyTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginTop: spacing.lg,
     marginBottom: spacing.sm,
   },
   emptyText: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.muted,
     textAlign: 'center',
+    letterSpacing: 1,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background.main,
-    height: 35,
+    height: 40,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   headerCell: {
     height: '100%',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    paddingLeft: 5,
+    paddingRight: 8,
     borderRightWidth: 2,
     borderRightColor: colors.border,
   },
   headerText: {
-    fontSize: 12,
-    fontWeight: '700',
+    fontFamily: 'Helvetica Neue',
+    fontSize: 15,
+    fontWeight: '800',
     color: colors.text.primary,
     textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   requesterHeader: {
     width: 105,
@@ -372,8 +404,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusHeader: {
-    width: 80,
+    width: 95,
     alignItems: 'center',
+    paddingLeft: 0,
+    paddingRight: 0,
   },
   optionsHeader: {
     width: 120,

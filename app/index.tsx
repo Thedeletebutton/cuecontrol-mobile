@@ -100,14 +100,14 @@ export default function ModeSelection() {
         <View style={styles.headerBar}>
           <Text style={styles.headerTitle}>CueControl</Text>
           <View style={styles.headerButtons}>
-            <TouchableOpacity style={styles.aboutButton} onPress={() => setAboutVisible(true)}>
-              <Text style={styles.aboutButtonText}>i</Text>
+            <TouchableOpacity style={[styles.iconButton, styles.aboutButton]} onPress={() => setAboutVisible(true)}>
+              <Ionicons name="information" size={16} color={colors.accent.primary} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsButton} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
-              <Text style={styles.closeButtonText}>✕</Text>
+            <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleLogout}>
+              <Ionicons name="close" size={16} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -120,7 +120,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 10.6.0</Text>
+            <Text style={styles.version}>Version 11.5.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}
@@ -168,68 +168,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   headerBar: {
-    height: 36,
+    height: 35,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    justifyContent: 'space-between',
     backgroundColor: colors.background.main,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
   headerTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    width: 98,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
+    paddingHorizontal: 1,
     height: '100%',
   },
-  aboutButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: colors.accent.primary,
+  iconButton: {
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderRadius: 0,
+    backgroundColor: colors.background.main,
   },
-  aboutButtonText: {
-    color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
+  aboutButton: {
+    borderColor: colors.accent.primary,
   },
   settingsButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
     borderColor: colors.text.grey,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   closeButton: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: '#ff3b3b',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    color: '#ff3b3b',
-    fontSize: 12,
-    fontWeight: '700',
+    borderColor: colors.status.error,
   },
   content: {
     flex: 1,
@@ -248,26 +238,33 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   title: {
+    fontFamily: 'Helvetica Neue',
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
   },
   subtitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.muted,
     fontStyle: 'italic',
+    letterSpacing: 0.5,
     marginBottom: spacing.xs,
   },
   version: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
     marginBottom: spacing.md,
   },
   supportButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'stretch',
     borderWidth: 1,
     borderColor: colors.accent.primary,
     borderRadius: 8,
@@ -278,6 +275,7 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.md,
     color: colors.accent.primary,
     fontWeight: '600',
+    letterSpacing: 1,
   },
   setupText: {
     fontSize: typography.sizes.sm,
@@ -306,13 +304,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   modeTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.xl,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
   },
   modeDesc: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.text.secondary,
+    letterSpacing: 0.5,
   },
 });

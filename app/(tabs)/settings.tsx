@@ -227,13 +227,13 @@ export default function SettingsScreen() {
               style={[styles.headerButton, styles.infoButton]}
               onPress={() => setAboutVisible(true)}
             >
-              <Text style={styles.infoButtonText}>i</Text>
+              <Ionicons name="information" size={16} color={colors.accent.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.headerButton, styles.closeButton]}
               onPress={handleBack}
             >
-              <Text style={styles.closeButtonText}>✕</Text>
+              <Ionicons name="close" size={16} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -521,44 +521,52 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
   },
   safeArea: {
     backgroundColor: colors.background.main,
   },
   header: {
-    height: 36,
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
     backgroundColor: colors.background.main,
-    borderTopWidth: 1,
-    borderTopColor: '#787878',
-    borderBottomWidth: 1,
-    borderBottomColor: '#787878',
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.border,
   },
   headerTitle: {
+    flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
+    paddingLeft: 5,
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    borderLeftWidth: 1,
-    borderLeftColor: '#787878',
-    paddingLeft: 8,
+    width: 98,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
+    paddingHorizontal: 1,
     height: '100%',
   },
   headerButton: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -566,22 +574,26 @@ const styles = StyleSheet.create({
     borderColor: colors.accent.primary,
   },
   infoButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   closeButton: {
     borderColor: colors.status.error,
   },
   closeButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: colors.background.panel,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   tab: {
@@ -595,10 +607,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.accent.primary,
   },
   tabText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
-    fontWeight: '600',
+    fontWeight: '800',
     color: colors.text.muted,
     textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   tabTextActive: {
     color: colors.accent.primary,
@@ -619,10 +633,12 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   sectionTitle: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.muted,
     textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   licenseContainer: {
     padding: spacing.lg,
