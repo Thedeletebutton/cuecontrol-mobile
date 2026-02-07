@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,9 @@ import {
   Platform,
   ActivityIndicator,
   SafeAreaView,
+  Keyboard,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,6 +30,7 @@ const STORAGE_KEYS = {
 export default function LoginScreen() {
   const router = useRouter();
   const { login, register, isLoading, error, clearError } = useAuth();
+  const passwordRef = useRef<TextInput>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -139,117 +143,138 @@ export default function LoginScreen() {
     }
   };
 
-  const toggleMode = () => {
-    setIsSignUp(!isSignUp);
-    setLocalError(null);
-    clearError();
+  const handleCloseApp = () => {
+    BackHandler.exitApp();
+  };
+
+  const handleSettings = () => {
+    Alert.alert('Settings', 'Sign in to access settings.');
   };
 
   const displayError = localError || error;
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Header bar matching desktop style */}
-      <View style={styles.headerBar}>
-        <Text style={styles.headerTitle}>CueControl</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.aboutButton} onPress={() => setAboutVisible(true)}>
-            <Ionicons name="information" size={16} color={colors.accent.primary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="headset" size={48} color={colors.accent.primary} />
+      <View style={styles.container}>
+        {/* Header bar */}
+        <View style={styles.headerBar}>
+          <Text style={styles.headerBarTitle}>CueControl - Login</Text>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity style={[styles.iconButton, styles.aboutButton]} onPress={() => setAboutVisible(true)}>
+              <Ionicons name="information" size={16} color={colors.accent.primary} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={handleSettings}>
+              <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleCloseApp}>
+              <Ionicons name="close" size={16} color={colors.status.error} />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.title}>CueControl</Text>
-          <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-          <Text style={styles.version}>Version 11.6.0</Text>
         </View>
 
-      <View style={styles.form}>
-        <Text style={styles.formTitle}>
-          {isSignUp ? 'Create Account' : 'Welcome Back'}
-        </Text>
-
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          placeholderTextColor={colors.text.muted}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="email-address"
-          editable={!isLoading}
-        />
-
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          placeholderTextColor={colors.text.muted}
-          secureTextEntry
-          editable={!isLoading}
-        />
-
-        {displayError && (
-          <Text style={styles.error}>{displayError}</Text>
-        )}
-
-        <View style={styles.checkboxGroup}>
-          <TouchableOpacity
-            style={styles.checkboxRow}
-            onPress={() => setRememberEmail(!rememberEmail)}
-          >
-            <View style={[styles.checkbox, rememberEmail && styles.checkboxChecked]}>
-              {rememberEmail && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
-            </View>
-            <Text style={styles.checkboxLabel}>Remember email</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.checkboxRow}
-            onPress={toggleStaySignedIn}
-          >
-            <View style={[styles.checkbox, staySignedIn && styles.checkboxChecked]}>
-              {staySignedIn && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
-            </View>
-            <Text style={styles.checkboxLabel}>Stay signed in</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity
-          style={[styles.submitButton, (isLoading || isAutoLogging) && styles.submitButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={isLoading || isAutoLogging}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
         >
-          {isLoading || isAutoLogging ? (
-            <ActivityIndicator color={colors.text.primary} />
-          ) : (
-            <Text style={styles.submitButtonText}>
-              {isSignUp ? 'Sign Up' : 'Login'}
-            </Text>
-          )}
-        </TouchableOpacity>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="headset" size={48} color={colors.accent.primary} />
+              </View>
+              <Text style={styles.title}>CueControl</Text>
+              <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
+              <Text style={styles.version}>Version 11.7.0</Text>
+            </View>
 
-        <TouchableOpacity style={styles.toggleButton} onPress={toggleMode}>
-          <Text style={styles.toggleButtonText}>
-            {isSignUp
-              ? 'Already have an account? Login'
-              : "Don't have an account? Sign Up"}
-          </Text>
-        </TouchableOpacity>
+            <View style={styles.form}>
+              <View style={styles.tabRow}>
+                <TouchableOpacity
+                  style={[styles.tab, !isSignUp && styles.tabActive]}
+                  onPress={() => { setIsSignUp(false); setLocalError(null); clearError(); }}
+                >
+                  <Text style={[styles.tabText, !isSignUp && styles.tabTextActive]}>Login!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.tab, isSignUp && styles.tabActive]}
+                  onPress={() => { setIsSignUp(true); setLocalError(null); clearError(); }}
+                >
+                  <Text style={[styles.tabText, isSignUp && styles.tabTextActive]}>Sign Up!</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="Email"
+                placeholderTextColor={colors.text.muted}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                editable={!isLoading}
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+              />
+
+              <TextInput
+                ref={passwordRef}
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+                placeholderTextColor={colors.text.muted}
+                secureTextEntry
+                editable={!isLoading}
+                returnKeyType="done"
+                onSubmitEditing={() => Keyboard.dismiss()}
+              />
+
+              {displayError && (
+                <Text style={styles.error}>{displayError}</Text>
+              )}
+
+              <View style={styles.checkboxGroup}>
+                <TouchableOpacity
+                  style={styles.checkboxRow}
+                  onPress={() => setRememberEmail(!rememberEmail)}
+                >
+                  <View style={[styles.checkbox, rememberEmail && styles.checkboxChecked]}>
+                    {rememberEmail && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Remember Email</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkboxRow}
+                  onPress={toggleStaySignedIn}
+                >
+                  <View style={[styles.checkbox, staySignedIn && styles.checkboxChecked]}>
+                    {staySignedIn && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                  </View>
+                  <Text style={styles.checkboxLabel}>Stay Signed In</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.submitButton, (isLoading || isAutoLogging) && styles.submitButtonDisabled]}
+                onPress={handleSubmit}
+                disabled={isLoading || isAutoLogging}
+              >
+                {isLoading || isAutoLogging ? (
+                  <ActivityIndicator color={colors.text.primary} />
+                ) : (
+                  <Text style={styles.submitButtonText}>
+                    {isSignUp ? 'Sign Up!' : 'Login!'}
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+
+        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={null} />
       </View>
-      </KeyboardAvoidingView>
-
-      <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={null} />
     </SafeAreaView>
   );
 }
@@ -259,18 +284,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background.main,
   },
+  container: {
+    flex: 1,
+    backgroundColor: colors.background.main,
+    borderWidth: 2,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden',
+  },
   headerBar: {
     height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: 2,
-    borderTopColor: colors.border,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
-  headerTitle: {
+  headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
     fontSize: 18,
@@ -290,33 +322,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 1,
     height: '100%',
   },
-  aboutButton: {
+  iconButton: {
     width: 25,
     height: 25,
-    borderWidth: 2,
-    borderColor: colors.accent.primary,
-    borderRadius: 0,
-    backgroundColor: colors.background.main,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  aboutButtonText: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.accent.primary,
-    fontSize: 15,
-    fontWeight: '800',
-    letterSpacing: 1,
-  },
-  container: {
-    flex: 1,
+    borderWidth: 2,
+    borderRadius: 0,
     backgroundColor: colors.background.main,
+  },
+  aboutButton: {
+    borderColor: colors.accent.primary,
+  },
+  settingsButton: {
+    borderColor: colors.text.grey,
+  },
+  closeButton: {
+    borderColor: colors.status.error,
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
     justifyContent: 'flex-start',
     padding: spacing.xl,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.xxl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xl,
   },
   iconContainer: {
     width: 80,
@@ -356,14 +391,32 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  formTitle: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: typography.sizes.xl,
-    fontWeight: '800',
-    color: colors.text.primary,
-    letterSpacing: 1,
+  tabRow: {
+    flexDirection: 'row',
     marginBottom: spacing.lg,
-    textAlign: 'center',
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    backgroundColor: colors.background.row,
+  },
+  tabActive: {
+    backgroundColor: colors.accent.primary,
+  },
+  tabText: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: 16,
+    fontWeight: '800',
+    color: colors.text.muted,
+    letterSpacing: 1,
+  },
+  tabTextActive: {
+    color: colors.text.primary,
   },
   input: {
     fontFamily: 'Helvetica Neue',
@@ -398,19 +451,9 @@ const styles = StyleSheet.create({
   submitButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: typography.sizes.md,
+    fontSize: 16,
     fontWeight: '800',
     letterSpacing: 1,
-  },
-  toggleButton: {
-    marginTop: spacing.lg,
-    alignItems: 'center',
-  },
-  toggleButtonText: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.accent.primary,
-    fontSize: typography.sizes.sm,
-    letterSpacing: 0.5,
   },
   checkboxGroup: {
     marginBottom: spacing.md,

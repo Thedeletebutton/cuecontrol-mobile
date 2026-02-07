@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   Linking,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,6 +30,7 @@ const DJ_TRACK_FONT_SIZE_KEY = '@cuecontrol_dj_track_font_size';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const { user, logout, isLoading } = useAuth();
   const { clearMode } = useAppModeContext();
   const { licenseKey, isValidFormat, setLicenseKey, formatLicenseKey } = useLicense();
@@ -193,7 +194,11 @@ export default function SettingsScreen() {
   };
 
   const handleBack = () => {
-    router.push('/(tabs)/queue');
+    if (from === 'mode') {
+      router.replace('/');
+    } else {
+      router.back();
+    }
   };
 
   const handleRequestLicenseKey = async () => {

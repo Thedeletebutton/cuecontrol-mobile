@@ -98,12 +98,12 @@ export default function ModeSelection() {
       <View style={styles.container}>
         {/* Header bar matching desktop style */}
         <View style={styles.headerBar}>
-          <Text style={styles.headerTitle}>CueControl</Text>
+          <Text style={styles.headerTitle}>CueControl - Mode Selection</Text>
           <View style={styles.headerButtons}>
             <TouchableOpacity style={[styles.iconButton, styles.aboutButton]} onPress={() => setAboutVisible(true)}>
               <Ionicons name="information" size={16} color={colors.accent.primary} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => router.push('/(tabs)/settings?from=mode')}>
               <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleLogout}>
@@ -120,7 +120,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 11.6.0</Text>
+            <Text style={styles.version}>Version 11.7.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}
@@ -136,15 +136,15 @@ export default function ModeSelection() {
                 <Ionicons name="headset" size={48} color={colors.accent.primary} />
               </View>
               <Text style={styles.modeTitle}>DJ Mode</Text>
-              <Text style={styles.modeDesc}>Manage your request queue</Text>
+              <Text style={styles.modeDesc}>Your queue, your rules.</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modeButton} onPress={handleViewerMode}>
               <View style={styles.iconContainer}>
                 <Ionicons name="musical-notes" size={48} color={colors.accent.primary} />
               </View>
-              <Text style={styles.modeTitle}>Request Mode</Text>
-              <Text style={styles.modeDesc}>Submit a song request</Text>
+              <Text style={styles.modeTitle}>Viewer Mode</Text>
+              <Text style={styles.modeDesc}>Drop a request, watch the queue.</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -225,17 +225,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     padding: spacing.xl,
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xl,
   },
   header: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
   logoIcon: {
     width: 80,
     height: 80,
     borderRadius: 16,
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
   title: {
     fontFamily: 'Helvetica Neue',
@@ -251,14 +251,14 @@ const styles = StyleSheet.create({
     color: colors.text.muted,
     fontStyle: 'italic',
     letterSpacing: 0.5,
-    marginBottom: spacing.xs,
   },
   version: {
     fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
     letterSpacing: 0.5,
-    marginBottom: spacing.md,
+    marginTop: spacing.xs,
+    marginBottom: spacing.lg,
   },
   supportButton: {
     flexDirection: 'row',
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   supportButtonText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.accent.primary,
     fontWeight: '600',
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 16,
-    padding: spacing.xl,
+    padding: spacing.lg,
     alignItems: 'center',
   },
   iconContainer: {
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent.soft,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
   modeTitle: {
     fontFamily: 'Helvetica Neue',
