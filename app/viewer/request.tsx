@@ -115,11 +115,7 @@ export default function RequestScreen() {
   };
 
   const handleBack = () => {
-    if (submitted) {
-      router.replace('/viewer/dashboard');
-    } else {
-      router.replace('/');
-    }
+    router.replace('/viewer/dashboard');
   };
 
   const handleSubmit = async () => {

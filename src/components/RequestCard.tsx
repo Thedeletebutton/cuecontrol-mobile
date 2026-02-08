@@ -76,22 +76,16 @@ export function RequestCard({
     : 'Anonymous';
 
   return (
-    <View style={[styles.row, index % 2 === 1 && styles.rowAlt, request.starred && styles.rowStarred, isActive && styles.rowActive]}>
-      {/* Drag Handle - DJ only */}
-      {!isViewer && (
-        <TouchableOpacity
-          style={styles.dragHandle}
-          onLongPress={drag}
-          delayLongPress={150}
-          disabled={!drag}
-        >
-          <Ionicons name="reorder-three" size={20} color={colors.text.muted} style={{ opacity: 0.4 }} />
-        </TouchableOpacity>
-      )}
-
-      {/* Requester + Track stacked column */}
-      <View style={[styles.cell, styles.contentCell]}>
-        {request.starred && (
+    <View style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive]}>
+      {/* Content column: Requester + Track — long press to drag (DJ only) */}
+      <TouchableOpacity
+        style={[styles.cell, styles.contentCell]}
+        onLongPress={!isViewer ? drag : undefined}
+        delayLongPress={150}
+        disabled={isViewer || !drag}
+        activeOpacity={isViewer ? 1 : 0.7}
+      >
+        {isViewer && request.starred && (
           <View style={styles.starIndicator}>
             <Ionicons name="star" size={18} color="#ffc107" />
           </View>
@@ -112,52 +106,61 @@ export function RequestCard({
             </TouchableOpacity>
           ) : null}
         </View>
-      </View>
+      </TouchableOpacity>
 
-      {/* Status Column */}
-      <View style={[styles.cell, styles.statusCell, isViewer && styles.statusCellLast]}>
-        <StatusPill
-          played={request.played}
-          onPress={handleStatusPress}
-          disabled={isViewer}
-          isPending={isNextStream}
-        />
-      </View>
-
-      {/* Options Column - DJ only */}
+      {/* Star button — DJ only, absolute positioned to match viewer star placement */}
       {!isViewer && (
-        <View style={[styles.cell, styles.optionsCell]}>
-          <TouchableOpacity
-            style={[styles.actionButton, request.starred ? styles.starButtonActive : styles.starButton]}
-            onPress={handleStarPress}
-          >
-            <Ionicons
-              name={request.starred ? 'star' : 'star-outline'}
-              size={14}
-              color={request.starred ? '#ffc107' : colors.text.muted}
+        <TouchableOpacity style={styles.starButton} onPress={handleStarPress}>
+          <Ionicons
+            name={request.starred ? 'star' : 'star-outline'}
+            size={18}
+            color={request.starred ? '#ffc107' : colors.text.muted}
+            style={!request.starred ? { opacity: 0.4 } : undefined}
+          />
+        </TouchableOpacity>
+      )}
+
+      {/* Right column */}
+      {isViewer ? (
+        <View style={[styles.cell, styles.statusCellLast]}>
+          <StatusPill
+            played={request.played}
+            onPress={handleStatusPress}
+            disabled={isViewer}
+            isPending={isNextStream}
+          />
+        </View>
+      ) : (
+        <View style={[styles.cell, styles.rightColumn]}>
+          <View style={styles.statusRow}>
+            <StatusPill
+              played={request.played}
+              onPress={handleStatusPress}
+              isPending={isNextStream}
             />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionButton, styles.editButton]}
-            onPress={() => onEdit?.(request)}
-          >
-            <Ionicons name="pencil" size={14} color={colors.accent.primary} />
-          </TouchableOpacity>
-
-          {(onMoveToNextStream || onMoveFromNextStream) && (
-            <TouchableOpacity style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
-              <Ionicons
-                name={isNextStream ? 'arrow-up' : 'arrow-down'}
-                size={14}
-                color={colors.text.muted}
-              />
+          </View>
+          <View style={styles.optionsRow}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.editButton]}
+              onPress={() => onEdit?.(request)}
+            >
+              <Ionicons name="pencil" size={16} color={colors.accent.primary} />
             </TouchableOpacity>
-          )}
 
-          <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
-            <Ionicons name="close" size={14} color={colors.status.error} />
-          </TouchableOpacity>
+            {(onMoveToNextStream || onMoveFromNextStream) && (
+              <TouchableOpacity style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
+                <Ionicons
+                  name={isNextStream ? 'arrow-up' : 'arrow-down'}
+                  size={16}
+                  color={colors.text.muted}
+                />
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
+              <Ionicons name="close" size={16} color={colors.status.error} />
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -169,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background.row,
-    height: 48,
+    height: 70,
     borderTopWidth: 2,
     borderTopColor: colors.border,
     borderBottomWidth: 2,
@@ -187,20 +190,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accent.soft,
     opacity: 0.8,
   },
-  starIndicator: {
-    position: 'absolute',
-    right: 5,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    zIndex: 1,
-  },
-  dragHandle: {
-    width: 24,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   cell: {
     height: '100%',
     justifyContent: 'center',
@@ -213,22 +202,52 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 4,
   },
-  statusCell: {
-    width: 95,
+  statusCellLast: {
+    width: 98,
     alignItems: 'center',
     paddingLeft: 0,
     paddingRight: 0,
-  },
-  statusCellLast: {
     borderRightWidth: 0,
   },
-  optionsCell: {
+  rightColumn: {
+    width: 98,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRightWidth: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  optionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    gap: 6,
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
+    paddingTop: 3,
+    paddingBottom: 3,
     paddingHorizontal: 4,
-    borderRightWidth: 0,
+    width: '100%',
+  },
+  statusRow: {
+    paddingTop: 3,
+    paddingBottom: 3,
+  },
+  starIndicator: {
+    position: 'absolute',
+    right: 5,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+  starButton: {
+    position: 'absolute',
+    right: 105,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+    zIndex: 1,
   },
   username: {
     fontFamily: 'Helvetica Neue',
@@ -260,20 +279,13 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   actionButton: {
-    width: 28,
-    height: 28,
+    width: 25,
+    height: 25,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderRadius: 0,
     backgroundColor: colors.background.main,
-  },
-  starButton: {
-    borderColor: colors.text.muted,
-    opacity: 0.5,
-  },
-  starButtonActive: {
-    borderColor: '#ffc107',
   },
   editButton: {
     borderColor: colors.accent.primary,

@@ -120,7 +120,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 11.8.0</Text>
+            <Text style={styles.version}>Version 11.9.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}

@@ -51,7 +51,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
         id,
         message: message.trim(),
         email: 'admin@cuecontrolapp.com',
-        appVersion: '11.8.0',
+        appVersion: '11.9.0',
         timestamp: id,
       });
 

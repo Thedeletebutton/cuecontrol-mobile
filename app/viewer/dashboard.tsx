@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   statusHeaderLast: {
-    width: 95,
+    width: 98,
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 0,

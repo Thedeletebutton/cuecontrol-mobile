@@ -288,7 +288,6 @@ export default function QueueScreen() {
 
   // Custom header matching desktop style
   const renderHeader = () => (
-    <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerBar}>
         <Text style={styles.headerBarTitle}>
           {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1)}'s </Text>}
@@ -318,33 +317,35 @@ export default function QueueScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
   );
 
   if (!licenseKey || !isValidFormat) {
     return (
-      <View style={styles.container}>
-        {renderHeader()}
-        <View style={styles.emptyContainer}>
-          <Ionicons name="key-outline" size={64} color={colors.text.muted} />
-          <Text style={styles.emptyTitle}>License Key Required</Text>
-          <Text style={styles.emptyText}>
-            Enter your CueControl license key to start receiving requests
-          </Text>
-          <TouchableOpacity
-            style={styles.goToSettingsButton}
-            onPress={handleSettings}
-          >
-            <Ionicons name="settings-sharp" size={18} color={colors.text.primary} />
-            <Text style={styles.goToSettingsText}>Go to Settings</Text>
-          </TouchableOpacity>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          {renderHeader()}
+          <View style={styles.emptyContainer}>
+            <Ionicons name="key-outline" size={64} color={colors.text.muted} />
+            <Text style={styles.emptyTitle}>License Key Required</Text>
+            <Text style={styles.emptyText}>
+              Enter your CueControl license key to start receiving requests
+            </Text>
+            <TouchableOpacity
+              style={styles.goToSettingsButton}
+              onPress={handleSettings}
+            >
+              <Ionicons name="settings-sharp" size={18} color={colors.text.primary} />
+              <Text style={styles.goToSettingsText}>Go to Settings</Text>
+            </TouchableOpacity>
+          </View>
+          <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
         </View>
-        <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.container}>
       {renderHeader()}
 
@@ -386,20 +387,20 @@ export default function QueueScreen() {
         </Text>
       </View>
 
-      {/* Column Headers - matching slim dashboard */}
+      {/* Column Headers */}
       <View style={styles.headerRow}>
         <View style={[styles.headerCell, styles.contentHeader]}>
-          <Text style={styles.headerText} numberOfLines={1}>REQUESTER / TRACK:</Text>
+          <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
+          <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
         </View>
-        <View style={[styles.headerCell, styles.statusHeader]}>
+        <View style={[styles.headerCell, styles.rightHeader]}>
           <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
-        </View>
-        <View style={[styles.headerCell, styles.optionsHeader]}>
-          <Text style={styles.headerText}>OPTIONS:</Text>
+          <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
         </View>
       </View>
 
       <DraggableFlatList
+        containerStyle={{ flex: 1 }}
         data={unplayedRequests}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, drag, isActive }: RenderItemParams<Request>) => {
@@ -477,17 +478,13 @@ export default function QueueScreen() {
 
             {/* Next Stream Column Headers */}
             <View style={styles.headerRow}>
-              <View style={[styles.headerCell, styles.requesterHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>REQUESTER:</Text>
+              <View style={[styles.headerCell, styles.contentHeader]}>
+                <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
+                <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
               </View>
-              <View style={[styles.headerCell, styles.trackHeader]}>
-                <Text style={styles.headerText} numberOfLines={1}>ARTIST - TRACK:</Text>
-              </View>
-              <View style={[styles.headerCell, styles.statusHeader]}>
+              <View style={[styles.headerCell, styles.rightHeader]}>
                 <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
-              </View>
-              <View style={[styles.headerCell, styles.optionsHeader]}>
-                <Text style={styles.headerText}>OPTIONS:</Text>
+                <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
               </View>
             </View>
 
@@ -515,6 +512,7 @@ export default function QueueScreen() {
                 />
               ))
             )}
+            <View style={{ height: 80 }} />
           </>
         }
         contentContainerStyle={unplayedRequests.length === 0 ? styles.emptyList : undefined}
@@ -539,6 +537,7 @@ export default function QueueScreen() {
 
       <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -553,6 +552,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   safeArea: {
+    flex: 1,
     backgroundColor: colors.background.main,
   },
   headerBar: {
@@ -561,8 +561,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: 2,
-    borderTopColor: colors.border,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
@@ -583,7 +581,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    width: 98,
+    width: 101,
     borderLeftWidth: 2,
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
@@ -693,7 +691,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    width: 98,
+    width: 101,
     borderLeftWidth: 2,
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
@@ -800,14 +798,13 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     backgroundColor: colors.background.main,
-    height: 40,
+    minHeight: 70,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
   headerCell: {
-    height: '100%',
     justifyContent: 'center',
     paddingLeft: 5,
     paddingRight: 8,
@@ -822,17 +819,26 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'Helvetica Neue',
   },
+  headerSubText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.text.secondary,
+    letterSpacing: 1,
+    textAlign: 'left',
+    fontFamily: 'Helvetica Neue',
+  },
   contentHeader: {
     flex: 1,
     alignItems: 'flex-start',
+    paddingVertical: 2,
   },
-  statusHeader: {
-    width: 95,
-    alignItems: 'center',
-  },
-  optionsHeader: {
+  rightHeader: {
+    width: 98,
     alignItems: 'center',
     borderRightWidth: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingVertical: 2,
   },
   nextStreamHeader: {
     flexDirection: 'row',
