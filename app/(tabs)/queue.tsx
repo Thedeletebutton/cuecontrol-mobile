@@ -351,7 +351,7 @@ export default function QueueScreen() {
 
       {/* Top bar with title and actions */}
       <View style={styles.topBar}>
-        <Text style={styles.sectionTitle}>REQUESTS:</Text>
+        <Text style={styles.sectionTitle}>TRACK REQUESTS:</Text>
         <View style={styles.actionButtons}>
           <TouchableOpacity
             style={[styles.iconButton, styles.addButton]}
@@ -452,24 +452,13 @@ export default function QueueScreen() {
               />
             ))}
 
-            {/* Requested By Section */}
-            {currentRequester && (
-              <View style={styles.requesterSection}>
-                <Text style={styles.requesterLabel}>Requested By:</Text>
-                <Text style={styles.requesterName}>{currentRequester.username}</Text>
-                <TouchableOpacity
-                  style={styles.requesterClearButton}
-                  onPress={() => clearCurrentRequester()}
-                >
-                  <Text style={styles.requesterClearText}>Clear</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
             {/* Next Stream Section */}
+            <View style={styles.sectionBorder} />
+            <View style={styles.sectionBorder} />
             <View style={styles.nextStreamHeader}>
               <Text style={styles.nextStreamTitle}>NEXT STREAM:</Text>
             </View>
+            <View style={styles.sectionBorder} />
             <View style={styles.nextStreamCountsRow}>
               <Text style={styles.nextStreamCount}>
                 Total<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamCount}</Text>
@@ -512,6 +501,22 @@ export default function QueueScreen() {
                 />
               ))
             )}
+
+            {/* Requested By Section */}
+            <View style={styles.sectionBorder} />
+            <View style={styles.requesterSection}>
+              <Text style={styles.requesterLabel}>REQUESTED BY:</Text>
+              <Text style={[styles.requesterName, !currentRequester && { color: colors.text.primary }]}>{currentRequester ? currentRequester.username : '—'}</Text>
+              {currentRequester && (
+                <TouchableOpacity
+                  style={styles.requesterClearButton}
+                  onPress={() => clearCurrentRequester()}
+                >
+                  <Text style={styles.requesterClearText}>Clear</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={styles.sectionBorder} />
             <View style={{ height: 80 }} />
           </>
         }
@@ -561,6 +566,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
@@ -641,6 +648,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 38,
     backgroundColor: colors.background.main,
+    borderTopWidth: 2,
+    borderTopColor: colors.border,
     borderBottomWidth: 2,
     borderBottomColor: colors.border,
   },
@@ -848,8 +857,6 @@ const styles = StyleSheet.create({
     paddingRight: spacing.sm,
     height: 38,
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
-    borderBottomColor: colors.border,
   },
   nextStreamCountsRow: {
     flexDirection: 'row',
@@ -904,14 +911,16 @@ const styles = StyleSheet.create({
     paddingRight: spacing.sm,
     height: 38,
     backgroundColor: colors.background.main,
-    borderTopWidth: 2,
-    borderTopColor: colors.border,
     gap: 8,
+  },
+  sectionBorder: {
+    height: 2,
+    backgroundColor: colors.border,
   },
   requesterLabel: {
     fontSize: 15,
     fontWeight: '800',
-    color: colors.text.secondary,
+    color: colors.text.primary,
     fontFamily: 'Helvetica Neue',
     letterSpacing: 1,
   },

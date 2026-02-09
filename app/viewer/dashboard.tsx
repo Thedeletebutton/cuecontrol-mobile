@@ -18,7 +18,7 @@ import { AboutModal } from '../../src/components/AboutModal';
 import { ViewerSettingsModal } from '../../src/components/ViewerSettingsModal';
 import { RequestCard } from '../../src/components/RequestCard';
 import { useViewerRequests, useViewerNextStream } from '../../src/hooks/useViewerRequests';
-import { lookupDJByHandle } from '../../src/services/requests';
+import { lookupDJByHandle, subscribeToCurrentRequester, setCurrentLicenseKey } from '../../src/services/requests';
 import { getFirebaseDatabase, initializeFirebase } from '../../src/services/firebase';
 import { FIREBASE_CONFIG, IS_CONFIGURED } from '../../src/config/firebase.config';
 import { colors, typography, spacing } from '../../src/constants/theme';
@@ -56,6 +56,20 @@ export default function ViewerDashboard() {
 
   const { requests, loading, totalCount, unplayedCount, playedCount } = useViewerRequests(licenseKey);
   const { requests: nextStreamRequests, count: nextStreamCount } = useViewerNextStream(licenseKey);
+  const [currentRequester, setCurrentRequester] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
+
+  // Subscribe to current requester when connected
+  useEffect(() => {
+    if (licenseKey) {
+      setCurrentLicenseKey(licenseKey);
+      const unsubscribe = subscribeToCurrentRequester((requester) => {
+        setCurrentRequester(requester);
+      });
+      return unsubscribe;
+    } else {
+      setCurrentRequester(null);
+    }
+  }, [licenseKey]);
 
   // Load saved settings on mount
   useEffect(() => {
@@ -422,6 +436,17 @@ export default function ViewerDashboard() {
                   />
                 ))
               )}
+
+              {/* Requested By Section */}
+              <View style={styles.sectionBorder} />
+              <View style={styles.requesterSection}>
+                <Text style={styles.requesterLabel}>REQUESTED BY:</Text>
+                <Text style={[styles.requesterName, !currentRequester && { color: colors.text.primary }]}>
+                  {currentRequester ? currentRequester.username : '—'}
+                </Text>
+              </View>
+              <View style={styles.sectionBorder} />
+              <View style={{ height: 80 }} />
             </>
           }
         />
@@ -880,5 +905,33 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: colors.text.muted,
     textAlign: 'center',
+  },
+  sectionBorder: {
+    height: 2,
+    backgroundColor: colors.border,
+  },
+  requesterSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: spacing.sm,
+    height: 38,
+    backgroundColor: colors.background.main,
+    gap: 8,
+  },
+  requesterLabel: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.text.primary,
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 1,
+  },
+  requesterName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: colors.requester.name,
+    flex: 1,
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 1,
   },
 });
