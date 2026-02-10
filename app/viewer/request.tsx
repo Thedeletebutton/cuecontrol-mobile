@@ -39,7 +39,6 @@ export default function RequestScreen() {
   const [track, setTrack] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [queuePosition, setQueuePosition] = useState(0);
   const [djDisplayName, setDjDisplayName] = useState('');
   const [aboutVisible, setAboutVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
@@ -164,7 +163,6 @@ export default function RequestScreen() {
         ...(pushToken && { pushToken }),
       });
 
-      setQueuePosition(result.queuePosition);
       setDjDisplayName(result.djDisplayName);
       setSubmitted(true);
     } catch (error: any) {
@@ -265,11 +263,6 @@ export default function RequestScreen() {
             </View>
             <Text style={styles.successTitle}>Request Submitted!</Text>
             <Text style={styles.successText}>Your track has been added to the queue</Text>
-          </View>
-
-          <View style={styles.positionBox}>
-            <Text style={styles.positionLabel}>Queue Position</Text>
-            <Text style={styles.positionNumber}>#{queuePosition}</Text>
           </View>
 
           <View style={styles.successButtons}>
@@ -671,31 +664,6 @@ const styles = StyleSheet.create({
     color: colors.text.muted,
     fontStyle: 'italic',
     letterSpacing: 0.5,
-  },
-  positionBox: {
-    backgroundColor: colors.background.panel,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 16,
-    padding: spacing.lg,
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  positionLabel: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 15,
-    fontWeight: '800',
-    color: colors.text.secondary,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    marginBottom: spacing.xs,
-  },
-  positionNumber: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: 48,
-    fontWeight: '800',
-    color: colors.accent.primary,
-    letterSpacing: 1,
   },
   successButtons: {
     gap: spacing.lg,

@@ -102,13 +102,13 @@ export function RequestCard({
           </Text>
           {!isViewer && request.notes ? (
             <TouchableOpacity onPress={() => onEdit?.(request)} style={styles.notesIndicator}>
-              <Ionicons name="document-text" size={12} color={colors.text.muted} />
+              <Ionicons name="document-text" size={12} color={colors.text.grey} />
             </TouchableOpacity>
           ) : null}
         </View>
       </TouchableOpacity>
 
-      {/* Star button — DJ only, absolute positioned to match viewer star placement */}
+      {/* Star button — DJ only, positioned between content and right column */}
       {!isViewer && (
         <TouchableOpacity style={styles.starButton} onPress={handleStarPress}>
           <Ionicons
@@ -241,13 +241,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   starButton: {
-    position: 'absolute',
-    right: 105,
-    top: 0,
-    bottom: 0,
+    height: '100%',
     justifyContent: 'center',
     paddingHorizontal: 5,
-    zIndex: 1,
   },
   username: {
     fontFamily: 'Helvetica Neue',
@@ -276,7 +272,6 @@ const styles = StyleSheet.create({
   },
   notesIndicator: {
     padding: 2,
-    opacity: 0.6,
   },
   actionButton: {
     width: 25,

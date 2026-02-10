@@ -201,22 +201,6 @@ export async function sendRequestToDJ(
   return id;
 }
 
-// Get queue position for a specific DJ's queue by license key
-export async function getDJQueuePosition(djLicenseKey: string): Promise<number> {
-  const db = getFirebaseDatabase();
-  if (!db) return 0;
-
-  const licensePath = djLicenseKey.replace(/-/g, '');
-  const requestsRef = ref(db, `licenses/${licensePath}/requests`);
-  const snapshot = await get(requestsRef);
-  const data = snapshot.val();
-  if (!data) return 1;
-
-  const unplayedCount = Object.values(data).filter(
-    (r: any) => !r.played
-  ).length;
-  return unplayedCount + 1;
-}
 
 // Validate license key format (DJRQ-XXXX-XXXX-XXXX)
 export function validateLicenseKeyFormat(licenseKey: string): boolean {
@@ -304,18 +288,16 @@ export async function getDJHandle(licenseKey: string): Promise<string | null> {
 export async function sendRequestByHandle(
   handle: string,
   request: { username: string; track: string; pushToken?: string }
-): Promise<{ id: number; queuePosition: number; djDisplayName: string }> {
+): Promise<{ id: number; djDisplayName: string }> {
   const djInfo = await lookupDJByHandle(handle);
   if (!djInfo) {
     throw new Error('DJ not found. Please check the handle and try again.');
   }
 
   const id = await sendRequestToDJ(djInfo.licenseKey, request);
-  const queuePosition = await getDJQueuePosition(djInfo.licenseKey);
 
   return {
     id,
-    queuePosition,
     djDisplayName: djInfo.displayName,
   };
 }
