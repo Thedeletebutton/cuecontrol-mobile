@@ -54,7 +54,7 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
               />
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 12.0.0</Text>
+              <Text style={styles.version}>Version 12.1.0</Text>
               <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
                 <Text style={styles.supportButtonText}>Contact Support</Text>
               </TouchableOpacity>

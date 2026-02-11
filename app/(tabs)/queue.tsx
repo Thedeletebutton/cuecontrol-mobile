@@ -32,6 +32,7 @@ import {
   setCurrentLicenseKey,
   getDJHandle,
   subscribeToCurrentRequester,
+  setCurrentRequester,
   clearCurrentRequester,
 } from '../../src/services/requests';
 import {
@@ -119,9 +120,18 @@ export default function QueueScreen() {
 
   const handleMarkPlayed = async (id: number) => {
     try {
-      await updateRequestStatus(id, true);
-      // Send push notification to viewer if they have a push token
+      // Find request before updating status (state may change after update)
       const request = requests.find(r => r.id === id);
+      await updateRequestStatus(id, true);
+      // Set current requester
+      if (request?.username) {
+        try {
+          await setCurrentRequester(request.username, id);
+        } catch (e) {
+          console.error('Failed to set current requester:', e);
+        }
+      }
+      // Send push notification to viewer if they have a push token
       console.log('[PUSH] Mark played - request pushToken:', request?.pushToken || 'NONE');
       if (request?.pushToken) {
         sendPushNotification(
@@ -138,6 +148,10 @@ export default function QueueScreen() {
   const handleMarkUnplayed = async (id: number) => {
     try {
       await updateRequestStatus(id, false);
+      // Clear requester if this was the current one
+      if (currentRequester?.requestId === id) {
+        await clearCurrentRequester();
+      }
     } catch (error) {
       console.error('Failed to mark as unplayed:', error);
     }

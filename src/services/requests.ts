@@ -334,6 +334,19 @@ export function subscribeToCurrentRequester(
   return unsubscribe;
 }
 
+export async function setCurrentRequester(username: string, requestId: number): Promise<void> {
+  const db = getFirebaseDatabase();
+  if (!db || !currentLicenseKey) throw new Error('Not connected');
+
+  const licensePath = licenseKeyToPath(currentLicenseKey);
+  const requesterRef = ref(db, `licenses/${licensePath}/currentRequester`);
+  await set(requesterRef, {
+    username,
+    requestId,
+    timestamp: Date.now(),
+  });
+}
+
 export async function clearCurrentRequester(): Promise<void> {
   const db = getFirebaseDatabase();
   if (!db || !currentLicenseKey) throw new Error('Not connected');
