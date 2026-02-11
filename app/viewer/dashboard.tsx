@@ -64,7 +64,7 @@ export default function ViewerDashboard() {
       setCurrentLicenseKey(licenseKey);
       const unsubscribe = subscribeToCurrentRequester((requester) => {
         setCurrentRequester(requester);
-      });
+      }, licenseKey);
       return unsubscribe;
     } else {
       setCurrentRequester(null);
@@ -745,7 +745,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   statusHeaderLast: {
-    width: 98,
+    width: 96,
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 0,

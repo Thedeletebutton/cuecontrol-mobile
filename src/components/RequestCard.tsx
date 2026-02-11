@@ -100,13 +100,15 @@ export function RequestCard({
           >
             {request.request}
           </Text>
-          {!isViewer && request.notes ? (
-            <TouchableOpacity onPress={() => onEdit?.(request)} style={styles.notesIndicator}>
-              <Ionicons name="document-text" size={12} color={colors.text.grey} />
-            </TouchableOpacity>
-          ) : null}
         </View>
       </TouchableOpacity>
+
+      {/* Notes indicator — DJ only, positioned between content and star */}
+      {!isViewer && request.notes ? (
+        <TouchableOpacity onPress={() => onEdit?.(request)} style={styles.notesIndicator}>
+          <Ionicons name="document-text" size={16} color={colors.text.grey} />
+        </TouchableOpacity>
+      ) : null}
 
       {/* Star button — DJ only, positioned between content and right column */}
       {!isViewer && (
@@ -204,11 +206,13 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
   },
   statusCellLast: {
-    width: 98,
+    width: 96,
     alignItems: 'center',
     paddingLeft: 0,
     paddingRight: 0,
     borderRightWidth: 0,
+    borderLeftWidth: 2,
+    borderLeftColor: colors.border,
   },
   rightColumn: {
     width: 98,
@@ -274,7 +278,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   notesIndicator: {
-    padding: 2,
+    height: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
   },
   actionButton: {
     width: 25,

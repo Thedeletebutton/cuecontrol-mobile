@@ -88,14 +88,14 @@ export default function QueueScreen() {
   const [editingNextStreamRequest, setEditingNextStreamRequest] = useState<Request | null>(null);
   const [aboutVisible, setAboutVisible] = useState(false);
   const [djHandle, setDjHandle] = useState<string | null>(null);
-  const [currentRequester, setCurrentRequester] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
+  const [currentRequester, setCurrentRequesterState] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
 
   // Subscribe to current requester
   useEffect(() => {
     if (licenseKey && isValidFormat) {
       const unsubscribe = subscribeToCurrentRequester((requester) => {
-        setCurrentRequester(requester);
-      });
+        setCurrentRequesterState(requester);
+      }, licenseKey);
       return unsubscribe;
     }
   }, [licenseKey, isValidFormat]);
@@ -440,13 +440,15 @@ export default function QueueScreen() {
           reorderRequests(ids);
         }}
         ListEmptyComponent={
-          <View style={styles.emptyListContainer}>
-            <Text style={styles.emptyListTitle}>NO REQUESTS YET</Text>
-            <Text style={styles.emptyListText}>
-              SEND YOUR REQUESTS IN CHAT USING
-            </Text>
-            <Text style={styles.emptyListCommand}>!request - Artist/Track</Text>
-          </View>
+          playedRequests.length === 0 ? (
+            <View style={styles.emptyListContainer}>
+              <Text style={styles.emptyListTitle}>NO REQUESTS YET</Text>
+              <Text style={styles.emptyListText}>
+                SEND YOUR REQUESTS IN CHAT USING
+              </Text>
+              <Text style={styles.emptyListCommand}>!request - Artist/Track</Text>
+            </View>
+          ) : null
         }
         ListFooterComponent={
           <>

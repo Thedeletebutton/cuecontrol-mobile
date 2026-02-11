@@ -315,16 +315,18 @@ export async function reorderRequests(orderedIds: number[]): Promise<void> {
 }
 
 export function subscribeToCurrentRequester(
-  callback: (requester: { username: string; requestId: number; timestamp: number } | null) => void
+  callback: (requester: { username: string; requestId: number; timestamp: number } | null) => void,
+  licenseKey?: string
 ): () => void {
   const db = getFirebaseDatabase();
+  const key = licenseKey || currentLicenseKey;
 
-  if (!db || !currentLicenseKey) {
+  if (!db || !key) {
     callback(null);
     return () => {};
   }
 
-  const licensePath = licenseKeyToPath(currentLicenseKey);
+  const licensePath = licenseKeyToPath(key);
   const requesterRef = ref(db, `licenses/${licensePath}/currentRequester`);
   const unsubscribe = onValue(requesterRef, (snapshot) => {
     const data = snapshot.val();
