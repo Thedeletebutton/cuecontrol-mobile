@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
   contentCell: {
     flex: 1,
     paddingVertical: 4,
+    borderRightWidth: 0,
   },
   statusCellLast: {
     width: 98,
@@ -244,6 +245,8 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     paddingHorizontal: 5,
+    borderRightWidth: 2,
+    borderRightColor: colors.border,
   },
   username: {
     fontFamily: 'Helvetica Neue',

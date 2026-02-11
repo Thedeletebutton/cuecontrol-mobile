@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { subscribeToNextStream } from '../services/nextStream';
+import { subscribeToNextStreamByLicenseKey } from '../services/nextStream';
 import { getCurrentLicenseKey } from '../services/requests';
 import { Request } from '../types/request';
 
@@ -21,7 +21,7 @@ export function useNextStream(licenseKey?: string | null) {
 
     setLoading(true);
     try {
-      const unsubscribe = subscribeToNextStream((data) => {
+      const unsubscribe = subscribeToNextStreamByLicenseKey(effectiveLicenseKey, (data) => {
         setRequests(data);
         setLoading(false);
         setError(null);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { subscribeToRequests, getCurrentLicenseKey } from '../services/requests';
+import { subscribeToRequestsByLicenseKey, getCurrentLicenseKey } from '../services/requests';
 import { Request } from '../types/request';
 
 export function useRequests(licenseKey?: string | null) {
@@ -20,7 +20,7 @@ export function useRequests(licenseKey?: string | null) {
 
     setLoading(true);
     try {
-      const unsubscribe = subscribeToRequests((data) => {
+      const unsubscribe = subscribeToRequestsByLicenseKey(effectiveLicenseKey, (data) => {
         setRequests(data);
         setLoading(false);
         setError(null);
