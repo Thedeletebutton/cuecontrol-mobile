@@ -2,7 +2,7 @@
   "expo": {
     "name": "CueControl",
     "slug": "cuecontrol-mobile",
-    "version": "15.3.0",
+    "version": "15.3.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
