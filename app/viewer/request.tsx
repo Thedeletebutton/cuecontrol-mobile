@@ -157,6 +157,7 @@ export default function RequestScreen() {
       }
 
       // Send the request to the DJ's queue by handle
+      console.log('[PUSH] Submitting request with pushToken:', pushToken || 'NONE');
       const result = await sendRequestByHandle(handle, {
         username: username.trim(),
         track: track.trim(),
@@ -261,16 +262,16 @@ export default function RequestScreen() {
             <View style={styles.successIconContainer}>
               <Ionicons name="checkmark-circle" size={48} color={colors.status.success} />
             </View>
-            <Text style={styles.successTitle}>Request Submitted!</Text>
+            <Text testID="viewer-success-message" style={styles.successTitle}>Request Submitted!</Text>
             <Text style={styles.successText}>Your track has been added to the queue</Text>
           </View>
 
           <View style={styles.successButtons}>
-            <TouchableOpacity style={styles.newRequestButton} onPress={handleNewRequest}>
+            <TouchableOpacity testID="viewer-new-request-button" style={styles.newRequestButton} onPress={handleNewRequest}>
               <Ionicons name="add" size={20} color={colors.text.primary} />
               <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
+            <TouchableOpacity testID="viewer-view-queue-button" style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
               <Ionicons name="list" size={20} color={colors.accent.primary} />
               <Text style={styles.viewQueueButtonText}>View Queue</Text>
             </TouchableOpacity>
@@ -332,6 +333,7 @@ export default function RequestScreen() {
               <View style={styles.handleInputContainer}>
                 <Text style={[styles.handlePrefix, { fontSize: inputFontSize }]}>@</Text>
                 <TextInput
+                  testID="viewer-dj-handle-input"
                   style={[styles.handleInput, { fontSize: inputFontSize }]}
                   value={djHandle}
                   onChangeText={handleDjHandleChange}
@@ -367,6 +369,7 @@ export default function RequestScreen() {
             </View>
             <View style={styles.sectionContent}>
               <TextInput
+                testID="viewer-username-input"
                 ref={usernameRef}
                 style={[styles.input, { fontSize: inputFontSize }]}
                 value={username}
@@ -400,6 +403,7 @@ export default function RequestScreen() {
             </View>
             <View style={styles.sectionContent}>
               <TextInput
+                testID="viewer-track-input"
                 ref={trackRef}
                 style={[styles.input, { fontSize: inputFontSize }]}
                 value={track}
@@ -416,6 +420,7 @@ export default function RequestScreen() {
           {/* Submit Button */}
           <View style={styles.submitButtonContainer}>
             <TouchableOpacity
+              testID="viewer-submit-button"
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
               disabled={loading}

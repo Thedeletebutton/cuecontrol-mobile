@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statusHeader: {
-    width: 95,
+    width: 98,
     alignItems: 'center',
     paddingLeft: 0,
     paddingRight: 0,

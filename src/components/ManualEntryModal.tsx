@@ -72,7 +72,7 @@ export function ManualEntryModal({
         <View style={styles.modal}>
           <View style={styles.header}>
             <Text style={styles.title}>Add Request</Text>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+            <TouchableOpacity testID="manual-entry-close" onPress={handleClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color={colors.status.error} />
             </TouchableOpacity>
           </View>
@@ -80,6 +80,7 @@ export function ManualEntryModal({
           <View style={styles.form}>
             <Text style={styles.label}>Requested By</Text>
             <TextInput
+              testID="manual-entry-username"
               style={styles.input}
               value={username}
               onChangeText={setUsername}
@@ -89,6 +90,7 @@ export function ManualEntryModal({
 
             <Text style={styles.label}>Artist / Track</Text>
             <TextInput
+              testID="manual-entry-track"
               style={styles.input}
               value={track}
               onChangeText={setTrack}
@@ -100,6 +102,7 @@ export function ManualEntryModal({
             {error && <Text style={styles.error}>{error}</Text>}
 
             <TouchableOpacity
+              testID="manual-entry-submit"
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
               disabled={loading}

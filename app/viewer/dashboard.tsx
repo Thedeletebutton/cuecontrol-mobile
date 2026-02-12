@@ -242,6 +242,7 @@ export default function ViewerDashboard() {
         <View style={styles.handleInputContainer}>
           <Text style={styles.handlePrefix}>@</Text>
           <TextInput
+            testID="viewer-dashboard-handle-input"
             style={styles.handleInput}
             value={djHandle}
             onChangeText={handleDjHandleChange}
@@ -255,6 +256,7 @@ export default function ViewerDashboard() {
           />
         </View>
         <TouchableOpacity
+          testID="viewer-dashboard-connect-button"
           style={[styles.connectButton, lookupLoading && styles.connectButtonDisabled]}
           onPress={handleConnect}
           disabled={lookupLoading}

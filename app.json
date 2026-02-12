@@ -2,7 +2,7 @@
   "expo": {
     "name": "CueControl",
     "slug": "cuecontrol-mobile",
-    "version": "15.0.0",
+    "version": "15.3.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.trinitromusic.cuecontrol",
-      "buildNumber": "9",
+      "buildNumber": "11",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

@@ -106,7 +106,7 @@ export default function ModeSelection() {
             <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => router.push('/(tabs)/settings?from=mode')}>
               <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleLogout}>
+            <TouchableOpacity testID="mode-signout-button" style={[styles.iconButton, styles.closeButton]} onPress={handleLogout}>
               <Ionicons name="close" size={16} color={colors.status.error} />
             </TouchableOpacity>
           </View>
@@ -130,7 +130,7 @@ export default function ModeSelection() {
           </View>
 
           <View style={styles.buttons}>
-            <TouchableOpacity style={styles.modeButton} onPress={handleDJMode}>
+            <TouchableOpacity testID="dj-mode-button" style={styles.modeButton} onPress={handleDJMode}>
               <View style={styles.iconContainer}>
                 <Ionicons name="headset" size={48} color={colors.accent.primary} />
               </View>
@@ -138,7 +138,7 @@ export default function ModeSelection() {
               <Text style={styles.modeDesc}>Your queue, your rules.</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.modeButton} onPress={handleViewerMode}>
+            <TouchableOpacity testID="viewer-mode-button" style={styles.modeButton} onPress={handleViewerMode}>
               <View style={styles.iconContainer}>
                 <Ionicons name="musical-notes" size={48} color={colors.accent.primary} />
               </View>

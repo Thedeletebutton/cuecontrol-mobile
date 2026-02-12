@@ -76,7 +76,7 @@ export function RequestCard({
     : 'Anonymous';
 
   return (
-    <View style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive]}>
+    <View testID={`request-card-${request.id}`} style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive]}>
       {/* Content column: Requester + Track — long press to drag (DJ only) */}
       <TouchableOpacity
         style={[styles.cell, styles.contentCell]}
@@ -112,7 +112,7 @@ export function RequestCard({
 
       {/* Star button — DJ only, positioned between content and right column */}
       {!isViewer && (
-        <TouchableOpacity style={styles.starButton} onPress={handleStarPress}>
+        <TouchableOpacity testID={`request-star-${request.id}`} style={styles.starButton} onPress={handleStarPress}>
           <Ionicons
             name={request.starred ? 'star' : 'star-outline'}
             size={18}
@@ -143,6 +143,7 @@ export function RequestCard({
           </View>
           <View style={styles.optionsRow}>
             <TouchableOpacity
+              testID={`request-edit-${request.id}`}
               style={[styles.actionButton, styles.editButton]}
               onPress={() => onEdit?.(request)}
             >
@@ -150,7 +151,7 @@ export function RequestCard({
             </TouchableOpacity>
 
             {(onMoveToNextStream || onMoveFromNextStream) && (
-              <TouchableOpacity style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
+              <TouchableOpacity testID={`request-move-${request.id}`} style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
                 <Ionicons
                   name={isNextStream ? 'arrow-up' : 'arrow-down'}
                   size={16}
@@ -159,7 +160,7 @@ export function RequestCard({
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
+            <TouchableOpacity testID={`request-delete-${request.id}`} style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
               <Ionicons name="close" size={16} color={colors.status.error} />
             </TouchableOpacity>
           </View>

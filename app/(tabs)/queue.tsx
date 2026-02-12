@@ -195,17 +195,15 @@ export default function QueueScreen() {
 
   const handleToggleStar = async (id: number, starred: boolean) => {
     try {
+      const request = requests.find(r => r.id === id);
       await updateRequest(id, { starred });
-      // Send push notification when starring (not un-starring)
-      if (starred) {
-        const request = requests.find(r => r.id === id);
-        if (request?.pushToken) {
-          sendPushNotification(
-            request.pushToken,
-            'CueControl',
-            `Your request "${request.request}" is coming up soon!`
-          );
-        }
+      // Send push notification when starring (not un-starring) if viewer has a push token
+      if (starred && request?.pushToken) {
+        sendPushNotification(
+          request.pushToken,
+          'CueControl',
+          `Your request "${request.request}" is coming up soon!`
+        );
       }
     } catch (error) {
       console.error('Failed to toggle star:', error);
@@ -368,18 +366,21 @@ export default function QueueScreen() {
         <Text style={styles.sectionTitle}>TRACK REQUESTS:</Text>
         <View style={styles.actionButtons}>
           <TouchableOpacity
+            testID="queue-add-button"
             style={[styles.iconButton, styles.addButton]}
             onPress={() => setManualModalVisible(true)}
           >
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            testID="queue-settings-button"
             style={[styles.iconButton, styles.settingsButton]}
             onPress={handleSettings}
           >
             <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
           </TouchableOpacity>
           <TouchableOpacity
+            testID="queue-clear-button"
             style={styles.clearButton}
             onPress={handleClearAll}
           >
@@ -391,7 +392,7 @@ export default function QueueScreen() {
       {/* Counts row */}
       <View style={styles.countsRow}>
         <Text style={styles.summaryText}>
-          Total<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{totalCount}</Text>
+          Total<Text style={styles.colon}>:</Text> <Text testID="queue-total-count" style={styles.summaryValue}>{totalCount}</Text>
         </Text>
         <Text style={styles.summaryText}>
           Unplayed<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{unplayedCount}</Text>

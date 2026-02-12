@@ -30,6 +30,7 @@ export function StatusPill({ played, onPress, disabled, isPending }: StatusPillP
 
   return (
     <TouchableOpacity
+      testID={`status-pill-${isPending ? 'pending' : played ? 'played' : 'queued'}`}
       style={[styles.pill, getPillStyle(), disabled && styles.disabled]}
       onPress={onPress}
       disabled={disabled || isPending}

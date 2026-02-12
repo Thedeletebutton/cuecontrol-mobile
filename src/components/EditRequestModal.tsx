@@ -94,6 +94,7 @@ export function EditRequestModal({
 
             <Text style={styles.label}>Artist / Track</Text>
             <TextInput
+              testID="edit-request-track"
               style={styles.input}
               value={track}
               onChangeText={setTrack}
@@ -103,6 +104,7 @@ export function EditRequestModal({
 
             <Text style={styles.label}>Notes</Text>
             <TextInput
+              testID="edit-request-notes"
               style={[styles.input, styles.notesInput]}
               value={notes}
               onChangeText={setNotes}
@@ -115,6 +117,7 @@ export function EditRequestModal({
             {error && <Text style={styles.error}>{error}</Text>}
 
             <TouchableOpacity
+              testID="edit-request-submit"
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
               disabled={loading}

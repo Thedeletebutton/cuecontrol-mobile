@@ -183,18 +183,20 @@ export default function LoginScreen() {
               </View>
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 15.0.0</Text>
+              <Text style={styles.version}>Version 15.3.0</Text>
             </View>
 
             <View style={styles.form}>
               <View style={styles.tabRow}>
                 <TouchableOpacity
+                  testID="login-tab"
                   style={[styles.tab, !isSignUp && styles.tabActive]}
                   onPress={() => { setIsSignUp(false); setLocalError(null); clearError(); }}
                 >
                   <Text style={[styles.tabText, !isSignUp && styles.tabTextActive]}>Login!</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  testID="signup-tab"
                   style={[styles.tab, isSignUp && styles.tabActive]}
                   onPress={() => { setIsSignUp(true); setLocalError(null); clearError(); }}
                 >
@@ -203,6 +205,7 @@ export default function LoginScreen() {
               </View>
 
               <TextInput
+                testID="login-email-input"
                 style={styles.input}
                 value={email}
                 onChangeText={setEmail}
@@ -217,6 +220,7 @@ export default function LoginScreen() {
               />
 
               <TextInput
+                testID="login-password-input"
                 ref={passwordRef}
                 style={styles.input}
                 value={password}
@@ -230,7 +234,7 @@ export default function LoginScreen() {
               />
 
               {displayError && (
-                <Text style={styles.error}>{displayError}</Text>
+                <Text testID="login-error-text" style={styles.error}>{displayError}</Text>
               )}
 
               <View style={styles.checkboxGroup}>
@@ -256,6 +260,7 @@ export default function LoginScreen() {
               </View>
 
               <TouchableOpacity
+                testID="login-submit-button"
                 style={[styles.submitButton, (isLoading || isAutoLogging) && styles.submitButtonDisabled]}
                 onPress={handleSubmit}
                 disabled={isLoading || isAutoLogging}

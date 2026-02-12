@@ -290,6 +290,7 @@ export default function SettingsScreen() {
             </Text>
 
             <TextInput
+              testID="settings-license-input"
               style={styles.licenseInput}
               value={licenseInput}
               onChangeText={handleLicenseInputChange}
@@ -495,6 +496,7 @@ export default function SettingsScreen() {
                 </View>
 
                 <TouchableOpacity
+                  testID="settings-signout-button"
                   style={styles.logoutButton}
                   onPress={handleLogout}
                   disabled={isLoading}
