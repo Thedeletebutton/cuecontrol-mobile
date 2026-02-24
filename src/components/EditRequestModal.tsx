@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
+import { s, fs } from '../utils/responsive';
 import { Request } from '../types/request';
 
 interface EditRequestModalProps {
@@ -84,7 +85,7 @@ export function EditRequestModal({
           <View style={styles.header}>
             <Text style={styles.title}>Edit Request</Text>
             <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color={colors.status.error} />
+              <Ionicons name="close" size={s(24)} color={colors.status.error} />
             </TouchableOpacity>
           </View>
 
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     backgroundColor: colors.background.panel,
-    borderRadius: 12,
+    borderRadius: s(12),
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   notesInput: {
-    minHeight: 80,
+    minHeight: s(80),
     textAlignVertical: 'top',
   },
   error: {

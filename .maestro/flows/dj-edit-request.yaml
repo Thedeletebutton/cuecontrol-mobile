@@ -1,0 +1,83 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Edit and Star Request Flow
+# Tests: Add request, star it, edit track/notes
+
+- launchApp
+
+# Navigate to DJ mode
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000
+
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license if needed
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Wait for queue
+- assertVisible:
+    text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Add a request to edit
+- tapOn:
+    id: "queue-add-button"
+
+- tapOn:
+    id: "manual-entry-username"
+- inputText: "EditTestUser"
+
+- tapOn:
+    id: "manual-entry-track"
+- inputText: "Original Artist - Original Song"
+
+- tapOn:
+    id: "manual-entry-submit"
+
+# Wait for request to appear
+- assertVisible:
+    text: "Original Artist - Original Song"
+    timeout: 5000
+
+# Tap the edit button (pencil icon) using accessibility label
+- tapOn:
+    text: "Edit request"
+
+# Wait for edit modal to appear
+- assertVisible:
+    text: "Edit Request"
+    timeout: 5000
+
+# Clear and update track
+- clearText:
+    id: "edit-request-track"
+- tapOn:
+    id: "edit-request-track"
+- inputText: "Updated Artist - Updated Song"
+
+# Add notes
+- tapOn:
+    id: "edit-request-notes"
+- inputText: "120 BPM, key of Am"
+
+# Submit the edit
+- tapOn:
+    id: "edit-request-submit"
+
+# Verify the updated track appears
+- assertVisible:
+    text: "Updated Artist - Updated Song"
+    timeout: 5000
+
+# Clean up - clear all
+- tapOn:
+    id: "queue-clear-button"
+    optional: true
+- tapOn:
+    text: "Clear All"
+    optional: true

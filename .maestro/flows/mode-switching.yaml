@@ -1,0 +1,45 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Mode Switching Flow
+# Tests: Switch between DJ and Viewer modes
+
+- launchApp
+
+# Start at mode selection
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000
+
+# Enter DJ mode
+- tapOn:
+    id: "dj-mode-button"
+
+# Wait for DJ screen to load (could be queue or license prompt)
+- assertVisible:
+    text: "CueControl"
+    timeout: 10000
+
+# Go back to mode selection using hardware back
+- back
+
+# Should be at mode selection again
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 10000
+
+# Enter Viewer mode
+- tapOn:
+    id: "viewer-mode-button"
+
+# Should see viewer screen
+- assertVisible:
+    text: "CueControl"
+    timeout: 10000
+
+# Go back
+- back
+
+# Should be back at mode selection
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 10000

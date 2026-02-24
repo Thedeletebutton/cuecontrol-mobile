@@ -1,0 +1,56 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Viewer Submit Request Flow
+# Tests: Enter viewer mode, navigate to request form, submit, verify success
+
+- launchApp
+
+# Should be at mode selection
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000
+
+# Select Viewer Mode
+- tapOn:
+    id: "viewer-mode-button"
+
+# Should see viewer dashboard
+- assertVisible:
+    text: "CueControl"
+    timeout: 10000
+
+# Navigate to submit request form
+- tapOn:
+    text: "SUBMIT REQUEST"
+    optional: true
+
+# Fill in the request form
+- tapOn:
+    id: "viewer-dj-handle-input"
+- inputText: "trinitro"
+
+- tapOn:
+    id: "viewer-username-input"
+- inputText: "E2EViewer"
+
+- tapOn:
+    id: "viewer-track-input"
+- inputText: "E2E Artist - E2E Track"
+
+# Submit
+- tapOn:
+    id: "viewer-submit-button"
+
+# Verify success screen
+- assertVisible:
+    id: "viewer-success-message"
+    timeout: 15000
+
+# Test "Submit Another Request" button
+- tapOn:
+    id: "viewer-new-request-button"
+
+# Should be back on the form
+- assertVisible:
+    text: "Submit Request"
+    timeout: 5000

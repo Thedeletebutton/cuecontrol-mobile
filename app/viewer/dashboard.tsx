@@ -23,6 +23,7 @@ import { getFirebaseDatabase, initializeFirebase } from '../../src/services/fire
 import { FIREBASE_CONFIG, IS_CONFIGURED } from '../../src/config/firebase.config';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { Request } from '../../src/types/request';
+import { s, fs } from '../../src/utils/responsive';
 
 const DJ_HANDLE_STORAGE = '@cuecontrol_viewer_dj_handle';
 const RECENT_HANDLES_STORAGE = '@cuecontrol_recent_handles';
@@ -183,7 +184,7 @@ export default function ViewerDashboard() {
             style={[styles.iconButton, styles.backButtonHeader]}
             onPress={handleDisconnect}
           >
-            <Ionicons name="arrow-back" size={14} color={colors.text.primary} />
+            <Ionicons name="arrow-back" size={s(14)} color={colors.text.primary} />
           </TouchableOpacity>
         </View>
       )}
@@ -202,19 +203,19 @@ export default function ViewerDashboard() {
           style={[styles.iconButton, styles.infoButton]}
           onPress={() => setAboutVisible(true)}
         >
-          <Ionicons name="information" size={16} color={colors.accent.primary} />
+          <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconButton, styles.settingsButtonIcon]}
           onPress={() => setSettingsVisible(true)}
         >
-          <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+          <Ionicons name="settings-sharp" size={s(14)} color={colors.text.grey} />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.iconButton, styles.closeButton]}
           onPress={handleBack}
         >
-          <Ionicons name="close" size={16} color={colors.status.error} />
+          <Ionicons name="close" size={s(16)} color={colors.status.error} />
         </TouchableOpacity>
       </View>
     </View>
@@ -230,7 +231,7 @@ export default function ViewerDashboard() {
         >
           <View style={styles.submitRequestInner}>
             <Text style={styles.submitRequestRowText}>SUBMIT REQUEST</Text>
-            <Ionicons name="chevron-forward" size={18} color={colors.text.primary} />
+            <Ionicons name="chevron-forward" size={s(18)} color={colors.text.primary} />
           </View>
         </TouchableOpacity>
       );
@@ -310,7 +311,7 @@ export default function ViewerDashboard() {
           </View>
         ) : null}
         <View style={styles.emptyContainer}>
-          <Ionicons name="radio-outline" size={64} color={colors.text.muted} />
+          <Ionicons name="radio-outline" size={s(64)} color={colors.text.muted} />
           <Text style={styles.emptyTitle}>Enter a Stream ID</Text>
           <Text style={styles.emptyText}>
             Enter a DJ's stream ID above to view their live request queue
@@ -448,7 +449,7 @@ export default function ViewerDashboard() {
                 </Text>
               </View>
               <View style={styles.sectionBorder} />
-              <View style={{ height: 80 }} />
+              <View style={{ height: s(80) }} />
             </>
           }
         />
@@ -503,20 +504,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 35,
-    borderRightWidth: 2,
+    width: s(35),
+    borderRightWidth: s(2),
     borderRightColor: colors.border,
     height: '100%',
   },
@@ -526,11 +527,11 @@ const styles = StyleSheet.create({
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   channelName: {
     color: colors.accent.primary,
@@ -539,19 +540,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -561,7 +562,7 @@ const styles = StyleSheet.create({
   infoButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -574,7 +575,7 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -582,12 +583,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: spacing.sm,
-    paddingRight: 2,
-    height: 40,
+    paddingRight: s(2),
+    height: s(40),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
-    gap: 8,
+    gap: s(8),
   },
   handleInputContainer: {
     flex: 1,
@@ -597,12 +598,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 4,
-    height: 30,
+    height: s(30),
   },
   handlePrefix: {
     fontFamily: 'Helvetica Neue',
-    paddingLeft: 8,
-    fontSize: 15,
+    paddingLeft: s(8),
+    fontSize: fs(15),
     color: colors.text.muted,
     fontWeight: '800',
     letterSpacing: 1,
@@ -610,8 +611,8 @@ const styles = StyleSheet.create({
   handleInput: {
     fontFamily: 'Helvetica Neue',
     flex: 1,
-    paddingHorizontal: 4,
-    fontSize: 15,
+    paddingHorizontal: s(4),
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -619,8 +620,8 @@ const styles = StyleSheet.create({
   },
   connectButton: {
     backgroundColor: colors.accent.primary,
-    paddingHorizontal: 12,
-    height: 30,
+    paddingHorizontal: s(12),
+    height: s(30),
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
@@ -631,18 +632,18 @@ const styles = StyleSheet.create({
   connectButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
   submitRequestRow: {
-    height: 40,
+    height: s(40),
     backgroundColor: colors.accent.primary,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingLeft: 2,
+    paddingLeft: s(2),
     paddingRight: spacing.sm - 2,
-    borderWidth: 2,
+    borderWidth: s(2),
     borderColor: colors.accent.primary,
     borderBottomColor: colors.border,
   },
@@ -655,7 +656,7 @@ const styles = StyleSheet.create({
   submitRequestRowText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -663,16 +664,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 38,
+    height: s(38),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   sectionTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.accent.primary,
     textTransform: 'uppercase',
@@ -680,18 +681,18 @@ const styles = StyleSheet.create({
   },
   countsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: s(12),
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 30,
+    height: s(30),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   summaryText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text.secondary,
     textTransform: 'uppercase',
     fontWeight: '800',
@@ -699,14 +700,14 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.primary,
   },
   colon: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -714,20 +715,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'stretch',
     backgroundColor: colors.background.main,
-    minHeight: 40,
-    borderBottomWidth: 2,
+    minHeight: s(40),
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerCell: {
     justifyContent: 'center',
-    paddingLeft: 5,
-    paddingRight: 8,
-    borderRightWidth: 2,
+    paddingLeft: s(5),
+    paddingRight: s(8),
+    borderRightWidth: s(2),
     borderRightColor: colors.border,
   },
   headerText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -735,7 +736,7 @@ const styles = StyleSheet.create({
   },
   headerSubText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
@@ -744,10 +745,10 @@ const styles = StyleSheet.create({
   contentHeader: {
     flex: 1,
     alignItems: 'flex-start',
-    paddingVertical: 2,
+    paddingVertical: s(2),
   },
   statusHeaderLast: {
-    width: 96,
+    width: s(96),
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 0,
@@ -767,7 +768,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     textAlign: 'center',
@@ -780,7 +781,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.primary,
@@ -789,7 +790,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.muted,
@@ -801,7 +802,7 @@ const styles = StyleSheet.create({
   },
   recentTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     textTransform: 'uppercase',
@@ -820,23 +821,23 @@ const styles = StyleSheet.create({
   },
   recentAt: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text.muted,
     fontWeight: '800',
   },
   recentHandle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.accent.primary,
     fontWeight: '800',
   },
   emptyListContainer: {
-    padding: 12,
+    padding: s(12),
     alignItems: 'center',
   },
   emptyListTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.secondary,
@@ -845,7 +846,7 @@ const styles = StyleSheet.create({
   },
   emptyListText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.secondary,
@@ -855,16 +856,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 38,
+    height: s(38),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   nextStreamTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.accent.primary,
     textTransform: 'uppercase',
@@ -872,18 +873,18 @@ const styles = StyleSheet.create({
   },
   nextStreamCountsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: s(12),
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 30,
+    height: s(30),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   nextStreamCount: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text.secondary,
     textTransform: 'uppercase',
     fontWeight: '800',
@@ -891,7 +892,7 @@ const styles = StyleSheet.create({
   },
   nextStreamCountValue: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.primary,
@@ -902,34 +903,34 @@ const styles = StyleSheet.create({
   },
   nextStreamEmptyText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.muted,
     textAlign: 'center',
   },
   sectionBorder: {
-    height: 2,
+    height: s(2),
     backgroundColor: colors.border,
   },
   requesterSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 38,
+    height: s(38),
     backgroundColor: colors.background.main,
-    gap: 8,
+    gap: s(8),
   },
   requesterLabel: {
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     fontFamily: 'Helvetica Neue',
     letterSpacing: 1,
   },
   requesterName: {
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.requester.name,
     flex: 1,

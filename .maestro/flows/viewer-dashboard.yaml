@@ -1,0 +1,40 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Viewer Dashboard Flow
+# Tests: Connect to DJ queue, verify requests load
+
+- launchApp
+
+# Should be at mode selection
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000
+
+# Select Viewer Mode
+- tapOn:
+    id: "viewer-mode-button"
+
+# Enter stream ID to connect
+- tapOn:
+    id: "viewer-dashboard-handle-input"
+- inputText: "trinitro"
+
+# Connect
+- tapOn:
+    id: "viewer-dashboard-connect-button"
+
+# Verify queue loads
+- assertVisible:
+    text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Verify counts are visible
+- assertVisible:
+    text: "Total"
+    timeout: 5000
+
+- assertVisible:
+    text: "Unplayed"
+
+- assertVisible:
+    text: "Played"

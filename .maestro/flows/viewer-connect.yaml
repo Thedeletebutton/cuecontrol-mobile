@@ -1,0 +1,16 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Viewer Connect Sub-flow
+# Connects to a DJ's queue by entering their stream ID
+
+- tapOn:
+    id: "viewer-dashboard-handle-input"
+- inputText: "trinitro"
+
+- tapOn:
+    id: "viewer-dashboard-connect-button"
+
+# Wait for queue to load
+- assertVisible:
+    text: "TRACK REQUESTS:"
+    timeout: 10000

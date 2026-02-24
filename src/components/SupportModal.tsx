@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getDatabase, ref, set } from 'firebase/database';
 import { getFirebaseDatabase, getFirebaseApp } from '../services/firebase';
 import { colors, typography, spacing } from '../constants/theme';
+import { s, fs } from '../utils/responsive';
 
 interface SupportModalProps {
   visible: boolean;
@@ -51,7 +52,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
         id,
         message: message.trim(),
         email: 'admin@cuecontrolapp.com',
-        appVersion: '11.9.0',
+        appVersion: '15.5.0',
         timestamp: id,
       });
 
@@ -84,7 +85,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
             <Text style={styles.headerBarTitle}>CueControl - Contact Support</Text>
             <View style={styles.headerButtons}>
               <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleClose}>
-                <Ionicons name="close" size={16} color={colors.status.error} />
+                <Ionicons name="close" size={s(16)} color={colors.status.error} />
               </TouchableOpacity>
             </View>
           </View>
@@ -95,7 +96,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
           >
             <View style={styles.content}>
               <View style={styles.infoSection}>
-                <Ionicons name="mail-outline" size={32} color={colors.accent.primary} />
+                <Ionicons name="mail-outline" size={s(32)} color={colors.accent.primary} />
                 <Text style={styles.infoText}>
                   Send us a message and we'll get back to you as soon as possible.
                 </Text>
@@ -119,7 +120,7 @@ export function SupportModal({ visible, onClose, userEmail }: SupportModalProps)
                 onPress={handleSend}
                 disabled={sending}
               >
-                <Ionicons name="send" size={18} color={colors.text.primary} />
+                <Ionicons name="send" size={s(18)} color={colors.text.primary} />
                 <Text style={styles.sendButtonText}>
                   {sending ? 'Sending...' : 'Send Message'}
                 </Text>
@@ -151,38 +152,38 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 35,
-    borderLeftWidth: 2,
+    width: s(35),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     textAlign: 'center',
@@ -220,11 +221,11 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: spacing.md,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    minHeight: 150,
+    minHeight: s(150),
   },
   sendButton: {
     flexDirection: 'row',
@@ -242,13 +243,13 @@ const styles = StyleSheet.create({
   sendButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
   noteText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.muted,
     textAlign: 'center',

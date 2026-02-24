@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
+import { s, fs } from '../utils/responsive';
 import { SupportModal } from './SupportModal';
 
 interface AboutModalProps {
@@ -41,7 +42,7 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
             <Text style={styles.headerBarTitle}>CueControl - About</Text>
             <View style={styles.headerButtons}>
               <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={onClose}>
-                <Ionicons name="close" size={16} color={colors.status.error} />
+                <Ionicons name="close" size={s(16)} color={colors.status.error} />
               </TouchableOpacity>
             </View>
           </View>
@@ -54,7 +55,7 @@ export function AboutModal({ visible, onClose, userEmail }: AboutModalProps) {
               />
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 15.3.1</Text>
+              <Text style={styles.version}>Version 16.0.0</Text>
               <TouchableOpacity style={styles.supportButton} onPress={() => setSupportVisible(true)}>
                 <Text style={styles.supportButtonText}>Contact Support</Text>
               </TouchableOpacity>
@@ -101,38 +102,38 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 35,
-    borderLeftWidth: 2,
+    width: s(35),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -152,14 +153,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   logoIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 16,
+    width: s(80),
+    height: s(80),
+    borderRadius: s(16),
     marginBottom: spacing.sm,
   },
   title: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 28,
+    fontSize: fs(28),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   },
   supportButtonText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.accent.primary,
     fontWeight: '800',
     letterSpacing: 1,
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.panel,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
+    borderRadius: s(16),
     padding: spacing.lg,
     alignItems: 'center',
     marginBottom: spacing.lg,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
   },
   creatorText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   },
   creatorName: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text.primary,
     fontWeight: '800',
     letterSpacing: 1,
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
   },
   followText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
@@ -237,14 +238,14 @@ const styles = StyleSheet.create({
   },
   socialLink: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.accent.primary,
     fontWeight: '800',
     letterSpacing: 1,
   },
   copyright: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.muted,
     letterSpacing: 1,

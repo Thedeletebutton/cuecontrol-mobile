@@ -1,0 +1,24 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Enter License Key Sub-flow
+# Called when license key prompt appears
+
+- tapOn:
+    text: "Go to Settings"
+    optional: true
+
+- tapOn:
+    id: "settings-license-input"
+- inputText: "DJRQ-Q448-YJQS-RKXJ"
+- hideKeyboard
+
+# Save the license key
+- tapOn:
+    text: "Save"
+
+# Dismiss the alert
+- tapOn:
+    text: "OK"
+    optional: true
+
+- back

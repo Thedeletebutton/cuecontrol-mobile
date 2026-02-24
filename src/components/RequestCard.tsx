@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
 import { StatusPill } from './StatusPill';
 import { Request } from '../types/request';
+import { s, fs } from '../utils/responsive';
 
 interface RequestCardProps {
   request: Request;
@@ -87,7 +88,7 @@ export function RequestCard({
       >
         {isViewer && request.starred && (
           <View style={styles.starIndicator}>
-            <Ionicons name="star" size={18} color="#ffc107" />
+            <Ionicons name="star" size={s(18)} color="#ffc107" />
           </View>
         )}
         <Text style={[styles.username, request.played && styles.textPlayed]} numberOfLines={1}>
@@ -106,7 +107,7 @@ export function RequestCard({
       {/* Notes indicator — DJ only, positioned between content and star */}
       {!isViewer && request.notes ? (
         <TouchableOpacity onPress={() => onEdit?.(request)} style={styles.notesIndicator}>
-          <Ionicons name="document-text" size={16} color={colors.text.grey} />
+          <Ionicons name="document-text" size={s(16)} color={colors.text.grey} />
         </TouchableOpacity>
       ) : null}
 
@@ -115,7 +116,7 @@ export function RequestCard({
         <TouchableOpacity testID={`request-star-${request.id}`} style={styles.starButton} onPress={handleStarPress}>
           <Ionicons
             name={request.starred ? 'star' : 'star-outline'}
-            size={18}
+            size={s(18)}
             color={request.starred ? '#ffc107' : colors.text.muted}
             style={!request.starred ? { opacity: 0.4 } : undefined}
           />
@@ -144,24 +145,25 @@ export function RequestCard({
           <View style={styles.optionsRow}>
             <TouchableOpacity
               testID={`request-edit-${request.id}`}
+              accessibilityLabel="Edit request"
               style={[styles.actionButton, styles.editButton]}
               onPress={() => onEdit?.(request)}
             >
-              <Ionicons name="pencil" size={16} color={colors.accent.primary} />
+              <Ionicons name="pencil" size={s(16)} color={colors.accent.primary} />
             </TouchableOpacity>
 
             {(onMoveToNextStream || onMoveFromNextStream) && (
               <TouchableOpacity testID={`request-move-${request.id}`} style={[styles.actionButton, styles.moveButton]} onPress={handleMove}>
                 <Ionicons
                   name={isNextStream ? 'arrow-up' : 'arrow-down'}
-                  size={16}
+                  size={s(16)}
                   color={colors.text.muted}
                 />
               </TouchableOpacity>
             )}
 
             <TouchableOpacity testID={`request-delete-${request.id}`} style={[styles.actionButton, styles.deleteButton]} onPress={handleDelete}>
-              <Ionicons name="close" size={16} color={colors.status.error} />
+              <Ionicons name="close" size={s(16)} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -175,18 +177,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background.row,
-    height: 70,
-    borderTopWidth: 2,
+    height: s(70),
+    borderTopWidth: s(2),
     borderTopColor: colors.border,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
-    marginTop: -2,
+    marginTop: s(-2),
   },
   rowAlt: {
     backgroundColor: colors.background.rowAlt,
   },
   rowStarred: {
-    borderLeftWidth: 3,
+    borderLeftWidth: s(3),
     borderLeftColor: '#ffc107',
   },
   rowActive: {
@@ -196,27 +198,27 @@ const styles = StyleSheet.create({
   cell: {
     height: '100%',
     justifyContent: 'center',
-    paddingLeft: 5,
-    paddingRight: 8,
-    borderRightWidth: 2,
+    paddingLeft: s(5),
+    paddingRight: s(8),
+    borderRightWidth: s(2),
     borderRightColor: colors.border,
   },
   contentCell: {
     flex: 1,
-    paddingVertical: 4,
+    paddingVertical: s(4),
     borderRightWidth: 0,
   },
   statusCellLast: {
-    width: 96,
+    width: s(96),
     alignItems: 'center',
     paddingLeft: 0,
     paddingRight: 0,
     borderRightWidth: 0,
-    borderLeftWidth: 2,
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
   },
   rightColumn: {
-    width: 98,
+    width: s(98),
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 0,
@@ -227,21 +229,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    borderTopWidth: 2,
+    gap: s(6),
+    borderTopWidth: s(2),
     borderTopColor: colors.border,
-    paddingTop: 3,
-    paddingBottom: 3,
-    paddingHorizontal: 4,
+    paddingTop: s(3),
+    paddingBottom: s(3),
+    paddingHorizontal: s(4),
     width: '100%',
   },
   statusRow: {
-    paddingTop: 3,
-    paddingBottom: 3,
+    paddingTop: s(3),
+    paddingBottom: s(3),
   },
   starIndicator: {
     position: 'absolute',
-    right: 5,
+    right: s(5),
     top: 0,
     bottom: 0,
     justifyContent: 'center',
@@ -249,13 +251,13 @@ const styles = StyleSheet.create({
   starButton: {
     height: '100%',
     justifyContent: 'center',
-    paddingHorizontal: 5,
-    borderRightWidth: 2,
+    paddingHorizontal: s(5),
+    borderRightWidth: s(2),
     borderRightColor: colors.border,
   },
   username: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.primary,
@@ -263,7 +265,7 @@ const styles = StyleSheet.create({
   },
   track: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.text.secondary,
@@ -276,19 +278,19 @@ const styles = StyleSheet.create({
   trackRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: s(4),
   },
   notesIndicator: {
     height: '100%',
     justifyContent: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: s(4),
   },
   actionButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },

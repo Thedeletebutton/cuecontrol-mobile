@@ -1,6 +1,6 @@
 {
   "name": "cuecontrol-mobile",
-  "version": "15.3.1",
+  "version": "16.0.0",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",

@@ -1,0 +1,75 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Mode Queue Management
+# Tests: Enter DJ mode, add manual request, mark played, clear all
+
+- launchApp
+
+# Should be at mode selection (assumes logged in from auth-login flow or stay-signed-in)
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000
+
+# Select DJ Mode
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license key prompt if it appears
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Verify queue screen loads
+- assertVisible:
+    text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Add a manual request
+- tapOn:
+    id: "queue-add-button"
+
+- assertVisible:
+    text: "Add Request"
+    timeout: 5000
+
+- tapOn:
+    id: "manual-entry-username"
+- inputText: "E2ETestUser"
+
+- tapOn:
+    id: "manual-entry-track"
+- inputText: "Test Artist - Test Song"
+
+- tapOn:
+    id: "manual-entry-submit"
+
+# Wait for modal to close and request to appear
+- assertNotVisible:
+    text: "Add Request"
+    timeout: 5000
+
+# Verify request appears in the list
+- assertVisible:
+    text: "E2ETestUser"
+    timeout: 5000
+- assertVisible:
+    text: "Test Artist - Test Song"
+
+# Mark as played by tapping the QUEUED pill
+- tapOn:
+    id: "status-pill-queued"
+
+# Verify it changed to PLAYED
+- assertVisible:
+    id: "status-pill-played"
+    timeout: 5000
+
+# Clear all requests
+- tapOn:
+    id: "queue-clear-button"
+
+# Confirm the alert
+- tapOn:
+    text: "Clear All"
+    timeout: 5000

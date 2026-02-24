@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../src/context/AuthContext';
 import { AboutModal } from '../../src/components/AboutModal';
 import { colors, typography, spacing } from '../../src/constants/theme';
+import { s, fs } from '../../src/utils/responsive';
 
 const STORAGE_KEYS = {
   REMEMBER_EMAIL: 'cuecontrol_remember_email',
@@ -161,13 +162,13 @@ export default function LoginScreen() {
           <Text style={styles.headerBarTitle}>CueControl - Login</Text>
           <View style={styles.headerButtons}>
             <TouchableOpacity style={[styles.iconButton, styles.aboutButton]} onPress={() => setAboutVisible(true)}>
-              <Ionicons name="information" size={16} color={colors.accent.primary} />
+              <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={handleSettings}>
-              <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+              <Ionicons name="settings-sharp" size={s(14)} color={colors.text.grey} />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleCloseApp}>
-              <Ionicons name="close" size={16} color={colors.status.error} />
+              <Ionicons name="close" size={s(16)} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -179,11 +180,11 @@ export default function LoginScreen() {
           <View style={styles.content}>
             <View style={styles.header}>
               <View style={styles.iconContainer}>
-                <Ionicons name="headset" size={48} color={colors.accent.primary} />
+                <Ionicons name="headset" size={s(48)} color={colors.accent.primary} />
               </View>
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 15.3.1</Text>
+              <Text style={styles.version}>Version 16.0.0</Text>
             </View>
 
             <View style={styles.form}>
@@ -243,7 +244,7 @@ export default function LoginScreen() {
                   onPress={() => setRememberEmail(!rememberEmail)}
                 >
                   <View style={[styles.checkbox, rememberEmail && styles.checkboxChecked]}>
-                    {rememberEmail && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                    {rememberEmail && <Ionicons name="checkmark" size={s(14)} color={colors.text.primary} />}
                   </View>
                   <Text style={styles.checkboxLabel}>Remember Email</Text>
                 </TouchableOpacity>
@@ -253,7 +254,7 @@ export default function LoginScreen() {
                   onPress={toggleStaySignedIn}
                 >
                   <View style={[styles.checkbox, staySignedIn && styles.checkboxChecked]}>
-                    {staySignedIn && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                    {staySignedIn && <Ionicons name="checkmark" size={s(14)} color={colors.text.primary} />}
                   </View>
                   <Text style={styles.checkboxLabel}>Stay Signed In</Text>
                 </TouchableOpacity>
@@ -299,40 +300,40 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -359,9 +360,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: s(80),
+    height: s(80),
+    borderRadius: s(40),
     backgroundColor: colors.accent.soft,
     justifyContent: 'center',
     alignItems: 'center',
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 28,
+    fontSize: fs(28),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
   },
   form: {
     backgroundColor: colors.background.panel,
-    borderRadius: 16,
+    borderRadius: s(16),
     padding: spacing.xl,
     borderWidth: 1,
     borderColor: colors.border,
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 16,
+    fontSize: fs(16),
     fontWeight: '800',
     color: colors.text.muted,
     letterSpacing: 1,
@@ -456,7 +457,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 16,
+    fontSize: fs(16),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -469,8 +470,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   checkbox: {
-    width: 20,
-    height: 20,
+    width: s(20),
+    height: s(20),
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.border,

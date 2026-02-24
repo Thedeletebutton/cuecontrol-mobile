@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { colors } from '../constants/theme';
+import { s, fs } from '../utils/responsive';
 
 interface StatusPillProps {
   played: boolean;
@@ -45,10 +46,10 @@ export function StatusPill({ played, onPress, disabled, isPending }: StatusPillP
 
 const styles = StyleSheet.create({
   pill: {
-    width: 72,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 2,
+    width: s(72),
+    height: s(26),
+    borderRadius: s(13),
+    borderWidth: s(2),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     textTransform: 'uppercase',

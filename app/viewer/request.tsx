@@ -21,6 +21,7 @@ import { ViewerSettingsModal } from '../../src/components/ViewerSettingsModal';
 import { sendRequestByHandle } from '../../src/services/requests';
 import { registerForPushNotificationsAsync } from '../../src/services/pushNotifications';
 import { colors, typography, spacing } from '../../src/constants/theme';
+import { s, fs } from '../../src/utils/responsive';
 
 const DJ_HANDLE_STORAGE = '@cuecontrol_viewer_dj_handle';
 const USERNAME_STORAGE_KEY = '@cuecontrol_username';
@@ -182,7 +183,6 @@ export default function RequestScreen() {
   const handleNewRequest = () => {
     setTrack('');
     setSubmitted(false);
-    setQueuePosition(0);
   };
 
   // Custom header with back and info buttons - matching desktop style
@@ -191,13 +191,13 @@ export default function RequestScreen() {
       <Text style={styles.headerBarTitle}>CueControl - Submit Request</Text>
       <View style={styles.headerButtons}>
         <TouchableOpacity style={[styles.iconButton, styles.infoButton]} onPress={() => setAboutVisible(true)}>
-          <Ionicons name="information" size={16} color={colors.accent.primary} />
+          <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => setSettingsVisible(true)}>
-          <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+          <Ionicons name="settings-sharp" size={s(14)} color={colors.text.grey} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.iconButton, styles.closeButton]} onPress={handleBack}>
-          <Ionicons name="close" size={16} color={colors.status.error} />
+          <Ionicons name="close" size={s(16)} color={colors.status.error} />
         </TouchableOpacity>
       </View>
     </View>
@@ -209,7 +209,7 @@ export default function RequestScreen() {
       <View style={styles.container}>
         {renderHeader()}
         <View style={styles.notConnected}>
-          <Ionicons name="person-circle-outline" size={64} color={colors.text.muted} />
+          <Ionicons name="person-circle-outline" size={s(64)} color={colors.text.muted} />
           <Text style={styles.notConnectedTitle}>Not Signed In</Text>
           <Text style={styles.notConnectedText}>
             Please sign in to submit song requests.
@@ -260,7 +260,7 @@ export default function RequestScreen() {
         <View style={styles.successContent}>
           <View style={styles.successHeader}>
             <View style={styles.successIconContainer}>
-              <Ionicons name="checkmark-circle" size={48} color={colors.status.success} />
+              <Ionicons name="checkmark-circle" size={s(48)} color={colors.status.success} />
             </View>
             <Text testID="viewer-success-message" style={styles.successTitle}>Request Submitted!</Text>
             <Text style={styles.successText}>Your track has been added to the queue</Text>
@@ -268,11 +268,11 @@ export default function RequestScreen() {
 
           <View style={styles.successButtons}>
             <TouchableOpacity testID="viewer-new-request-button" style={styles.newRequestButton} onPress={handleNewRequest}>
-              <Ionicons name="add" size={20} color={colors.text.primary} />
+              <Ionicons name="add" size={s(20)} color={colors.text.primary} />
               <Text style={styles.newRequestButtonText}>Submit Another Request</Text>
             </TouchableOpacity>
             <TouchableOpacity testID="viewer-view-queue-button" style={styles.viewQueueButton} onPress={() => router.push('/viewer/dashboard')}>
-              <Ionicons name="list" size={20} color={colors.accent.primary} />
+              <Ionicons name="list" size={s(20)} color={colors.accent.primary} />
               <Text style={styles.viewQueueButtonText}>View Queue</Text>
             </TouchableOpacity>
           </View>
@@ -355,7 +355,7 @@ export default function RequestScreen() {
                 }}
               >
                 <View style={[styles.checkbox, saveDjHandle && styles.checkboxChecked]}>
-                  {saveDjHandle && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                  {saveDjHandle && <Ionicons name="checkmark" size={s(14)} color={colors.text.primary} />}
                 </View>
                 <Text style={styles.checkboxLabel}>Save Stream ID</Text>
               </TouchableOpacity>
@@ -389,7 +389,7 @@ export default function RequestScreen() {
                 }}
               >
                 <View style={[styles.checkbox, saveUsername && styles.checkboxChecked]}>
-                  {saveUsername && <Ionicons name="checkmark" size={14} color={colors.text.primary} />}
+                  {saveUsername && <Ionicons name="checkmark" size={s(14)} color={colors.text.primary} />}
                 </View>
                 <Text style={styles.checkboxLabel}>Save Username</Text>
               </TouchableOpacity>
@@ -425,7 +425,7 @@ export default function RequestScreen() {
               onPress={handleSubmit}
               disabled={loading}
             >
-              <Ionicons name="musical-notes" size={20} color={colors.text.primary} />
+              <Ionicons name="musical-notes" size={s(20)} color={colors.text.primary} />
               <Text style={styles.submitButtonText}>
                 {loading ? 'Submitting...' : 'Submit Request'}
               </Text>
@@ -482,40 +482,40 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: s(100),
   },
   section: {
     marginBottom: 0,
@@ -544,16 +544,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 38,
+    height: s(38),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   sectionTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.accent.primary,
     textTransform: 'uppercase',
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   sectionContent: {
     padding: spacing.lg,
     backgroundColor: colors.background.row,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   input: {
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: spacing.md,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
   signInButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -647,9 +647,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   successIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: s(80),
+    height: s(80),
+    borderRadius: s(40),
     backgroundColor: colors.accent.soft,
     justifyContent: 'center',
     alignItems: 'center',
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
   },
   successTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 28,
+    fontSize: fs(28),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
   newRequestButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -694,7 +694,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
-    borderWidth: 2,
+    borderWidth: s(2),
     borderColor: colors.accent.primary,
     borderRadius: 8,
     padding: spacing.md,
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
   viewQueueButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
   handlePrefix: {
     fontFamily: 'Helvetica Neue',
     paddingLeft: spacing.md,
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text.muted,
     fontWeight: '800',
     letterSpacing: 1,
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: spacing.md,
     paddingLeft: spacing.xs,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -740,8 +740,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   checkbox: {
-    width: 20,
-    height: 20,
+    width: s(20),
+    height: s(20),
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.border,
@@ -757,7 +757,7 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },

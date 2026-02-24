@@ -1,0 +1,34 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Auth Login Flow
+# Tests: Login with email/password, verify mode selection appears
+
+- launchApp:
+    clearState: true
+
+# Login screen should appear
+- assertVisible:
+    text: "CueControl - Login"
+    timeout: 10000
+
+# Tap Login tab (should be default)
+- tapOn:
+    id: "login-tab"
+
+# Enter credentials
+- tapOn:
+    id: "login-email-input"
+- inputText: "e2e-test@cuecontrol-test.com"
+
+- tapOn:
+    id: "login-password-input"
+- inputText: "TestPassword123!"
+
+# Submit
+- tapOn:
+    id: "login-submit-button"
+
+# Should navigate to mode selection
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000

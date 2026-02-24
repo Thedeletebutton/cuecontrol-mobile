@@ -18,6 +18,7 @@ import { useAppModeContext } from '../src/context/AppModeContext';
 import { AboutModal } from '../src/components/AboutModal';
 import { SupportModal } from '../src/components/SupportModal';
 import { colors, typography, spacing } from '../src/constants/theme';
+import { s, fs } from '../src/utils/responsive';
 import { IS_CONFIGURED } from '../src/config/firebase.config';
 
 export default function ModeSelection() {
@@ -101,13 +102,13 @@ export default function ModeSelection() {
           <Text style={styles.headerTitle}>CueControl - Mode Selection</Text>
           <View style={styles.headerButtons}>
             <TouchableOpacity style={[styles.iconButton, styles.aboutButton]} onPress={() => setAboutVisible(true)}>
-              <Ionicons name="information" size={16} color={colors.accent.primary} />
+              <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
             </TouchableOpacity>
             <TouchableOpacity style={[styles.iconButton, styles.settingsButton]} onPress={() => router.push('/(tabs)/settings?from=mode')}>
-              <Ionicons name="settings-sharp" size={14} color={colors.text.grey} />
+              <Ionicons name="settings-sharp" size={s(14)} color={colors.text.grey} />
             </TouchableOpacity>
             <TouchableOpacity testID="mode-signout-button" style={[styles.iconButton, styles.closeButton]} onPress={handleLogout}>
-              <Ionicons name="close" size={16} color={colors.status.error} />
+              <Ionicons name="close" size={s(16)} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -120,7 +121,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 11.9.0</Text>
+            <Text style={styles.version}>Version 16.0.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}
@@ -132,7 +133,7 @@ export default function ModeSelection() {
           <View style={styles.buttons}>
             <TouchableOpacity testID="dj-mode-button" style={styles.modeButton} onPress={handleDJMode}>
               <View style={styles.iconContainer}>
-                <Ionicons name="headset" size={48} color={colors.accent.primary} />
+                <Ionicons name="headset" size={s(48)} color={colors.accent.primary} />
               </View>
               <Text style={styles.modeTitle}>DJ Mode</Text>
               <Text style={styles.modeDesc}>Your queue, your rules.</Text>
@@ -140,7 +141,7 @@ export default function ModeSelection() {
 
             <TouchableOpacity testID="viewer-mode-button" style={styles.modeButton} onPress={handleViewerMode}>
               <View style={styles.iconContainer}>
-                <Ionicons name="musical-notes" size={48} color={colors.accent.primary} />
+                <Ionicons name="musical-notes" size={s(48)} color={colors.accent.primary} />
               </View>
               <Text style={styles.modeTitle}>Viewer Mode</Text>
               <Text style={styles.modeDesc}>Drop a request, watch the queue.</Text>
@@ -174,40 +175,40 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -231,14 +232,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   logoIcon: {
-    width: 80,
-    height: 80,
-    borderRadius: 16,
+    width: s(80),
+    height: s(80),
+    borderRadius: s(16),
     marginBottom: spacing.sm,
   },
   title: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 28,
+    fontSize: fs(28),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -271,7 +272,7 @@ const styles = StyleSheet.create({
   },
   supportButtonText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.accent.primary,
     fontWeight: '800',
     letterSpacing: 1,
@@ -290,14 +291,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.panel,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 16,
+    borderRadius: s(16),
     padding: spacing.lg,
     alignItems: 'center',
   },
   iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: s(80),
+    height: s(80),
+    borderRadius: s(40),
     backgroundColor: colors.accent.soft,
     justifyContent: 'center',
     alignItems: 'center',

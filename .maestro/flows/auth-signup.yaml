@@ -1,0 +1,38 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Auth Sign Up Flow
+# Tests: Create a new account (uses timestamp for unique email)
+# NOTE: This creates real Firebase accounts - use sparingly
+
+- launchApp:
+    clearState: true
+
+# Generate unique email using timestamp
+- evalScript: ${output.email = 'e2e-' + Date.now() + '@cuecontrol-test.com'}
+
+# Login screen should appear
+- assertVisible:
+    text: "CueControl - Login"
+    timeout: 10000
+
+# Switch to Sign Up tab
+- tapOn:
+    id: "signup-tab"
+
+# Enter unique email
+- tapOn:
+    id: "login-email-input"
+- inputText: ${output.email}
+
+- tapOn:
+    id: "login-password-input"
+- inputText: "TestPassword123!"
+
+# Submit
+- tapOn:
+    id: "login-submit-button"
+
+# Should navigate to mode selection on success
+- assertVisible:
+    text: "Mode Selection"
+    timeout: 15000

@@ -26,6 +26,7 @@ import {
 import { setCurrentLicenseKey } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { Request } from '../../src/types/request';
+import { s, fs } from '../../src/utils/responsive';
 
 export default function NextStreamScreen() {
   const router = useRouter();
@@ -120,7 +121,7 @@ export default function NextStreamScreen() {
             style={[styles.iconButton, styles.infoButton]}
             onPress={() => setAboutVisible(true)}
           >
-            <Ionicons name="information" size={16} color={colors.accent.primary} />
+            <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.iconButton, styles.modeButton]}
@@ -129,7 +130,7 @@ export default function NextStreamScreen() {
               router.replace('/');
             }}
           >
-            <Ionicons name="close" size={16} color={colors.status.error} />
+            <Ionicons name="close" size={s(16)} color={colors.status.error} />
           </TouchableOpacity>
         </View>
       </View>
@@ -141,7 +142,7 @@ export default function NextStreamScreen() {
       <View style={styles.container}>
         {renderHeader()}
         <View style={styles.emptyContainer}>
-          <Ionicons name="person-circle-outline" size={64} color={colors.text.muted} />
+          <Ionicons name="person-circle-outline" size={s(64)} color={colors.text.muted} />
           <Text style={styles.emptyTitle}>Not Signed In</Text>
           <Text style={styles.emptyText}>
             Please sign in to access your saved requests
@@ -242,42 +243,42 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   headerBar: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: 2,
+    borderTopWidth: s(2),
     borderTopColor: colors.border,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerBarTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   iconButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
   infoButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
   modeButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -311,16 +312,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 5,
+    paddingLeft: s(5),
     paddingRight: spacing.sm,
-    height: 38,
+    height: s(38),
     backgroundColor: colors.background.main,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   subHeaderTitle: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.accent.primary,
     textTransform: 'uppercase',
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
   },
   subHeaderCount: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.accent.primary,
     textTransform: 'uppercase',
     fontWeight: '800',
@@ -336,14 +337,14 @@ const styles = StyleSheet.create({
   },
   subHeaderCountValue: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
     color: colors.accent.primary,
   },
   colon: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -367,7 +368,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.muted,
     textAlign: 'center',
@@ -377,40 +378,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background.main,
-    height: 40,
-    borderBottomWidth: 2,
+    height: s(40),
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerCell: {
     height: '100%',
     justifyContent: 'center',
-    paddingLeft: 5,
-    paddingRight: 8,
-    borderRightWidth: 2,
+    paddingLeft: s(5),
+    paddingRight: s(8),
+    borderRightWidth: s(2),
     borderRightColor: colors.border,
   },
   headerText: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   requesterHeader: {
-    width: 105,
+    width: s(105),
   },
   trackHeader: {
     flex: 1,
   },
   statusHeader: {
-    width: 98,
+    width: s(98),
     alignItems: 'center',
     paddingLeft: 0,
     paddingRight: 0,
   },
   optionsHeader: {
-    width: 120,
+    width: s(120),
     alignItems: 'center',
     borderRightWidth: 0,
   },

@@ -21,6 +21,7 @@ import { useLicense } from '../../src/context/LicenseContext';
 import { AboutModal } from '../../src/components/AboutModal';
 import { setCurrentLicenseKey, registerDJHandle, getDJHandle } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
+import { s, fs } from '../../src/utils/responsive';
 
 type SettingsTab = 'license' | 'display' | 'account';
 
@@ -232,13 +233,13 @@ export default function SettingsScreen() {
               style={[styles.headerButton, styles.infoButton]}
               onPress={() => setAboutVisible(true)}
             >
-              <Ionicons name="information" size={16} color={colors.accent.primary} />
+              <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.headerButton, styles.closeButton]}
               onPress={handleBack}
             >
-              <Ionicons name="close" size={16} color={colors.status.error} />
+              <Ionicons name="close" size={s(16)} color={colors.status.error} />
             </TouchableOpacity>
           </View>
         </View>
@@ -325,7 +326,7 @@ export default function SettingsScreen() {
             <View style={styles.divider} />
             <Text style={styles.requestLabel}>Don't have a license key?</Text>
             <TouchableOpacity style={styles.requestButton} onPress={handleRequestLicenseKey}>
-              <Ionicons name="mail-outline" size={18} color={colors.text.primary} />
+              <Ionicons name="mail-outline" size={s(18)} color={colors.text.primary} />
               <Text style={styles.requestButtonText}>Request a License Key</Text>
             </TouchableOpacity>
           </View>
@@ -361,7 +362,7 @@ export default function SettingsScreen() {
                 onPress={handleSaveHandle}
                 disabled={savingHandle}
               >
-                <Ionicons name="save-outline" size={18} color={colors.text.primary} />
+                <Ionicons name="save-outline" size={s(18)} color={colors.text.primary} />
                 <Text style={styles.saveButtonText}>
                   {savingHandle ? 'Saving...' : 'Save Stream ID'}
                 </Text>
@@ -372,7 +373,7 @@ export default function SettingsScreen() {
                   <View style={styles.divider} />
                   <Text style={styles.shareLabel}>Share with viewers:</Text>
                   <TouchableOpacity style={styles.copyButton} onPress={handleCopyHandle}>
-                    <Ionicons name="copy-outline" size={18} color={colors.accent.primary} />
+                    <Ionicons name="copy-outline" size={s(18)} color={colors.accent.primary} />
                     <Text style={styles.copyButtonText}>@{djHandle}</Text>
                   </TouchableOpacity>
                   <Text style={styles.handleHint}>
@@ -405,7 +406,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{headerFontSize}px</Text>
                     <TouchableOpacity
@@ -416,7 +417,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="add" size={16} color={colors.accent.primary} />
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -432,7 +433,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{requesterFontSize}px</Text>
                     <TouchableOpacity
@@ -443,7 +444,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="add" size={16} color={colors.accent.primary} />
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -459,7 +460,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="remove" size={16} color={colors.accent.primary} />
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                     <Text style={styles.fontSizeValue}>{trackFontSize}px</Text>
                     <TouchableOpacity
@@ -470,7 +471,7 @@ export default function SettingsScreen() {
                         await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
                       }}
                     >
-                      <Ionicons name="add" size={16} color={colors.accent.primary} />
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -488,7 +489,7 @@ export default function SettingsScreen() {
 
               <View style={styles.accountContainer}>
                 <View style={styles.accountInfo}>
-                  <Ionicons name="person-circle" size={48} color={colors.accent.primary} />
+                  <Ionicons name="person-circle" size={s(48)} color={colors.accent.primary} />
                   <View style={styles.accountDetails}>
                     <Text style={styles.accountEmail}>{user?.email || 'Not signed in'}</Text>
                     <Text style={styles.accountStatus}>Signed in</Text>
@@ -501,7 +502,7 @@ export default function SettingsScreen() {
                   onPress={handleLogout}
                   disabled={isLoading}
                 >
-                  <Ionicons name="log-out-outline" size={20} color={colors.status.error} />
+                  <Ionicons name="log-out-outline" size={s(20)} color={colors.status.error} />
                   <Text style={styles.logoutButtonText}>Sign Out</Text>
                 </TouchableOpacity>
               </View>
@@ -513,7 +514,7 @@ export default function SettingsScreen() {
         {/* Save Settings Button */}
         <View style={styles.saveSettingsContainer}>
           <TouchableOpacity style={styles.saveSettingsButton} onPress={handleBack}>
-            <Ionicons name="checkmark" size={20} color={colors.text.primary} />
+            <Ionicons name="checkmark" size={s(20)} color={colors.text.primary} />
             <Text style={styles.saveSettingsButtonText}>Save Settings</Text>
           </TouchableOpacity>
         </View>
@@ -538,42 +539,42 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.main,
   },
   header: {
-    height: 35,
+    height: s(35),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: 2,
+    borderTopWidth: s(2),
     borderTopColor: colors.border,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   headerTitle: {
     flex: 1,
     fontFamily: 'Helvetica Neue',
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
-    paddingLeft: 5,
+    paddingLeft: s(5),
   },
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    width: 98,
-    borderLeftWidth: 2,
+    gap: s(6),
+    width: s(98),
+    borderLeftWidth: s(2),
     borderLeftColor: colors.border,
     paddingHorizontal: 1,
     height: '100%',
   },
   headerButton: {
-    width: 25,
-    height: 25,
+    width: s(25),
+    height: s(25),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: s(2),
     borderRadius: 0,
     backgroundColor: colors.background.main,
   },
@@ -583,7 +584,7 @@ const styles = StyleSheet.create({
   infoButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -593,21 +594,21 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
   },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: colors.background.panel,
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
   tab: {
     flex: 1,
     paddingVertical: spacing.md,
     alignItems: 'center',
-    borderBottomWidth: 2,
+    borderBottomWidth: s(2),
     borderBottomColor: 'transparent',
   },
   tabActive: {
@@ -628,7 +629,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: s(100),
   },
   section: {
     marginBottom: spacing.lg,
@@ -688,7 +689,7 @@ const styles = StyleSheet.create({
   validateButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.accent.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -715,7 +716,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -726,7 +727,7 @@ const styles = StyleSheet.create({
   },
   shareLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
@@ -745,7 +746,7 @@ const styles = StyleSheet.create({
   },
   copyButtonText: {
     color: colors.accent.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     fontWeight: '800',
     letterSpacing: 1,
@@ -764,14 +765,14 @@ const styles = StyleSheet.create({
   },
   accountEmail: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
   },
   accountStatus: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.status.success,
     letterSpacing: 1,
@@ -791,13 +792,13 @@ const styles = StyleSheet.create({
   logoutButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.status.error,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
   requestLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.secondary,
     letterSpacing: 1,
@@ -815,7 +816,7 @@ const styles = StyleSheet.create({
   requestButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
@@ -847,7 +848,7 @@ const styles = StyleSheet.create({
   },
   handleHint: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.muted,
     letterSpacing: 1,
@@ -869,7 +870,7 @@ const styles = StyleSheet.create({
   },
   fontSizeLabel: {
     fontFamily: 'Helvetica Neue',
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     color: colors.text.primary,
     letterSpacing: 1,
@@ -880,9 +881,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   fontSizeButton: {
-    width: 25,
-    height: 25,
-    borderWidth: 2,
+    width: s(25),
+    height: s(25),
+    borderWidth: s(2),
     borderColor: colors.accent.primary,
     borderRadius: 0,
     backgroundColor: colors.background.main,
@@ -892,10 +893,10 @@ const styles = StyleSheet.create({
   fontSizeValue: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 15,
+    fontSize: fs(15),
     fontWeight: '800',
     letterSpacing: 1,
-    minWidth: 50,
+    minWidth: s(50),
     textAlign: 'center',
   },
   saveSettingsContainer: {
@@ -913,7 +914,7 @@ const styles = StyleSheet.create({
   saveSettingsButtonText: {
     fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
-    fontSize: 18,
+    fontSize: fs(18),
     fontWeight: '800',
     letterSpacing: 1,
   },
