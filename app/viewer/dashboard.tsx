@@ -31,6 +31,9 @@ const SAVE_DJ_HANDLE_KEY = '@cuecontrol_save_dj_handle';
 const SAVE_USERNAME_KEY = '@cuecontrol_save_username';
 const LABEL_FONT_SIZE_KEY = '@cuecontrol_viewer_label_font_size';
 const INPUT_FONT_SIZE_KEY = '@cuecontrol_viewer_input_font_size';
+const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
+const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
+const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
 const MAX_RECENT_HANDLES = 5;
 
 function capitalize(str: string): string {
@@ -54,6 +57,9 @@ export default function ViewerDashboard() {
   const [labelFontSize, setLabelFontSize] = useState(15);
   const [inputFontSize, setInputFontSize] = useState(15);
   const [recentHandles, setRecentHandles] = useState<string[]>([]);
+  const [columnWidth, setColumnWidth] = useState(98);
+  const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
+  const [contentPaddingRight, setContentPaddingRight] = useState(8);
 
   const { requests, loading, totalCount, unplayedCount, playedCount } = useViewerRequests(licenseKey);
   const { requests: nextStreamRequests, count: nextStreamCount } = useViewerNextStream(licenseKey);
@@ -83,12 +89,18 @@ export default function ViewerDashboard() {
         const savedInputFontSize = await AsyncStorage.getItem(INPUT_FONT_SIZE_KEY);
 
         const savedRecentHandles = await AsyncStorage.getItem(RECENT_HANDLES_STORAGE);
+        const savedColumnWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
+        const savedPaddingLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
+        const savedPaddingRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
 
         if (savedSaveDjHandle !== null) setSaveDjHandle(savedSaveDjHandle === 'true');
         if (savedSaveUsername !== null) setSaveUsername(savedSaveUsername === 'true');
         if (savedLabelFontSize) setLabelFontSize(parseInt(savedLabelFontSize, 10));
         if (savedInputFontSize) setInputFontSize(parseInt(savedInputFontSize, 10));
         if (savedRecentHandles) setRecentHandles(JSON.parse(savedRecentHandles));
+        if (savedColumnWidth) setColumnWidth(parseInt(savedColumnWidth, 10));
+        if (savedPaddingLeft) setContentPaddingLeft(parseInt(savedPaddingLeft, 10));
+        if (savedPaddingRight) setContentPaddingRight(parseInt(savedPaddingRight, 10));
 
         if (savedDjHandle) {
           setDjHandle(savedDjHandle);
@@ -198,7 +210,7 @@ export default function ViewerDashboard() {
           'CueControl'
         )}
       </Text>
-      <View style={styles.headerButtons}>
+      <View style={[styles.headerButtons, { width: s(columnWidth) }]}>
         <TouchableOpacity
           style={[styles.iconButton, styles.infoButton]}
           onPress={() => setAboutVisible(true)}
@@ -212,6 +224,7 @@ export default function ViewerDashboard() {
           <Ionicons name="settings-sharp" size={s(14)} color={colors.text.grey} />
         </TouchableOpacity>
         <TouchableOpacity
+          testID="switch-mode-button"
           style={[styles.iconButton, styles.closeButton]}
           onPress={handleBack}
         >
@@ -226,6 +239,7 @@ export default function ViewerDashboard() {
       // Connected: full-width submit request button
       return (
         <TouchableOpacity
+          testID="viewer-submit-request-button"
           style={styles.submitRequestRow}
           onPress={() => router.push('/viewer/request')}
         >
@@ -288,11 +302,11 @@ export default function ViewerDashboard() {
 
   const renderColumnHeaders = () => (
     <View style={styles.headerRow}>
-      <View style={[styles.headerCell, styles.contentHeader]}>
+      <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
         <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
         <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
       </View>
-      <View style={[styles.headerCell, styles.statusHeaderLast]}>
+      <View style={[styles.headerCell, styles.statusHeaderLast, { width: s(columnWidth) }]}>
         <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
       </View>
     </View>
@@ -397,6 +411,9 @@ export default function ViewerDashboard() {
               request={item}
               index={index}
               mode="viewer"
+              columnWidth={columnWidth}
+              contentPaddingLeft={contentPaddingLeft}
+              contentPaddingRight={contentPaddingRight}
             />
           )}
           ListEmptyComponent={
@@ -436,6 +453,9 @@ export default function ViewerDashboard() {
                     index={index}
                     mode="viewer"
                     isNextStream
+                    columnWidth={columnWidth}
+                    contentPaddingLeft={contentPaddingLeft}
+                    contentPaddingRight={contentPaddingRight}
                   />
                 ))
               )}

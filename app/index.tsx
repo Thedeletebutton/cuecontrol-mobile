@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
   Linking,
   Image,
   Alert,
@@ -113,7 +114,7 @@ export default function ModeSelection() {
           </View>
         </View>
 
-        <View style={styles.content}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
           <View style={styles.header}>
             <Image
               source={require('../assets/icon.png')}
@@ -147,7 +148,7 @@ export default function ModeSelection() {
               <Text style={styles.modeDesc}>Drop a request, watch the queue.</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
 
         <AboutModal visible={aboutVisible} onClose={() => setAboutVisible(false)} userEmail={user?.email} />
         <SupportModal
@@ -221,11 +222,12 @@ const styles = StyleSheet.create({
   closeButton: {
     borderColor: colors.status.error,
   },
-  content: {
+  scrollView: {
     flex: 1,
-    justifyContent: 'flex-start',
+  },
+  content: {
     padding: spacing.xl,
-    paddingTop: spacing.xl,
+    paddingBottom: s(40),
   },
   header: {
     alignItems: 'center',

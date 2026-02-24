@@ -28,6 +28,9 @@ type SettingsTab = 'license' | 'display' | 'account';
 const DJ_HEADER_FONT_SIZE_KEY = '@cuecontrol_dj_header_font_size';
 const DJ_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_dj_requester_font_size';
 const DJ_TRACK_FONT_SIZE_KEY = '@cuecontrol_dj_track_font_size';
+const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
+const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
+const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -48,6 +51,9 @@ export default function SettingsScreen() {
   const [headerFontSize, setHeaderFontSize] = useState(11);
   const [requesterFontSize, setRequesterFontSize] = useState(12);
   const [trackFontSize, setTrackFontSize] = useState(12);
+  const [columnWidth, setColumnWidth] = useState(98);
+  const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
+  const [contentPaddingRight, setContentPaddingRight] = useState(8);
 
   // Load display settings
   useEffect(() => {
@@ -56,10 +62,16 @@ export default function SettingsScreen() {
         const savedHeaderSize = await AsyncStorage.getItem(DJ_HEADER_FONT_SIZE_KEY);
         const savedRequesterSize = await AsyncStorage.getItem(DJ_REQUESTER_FONT_SIZE_KEY);
         const savedTrackSize = await AsyncStorage.getItem(DJ_TRACK_FONT_SIZE_KEY);
+        const savedColumnWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
+        const savedPaddingLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
+        const savedPaddingRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
 
         if (savedHeaderSize) setHeaderFontSize(parseInt(savedHeaderSize, 10));
         if (savedRequesterSize) setRequesterFontSize(parseInt(savedRequesterSize, 10));
         if (savedTrackSize) setTrackFontSize(parseInt(savedTrackSize, 10));
+        if (savedColumnWidth) setColumnWidth(parseInt(savedColumnWidth, 10));
+        if (savedPaddingLeft) setContentPaddingLeft(parseInt(savedPaddingLeft, 10));
+        if (savedPaddingRight) setContentPaddingRight(parseInt(savedPaddingRight, 10));
       } catch (error) {
         console.error('Failed to load display settings:', error);
       }
@@ -236,6 +248,7 @@ export default function SettingsScreen() {
               <Ionicons name="information" size={s(16)} color={colors.accent.primary} />
             </TouchableOpacity>
             <TouchableOpacity
+              testID="settings-close-button"
               style={[styles.headerButton, styles.closeButton]}
               onPress={handleBack}
             >
@@ -346,6 +359,7 @@ export default function SettingsScreen() {
               <View style={styles.handleInputContainer}>
                 <Text style={styles.handlePrefix}>@</Text>
                 <TextInput
+                  testID="settings-handle-input"
                   style={styles.handleInput}
                   value={handleInput}
                   onChangeText={(text) => setHandleInput(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
@@ -358,6 +372,7 @@ export default function SettingsScreen() {
               </View>
 
               <TouchableOpacity
+                testID="settings-save-handle-button"
                 style={[styles.saveButton, savingHandle && styles.buttonDisabled]}
                 onPress={handleSaveHandle}
                 disabled={savingHandle}
@@ -469,6 +484,95 @@ export default function SettingsScreen() {
                         const newSize = Math.min(20, trackFontSize + 1);
                         setTrackFontSize(newSize);
                         await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Column & Padding</Text>
+              </View>
+
+              <View style={styles.displayContainer}>
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Column Width</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(70, columnWidth - 2);
+                        setColumnWidth(newSize);
+                        await AsyncStorage.setItem(DJ_COLUMN_WIDTH_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{columnWidth}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(140, columnWidth + 2);
+                        setColumnWidth(newSize);
+                        await AsyncStorage.setItem(DJ_COLUMN_WIDTH_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Content Padding Left</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(0, contentPaddingLeft - 1);
+                        setContentPaddingLeft(newSize);
+                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_LEFT_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{contentPaddingLeft}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(20, contentPaddingLeft + 1);
+                        setContentPaddingLeft(newSize);
+                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_LEFT_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.fontSizeRow}>
+                  <Text style={styles.fontSizeLabel}>Content Padding Right</Text>
+                  <View style={styles.fontSizeControls}>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.max(0, contentPaddingRight - 1);
+                        setContentPaddingRight(newSize);
+                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_RIGHT_KEY, newSize.toString());
+                      }}
+                    >
+                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
+                    </TouchableOpacity>
+                    <Text style={styles.fontSizeValue}>{contentPaddingRight}px</Text>
+                    <TouchableOpacity
+                      style={styles.fontSizeButton}
+                      onPress={async () => {
+                        const newSize = Math.min(20, contentPaddingRight + 1);
+                        setContentPaddingRight(newSize);
+                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_RIGHT_KEY, newSize.toString());
                       }}
                     >
                       <Ionicons name="add" size={s(16)} color={colors.accent.primary} />

@@ -5,9 +5,20 @@ appId: com.trinitromusic.cuecontrol
 
 - launchApp
 
-# Start at mode selection
-- assertVisible:
-    text: "Mode Selection"
+# Dismiss Expo dev menu overlay if present
+# Swipe down on the modal to dismiss, then tap above it
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Start at mode selection - wait for DJ mode button to be visible
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
     timeout: 15000
 
 # Enter DJ mode
@@ -15,16 +26,19 @@ appId: com.trinitromusic.cuecontrol
     id: "dj-mode-button"
 
 # Wait for DJ screen to load (could be queue or license prompt)
-- assertVisible:
-    text: "CueControl"
+- extendedWaitUntil:
+    visible:
+      text: "CueControl"
     timeout: 10000
 
-# Go back to mode selection using hardware back
-- back
+# Go back to mode selection using the red X (switch mode) button
+- tapOn:
+    id: "switch-mode-button"
 
 # Should be at mode selection again
-- assertVisible:
-    text: "Mode Selection"
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
     timeout: 10000
 
 # Enter Viewer mode
@@ -32,14 +46,17 @@ appId: com.trinitromusic.cuecontrol
     id: "viewer-mode-button"
 
 # Should see viewer screen
-- assertVisible:
-    text: "CueControl"
+- extendedWaitUntil:
+    visible:
+      text: "CueControl"
     timeout: 10000
 
-# Go back
-- back
+# Go back to mode selection
+- tapOn:
+    id: "switch-mode-button"
 
 # Should be back at mode selection
-- assertVisible:
-    text: "Mode Selection"
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
     timeout: 10000

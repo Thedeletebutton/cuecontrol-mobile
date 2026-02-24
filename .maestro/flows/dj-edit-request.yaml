@@ -5,9 +5,19 @@ appId: com.trinitromusic.cuecontrol
 
 - launchApp
 
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
 # Navigate to DJ mode
-- assertVisible:
-    text: "Mode Selection"
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
     timeout: 15000
 
 - tapOn:
@@ -20,9 +30,18 @@ appId: com.trinitromusic.cuecontrol
     file: enter-license.yaml
 
 # Wait for queue
-- assertVisible:
-    text: "TRACK REQUESTS:"
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
     timeout: 10000
+
+# Clear any stale data from previous runs
+- tapOn:
+    id: "queue-clear-button"
+    optional: true
+- tapOn:
+    text: "Clear All"
+    optional: true
 
 # Add a request to edit
 - tapOn:
@@ -30,49 +49,55 @@ appId: com.trinitromusic.cuecontrol
 
 - tapOn:
     id: "manual-entry-username"
-- inputText: "EditTestUser"
+- inputText: "EditUser"
 
 - tapOn:
     id: "manual-entry-track"
-- inputText: "Original Artist - Original Song"
+- inputText: "OG Artist - OG Song"
 
 - tapOn:
     id: "manual-entry-submit"
 
-# Wait for request to appear
-- assertVisible:
-    text: "Original Artist - Original Song"
-    timeout: 5000
+# Wait for request to appear (accessibilityLabel set on content cell)
+- extendedWaitUntil:
+    visible:
+      text: "EditUser, OG Artist - OG Song"
+    timeout: 10000
 
 # Tap the edit button (pencil icon) using accessibility label
 - tapOn:
     text: "Edit request"
 
 # Wait for edit modal to appear
-- assertVisible:
-    text: "Edit Request"
+- extendedWaitUntil:
+    visible:
+      text: "Edit Request"
     timeout: 5000
 
 # Clear and update track
-- clearText:
-    id: "edit-request-track"
 - tapOn:
     id: "edit-request-track"
-- inputText: "Updated Artist - Updated Song"
+- eraseText:
+    charactersToErase: 30
+- inputText: "New Artist - New Song"
 
 # Add notes
 - tapOn:
     id: "edit-request-notes"
-- inputText: "120 BPM, key of Am"
+- inputText: "120 BPM"
+
+# Dismiss keyboard before submit
+- pressKey: Enter
 
 # Submit the edit
 - tapOn:
     id: "edit-request-submit"
 
 # Verify the updated track appears
-- assertVisible:
-    text: "Updated Artist - Updated Song"
-    timeout: 5000
+- extendedWaitUntil:
+    visible:
+      text: "EditUser, New Artist - New Song"
+    timeout: 10000
 
 # Clean up - clear all
 - tapOn:

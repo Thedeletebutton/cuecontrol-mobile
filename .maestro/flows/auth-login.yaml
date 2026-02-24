@@ -6,10 +6,29 @@ appId: com.trinitromusic.cuecontrol
 - launchApp:
     clearState: true
 
-# Login screen should appear
-- assertVisible:
-    text: "CueControl - Login"
+# Dev build shows Expo launcher - tap localhost to load app
+- extendedWaitUntil:
+    visible:
+      text: "http://localhost:8081"
     timeout: 10000
+- tapOn:
+    text: "http://localhost:8081"
+
+# Wait for app to load, dismiss Expo dev menu overlay if present
+# Swipe down on the dev menu modal to dismiss it, then tap outside
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Login screen should appear
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 15000
 
 # Tap Login tab (should be default)
 - tapOn:
@@ -20,15 +39,20 @@ appId: com.trinitromusic.cuecontrol
     id: "login-email-input"
 - inputText: "e2e-test@cuecontrol-test.com"
 
+# Tap on password field (dismisses keyboard from email, focuses password)
 - tapOn:
     id: "login-password-input"
 - inputText: "TestPassword123!"
 
-# Submit
+# Press Done to dismiss keyboard (password field has returnKeyType="done")
+- pressKey: Enter
+
+# Now tap submit button (keyboard is dismissed, button should be visible)
 - tapOn:
     id: "login-submit-button"
 
-# Should navigate to mode selection
-- assertVisible:
-    text: "Mode Selection"
-    timeout: 15000
+# Should navigate to mode selection (login + Firebase can take time)
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 30000

@@ -11,6 +11,7 @@ appId: com.trinitromusic.cuecontrol
     id: "viewer-dashboard-connect-button"
 
 # Wait for queue to load
-- assertVisible:
-    text: "TRACK REQUESTS:"
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
     timeout: 10000

@@ -21,6 +21,9 @@ interface RequestCardProps {
   drag?: () => void;
   isActive?: boolean;
   mode?: 'dj' | 'viewer';
+  columnWidth?: number;
+  contentPaddingLeft?: number;
+  contentPaddingRight?: number;
 }
 
 export function RequestCard({
@@ -38,6 +41,9 @@ export function RequestCard({
   drag,
   isActive,
   mode = 'dj',
+  columnWidth,
+  contentPaddingLeft,
+  contentPaddingRight,
 }: RequestCardProps) {
   const isViewer = mode === 'viewer';
 
@@ -80,7 +86,8 @@ export function RequestCard({
     <View testID={`request-card-${request.id}`} style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive]}>
       {/* Content column: Requester + Track — long press to drag (DJ only) */}
       <TouchableOpacity
-        style={[styles.cell, styles.contentCell]}
+        accessibilityLabel={`${capitalizedUsername}, ${request.request}`}
+        style={[styles.cell, styles.contentCell, contentPaddingLeft != null && { paddingLeft: s(contentPaddingLeft) }, contentPaddingRight != null && { paddingRight: s(contentPaddingRight) }]}
         onLongPress={!isViewer ? drag : undefined}
         delayLongPress={150}
         disabled={isViewer || !drag}
@@ -125,7 +132,7 @@ export function RequestCard({
 
       {/* Right column */}
       {isViewer ? (
-        <View style={[styles.cell, styles.statusCellLast]}>
+        <View style={[styles.cell, styles.statusCellLast, columnWidth != null && { width: s(columnWidth) }]}>
           <StatusPill
             played={request.played}
             onPress={handleStatusPress}
@@ -134,7 +141,7 @@ export function RequestCard({
           />
         </View>
       ) : (
-        <View style={[styles.cell, styles.rightColumn]}>
+        <View style={[styles.cell, styles.rightColumn, columnWidth != null && { width: s(columnWidth) }]}>
           <View style={styles.statusRow}>
             <StatusPill
               played={request.played}

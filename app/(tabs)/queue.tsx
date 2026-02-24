@@ -41,9 +41,14 @@ import {
   moveFromNextStream,
 } from '../../src/services/nextStream';
 import { sendPushNotification } from '../../src/services/pushNotifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { Request } from '../../src/types/request';
 import { s, fs } from '../../src/utils/responsive';
+
+const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
+const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
+const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
 
 export default function QueueScreen() {
   const router = useRouter();
@@ -90,6 +95,26 @@ export default function QueueScreen() {
   const [aboutVisible, setAboutVisible] = useState(false);
   const [djHandle, setDjHandle] = useState<string | null>(null);
   const [currentRequester, setCurrentRequesterState] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
+  const [columnWidth, setColumnWidth] = useState(98);
+  const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
+  const [contentPaddingRight, setContentPaddingRight] = useState(8);
+
+  // Load layout settings
+  useEffect(() => {
+    const loadLayoutSettings = async () => {
+      try {
+        const savedWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
+        const savedPadLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
+        const savedPadRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
+        if (savedWidth) setColumnWidth(parseInt(savedWidth, 10));
+        if (savedPadLeft) setContentPaddingLeft(parseInt(savedPadLeft, 10));
+        if (savedPadRight) setContentPaddingRight(parseInt(savedPadRight, 10));
+      } catch (error) {
+        console.error('Failed to load layout settings:', error);
+      }
+    };
+    loadLayoutSettings();
+  }, []);
 
   // Subscribe to current requester
   useEffect(() => {
@@ -306,7 +331,7 @@ export default function QueueScreen() {
           {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1)}'s </Text>}
           CueControl
         </Text>
-        <View style={styles.headerButtons}>
+        <View style={[styles.headerButtons, { width: s(columnWidth) }]}>
           <TouchableOpacity
             style={[styles.iconButton, styles.infoButton]}
             onPress={() => setAboutVisible(true)}
@@ -320,6 +345,7 @@ export default function QueueScreen() {
             <Ionicons name="reload" size={s(14)} color={colors.text.grey} />
           </TouchableOpacity>
           <TouchableOpacity
+            testID="switch-mode-button"
             style={[styles.iconButton, styles.closeButton]}
             onPress={async () => {
               await clearMode();
@@ -344,6 +370,7 @@ export default function QueueScreen() {
               Enter your CueControl license key to start receiving requests
             </Text>
             <TouchableOpacity
+              testID="go-to-settings-button"
               style={styles.goToSettingsButton}
               onPress={handleSettings}
             >
@@ -365,7 +392,7 @@ export default function QueueScreen() {
       {/* Top bar with title and actions */}
       <View style={styles.topBar}>
         <Text style={styles.sectionTitle}>TRACK REQUESTS:</Text>
-        <View style={styles.actionButtons}>
+        <View style={[styles.actionButtons, { width: s(columnWidth) }]}>
           <TouchableOpacity
             testID="queue-add-button"
             style={[styles.iconButton, styles.addButton]}
@@ -405,11 +432,11 @@ export default function QueueScreen() {
 
       {/* Column Headers */}
       <View style={styles.headerRow}>
-        <View style={[styles.headerCell, styles.contentHeader]}>
+        <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
           <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
           <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
         </View>
-        <View style={[styles.headerCell, styles.rightHeader]}>
+        <View style={[styles.headerCell, styles.rightHeader, { width: s(columnWidth) }]}>
           <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
           <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
         </View>
@@ -434,6 +461,9 @@ export default function QueueScreen() {
               onMoveToNextStream={handleMoveToNextStream}
               drag={drag}
               isActive={isActive}
+              columnWidth={columnWidth}
+              contentPaddingLeft={contentPaddingLeft}
+              contentPaddingRight={contentPaddingRight}
             />
           );
         }}
@@ -467,6 +497,9 @@ export default function QueueScreen() {
                 onUpdateNotes={handleUpdateNotes}
                 onToggleStar={handleToggleStar}
                 onMoveToNextStream={handleMoveToNextStream}
+                columnWidth={columnWidth}
+                contentPaddingLeft={contentPaddingLeft}
+                contentPaddingRight={contentPaddingRight}
               />
             ))}
 
@@ -485,11 +518,11 @@ export default function QueueScreen() {
 
             {/* Next Stream Column Headers */}
             <View style={styles.headerRow}>
-              <View style={[styles.headerCell, styles.contentHeader]}>
+              <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
                 <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
                 <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
               </View>
-              <View style={[styles.headerCell, styles.rightHeader]}>
+              <View style={[styles.headerCell, styles.rightHeader, { width: s(columnWidth) }]}>
                 <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
                 <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
               </View>
@@ -516,6 +549,9 @@ export default function QueueScreen() {
                   onToggleStar={handleNextStreamToggleStar}
                   onMoveFromNextStream={handleMoveFromNextStream}
                   isNextStream
+                  columnWidth={columnWidth}
+                  contentPaddingLeft={contentPaddingLeft}
+                  contentPaddingRight={contentPaddingRight}
                 />
               ))
             )}
@@ -584,8 +620,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: s(2),
-    borderTopColor: colors.border,
     borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
