@@ -1,0 +1,101 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Viewer Dashboard Flow
+# Tests: Connect to DJ queue, verify requests load
+# Uses clearState to ensure fresh viewer state (no auto-connect from saved handle)
+# Flow: clearState → login → DJ mode → register handle → viewer mode → connect → verify
+
+- launchApp:
+    clearState: true
+
+# Dev build shows Expo launcher - tap localhost to load app
+- extendedWaitUntil:
+    visible:
+      text: "http://localhost:8081"
+    timeout: 10000
+- tapOn:
+    text: "http://localhost:8081"
+
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Login screen appears after clearState (no auth)
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 15000
+
+- tapOn:
+    id: "login-tab"
+- tapOn:
+    id: "login-email-input"
+- inputText: "e2e-test@cuecontrol-test.com"
+- tapOn:
+    id: "login-password-input"
+- inputText: "TestPassword123!"
+- pressKey: Enter
+- tapOn:
+    id: "login-submit-button"
+
+# After login, mode selection appears
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 30000
+
+# Enter DJ mode to register a handle
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license (clearState cleared saved license)
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Wait for queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Register handle "e2etest" in settings
+- runFlow:
+    file: register-handle.yaml
+
+# Go back to mode selection
+- tapOn:
+    id: "switch-mode-button"
+
+# Enter Viewer mode
+- extendedWaitUntil:
+    visible:
+      id: "viewer-mode-button"
+    timeout: 10000
+
+- tapOn:
+    id: "viewer-mode-button"
+
+# Connect to our DJ queue (fresh state, no auto-connect)
+- tapOn:
+    id: "viewer-dashboard-handle-input"
+- inputText: "e2etest"
+- pressKey: Enter
+
+# Verify queue loads
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 15000
+
+# Verify SUBMIT REQUEST button is visible (confirms full dashboard loaded)
+- extendedWaitUntil:
+    visible:
+      id: "viewer-submit-request-button"
+    timeout: 5000

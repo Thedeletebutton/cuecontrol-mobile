@@ -1,0 +1,87 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Mode Queue Management
+# Tests: Enter DJ mode, add manual request, mark played, clear all
+
+- launchApp
+
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Should be at mode selection
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 15000
+
+# Select DJ Mode
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license key prompt if it appears
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Verify queue screen loads
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Add a manual request
+- tapOn:
+    id: "queue-add-button"
+
+- extendedWaitUntil:
+    visible:
+      text: "Add Request"
+    timeout: 5000
+
+- tapOn:
+    id: "manual-entry-username"
+- inputText: "E2ETestUser"
+
+- tapOn:
+    id: "manual-entry-track"
+- inputText: "Test Artist - Test Song"
+
+- tapOn:
+    id: "manual-entry-submit"
+
+# Wait for modal to close and request to appear
+- extendedWaitUntil:
+    notVisible:
+      text: "Add Request"
+    timeout: 5000
+
+# Verify request appears in the list (text is combined in accessibility)
+- extendedWaitUntil:
+    visible:
+      text: "E2ETestUser, Test Artist - Test Song"
+    timeout: 10000
+
+# Mark as played by tapping the QUEUED pill
+- tapOn:
+    id: "status-pill-queued"
+
+# Verify it changed to PLAYED
+- extendedWaitUntil:
+    visible:
+      id: "status-pill-played"
+    timeout: 5000
+
+# Clear all requests
+- tapOn:
+    id: "queue-clear-button"
+
+# Confirm the alert
+- tapOn:
+    text: "Clear All"

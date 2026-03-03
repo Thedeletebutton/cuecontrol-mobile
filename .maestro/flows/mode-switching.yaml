@@ -1,0 +1,62 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Mode Switching Flow
+# Tests: Switch between DJ and Viewer modes
+
+- launchApp
+
+# Dismiss Expo dev menu overlay if present
+# Swipe down on the modal to dismiss, then tap above it
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Start at mode selection - wait for DJ mode button to be visible
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 15000
+
+# Enter DJ mode
+- tapOn:
+    id: "dj-mode-button"
+
+# Wait for DJ screen to load (could be queue or license prompt)
+- extendedWaitUntil:
+    visible:
+      text: "CueControl"
+    timeout: 10000
+
+# Go back to mode selection using the red X (switch mode) button
+- tapOn:
+    id: "switch-mode-button"
+
+# Should be at mode selection again
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 10000
+
+# Enter Viewer mode
+- tapOn:
+    id: "viewer-mode-button"
+
+# Should see viewer screen
+- extendedWaitUntil:
+    visible:
+      text: "CueControl"
+    timeout: 10000
+
+# Go back to mode selection
+- tapOn:
+    id: "switch-mode-button"
+
+# Should be back at mode selection
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 10000

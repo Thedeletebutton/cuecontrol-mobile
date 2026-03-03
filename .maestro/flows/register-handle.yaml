@@ -1,0 +1,38 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Register DJ Handle Sub-flow
+# Navigates to settings, registers a DJ handle "e2etest", then returns
+
+# Open settings (via gear button in header)
+- tapOn:
+    id: "queue-settings-button"
+
+# Scroll down to find the handle input on the license tab
+- scrollUntilVisible:
+    element:
+      id: "settings-handle-input"
+    direction: DOWN
+    timeout: 10000
+
+# Clear any existing handle and enter new one
+- tapOn:
+    id: "settings-handle-input"
+- eraseText:
+    charactersToErase: 25
+- inputText: "e2etest"
+
+# Dismiss keyboard
+- pressKey: Enter
+
+# Save the handle
+- tapOn:
+    id: "settings-save-handle-button"
+
+# Dismiss the success alert
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Go back to queue
+- tapOn:
+    id: "settings-close-button"

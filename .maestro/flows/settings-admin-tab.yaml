@@ -1,0 +1,128 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Settings - Admin Tab
+# Tests: Switch to admin tab, expand/collapse sections, adjust display settings
+
+- launchApp
+
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Navigate to DJ mode
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 15000
+
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license if needed
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Wait for queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Open settings
+- tapOn:
+    id: "queue-settings-button"
+
+- extendedWaitUntil:
+    visible:
+      text: "CueControl - Settings"
+    timeout: 10000
+
+# Switch to Admin tab
+- tapOn:
+    id: "settings-tab-admin"
+
+# Verify DJ Dashboard collapsible header is visible
+- extendedWaitUntil:
+    visible:
+      id: "settings-dj-dashboard-header"
+    timeout: 5000
+
+# DJ Dashboard section should be expanded by default - verify Font Sizes section
+- assertVisible:
+    text: "Font Sizes"
+
+# Verify SettingRow elements are visible
+- assertVisible:
+    id: "dj-header-font-size"
+
+# Tap the plus button to increase DJ Header Font Size
+- tapOn:
+    id: "dj-header-font-size-plus"
+
+# Tap plus again
+- tapOn:
+    id: "dj-header-font-size-plus"
+
+# Tap minus to decrease
+- tapOn:
+    id: "dj-header-font-size-minus"
+
+# Collapse DJ Dashboard section
+- tapOn:
+    id: "settings-dj-dashboard-header"
+
+# Font Sizes should no longer be visible
+- assertNotVisible:
+    text: "Font Sizes"
+
+# Expand Viewer Dashboard section
+- tapOn:
+    id: "settings-viewer-dashboard-header"
+
+# Verify Viewer Dashboard content appears
+- extendedWaitUntil:
+    visible:
+      text: "Font Sizes"
+    timeout: 5000
+
+# Collapse Viewer Dashboard section
+- tapOn:
+    id: "settings-viewer-dashboard-header"
+
+# Re-expand DJ Dashboard
+- tapOn:
+    id: "settings-dj-dashboard-header"
+
+# Scroll down to Heights section
+- scrollUntilVisible:
+    element:
+      id: "dj-header-row-height"
+    direction: DOWN
+    timeout: 5000
+
+# Tap plus on Header Row Height
+- tapOn:
+    id: "dj-header-row-height-plus"
+
+# Save settings and go back
+- scrollUntilVisible:
+    element:
+      id: "settings-save-button"
+    direction: DOWN
+    timeout: 5000
+
+- tapOn:
+    id: "settings-save-button"
+
+# Verify we're back on the queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 5000

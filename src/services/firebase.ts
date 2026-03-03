@@ -1,0 +1,88 @@
+import { initializeApp, getApp, FirebaseApp } from "firebase/app";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { getDatabase, Database, ref, onValue } from "firebase/database";
+import { FirebaseConfig } from "../types/request";
+
+let firebaseApp: FirebaseApp | null = null;
+let database: Database | null = null;
+let isConnected = false;
+
+export let auth: ReturnType<typeof initializeAuth> | null = null;
+
+export function initializeFirebase(config: FirebaseConfig): boolean {
+  try {
+    if (!config || !config.apiKey || !config.projectId || !config.databaseURL) {
+      console.log('Firebase not configured - missing required fields');
+      return false;
+    }
+
+    console.log("Initializing Firebase...");
+
+    // Try to get existing app first, create if it doesn't exist
+    try {
+      firebaseApp = getApp("cuecontrol-mobile");
+    } catch {
+      firebaseApp = initializeApp(config, "cuecontrol-mobile");
+    }
+
+    try {
+      auth = initializeAuth(firebaseApp, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+      });
+    } catch {
+      // Auth may already be initialized (hot reload / re-init)
+    }
+
+    database = getDatabase(firebaseApp);
+
+    isConnected = true;
+    console.log('Firebase initialized successfully');
+    return true;
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+    isConnected = false;
+    return false;
+  }
+}
+
+export function isCloudConnected(): boolean {
+  return isConnected && database !== null;
+}
+
+export function getFirebaseApp(): FirebaseApp | null {
+  return firebaseApp;
+}
+
+export function getFirebaseDatabase(): Database | null {
+  return database;
+}
+
+export function disconnectFirebase(): void {
+  firebaseApp = null;
+  database = null;
+  isConnected = false;
+  console.log('Disconnected from Firebase');
+}
+
+export async function testFirebaseConnection(config: FirebaseConfig): Promise<boolean> {
+  try {
+    const testApp = initializeApp(config, 'test-connection-' + Date.now());
+    const testDb = getDatabase(testApp);
+    const testRef = ref(testDb, '.info/connected');
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => {
+        resolve(false);
+      }, 5000);
+
+      onValue(testRef, (snapshot) => {
+        clearTimeout(timeout);
+        resolve(snapshot.val() === true);
+      }, { onlyOnce: true });
+    });
+  } catch (error) {
+    console.error('Firebase connection test failed:', error);
+    return false;
+  }
+}

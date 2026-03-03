@@ -1,0 +1,60 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Auth Sign Up Flow
+# Tests: Create a new account (uses timestamp for unique email)
+# NOTE: This creates real Firebase accounts - use sparingly
+
+- launchApp:
+    clearState: true
+
+# Dev build shows Expo launcher - tap localhost to load app
+- extendedWaitUntil:
+    visible:
+      text: "http://localhost:8081"
+    timeout: 10000
+- tapOn:
+    text: "http://localhost:8081"
+
+# Wait for app to load, dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Generate unique email using timestamp
+- evalScript: ${output.email = 'e2e-' + Date.now() + '@cuecontrol-test.com'}
+
+# Login screen should appear
+- extendedWaitUntil:
+    visible:
+      id: "login-email-input"
+    timeout: 15000
+
+# Switch to Sign Up tab
+- tapOn:
+    id: "signup-tab"
+
+# Enter unique email
+- tapOn:
+    id: "login-email-input"
+- inputText: ${output.email}
+
+- tapOn:
+    id: "login-password-input"
+- inputText: "TestPassword123!"
+
+# Press Done to dismiss keyboard (password field has returnKeyType="done")
+- pressKey: Enter
+
+# Now tap submit button (keyboard is dismissed, button should be visible)
+- tapOn:
+    id: "login-submit-button"
+
+# Should navigate to mode selection on success
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 30000

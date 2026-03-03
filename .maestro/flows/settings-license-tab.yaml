@@ -1,0 +1,95 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Settings - License Tab
+# Tests: Navigate to settings, verify license tab, validate license, save stream ID
+
+- launchApp
+
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Navigate to DJ mode
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 15000
+
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license if needed
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Wait for queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Open settings via gear button
+- tapOn:
+    id: "queue-settings-button"
+
+# Verify settings screen loads with header
+- extendedWaitUntil:
+    visible:
+      text: "CueControl - Settings"
+    timeout: 10000
+
+# Verify License tab is active by default (License tab button visible)
+- assertVisible:
+    id: "settings-tab-license"
+
+# Verify license input is visible
+- assertVisible:
+    id: "settings-license-input"
+
+# Verify validate and save buttons exist
+- assertVisible:
+    id: "settings-validate-button"
+- assertVisible:
+    id: "settings-save-license-button"
+
+# Verify "Your License Key" section header
+- assertVisible:
+    text: "Your License Key"
+
+# Tap validate on the existing license
+- tapOn:
+    id: "settings-validate-button"
+
+# Should show "Valid Format" alert (license was saved from prior flow)
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Verify Stream ID section is visible (since license is valid)
+- scrollUntilVisible:
+    element:
+      id: "settings-handle-input"
+    direction: DOWN
+    timeout: 5000
+
+- assertVisible:
+    id: "settings-handle-input"
+- assertVisible:
+    id: "settings-save-handle-button"
+
+# Go back to queue
+- tapOn:
+    id: "settings-close-button"
+
+# Verify we're back on the queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 5000

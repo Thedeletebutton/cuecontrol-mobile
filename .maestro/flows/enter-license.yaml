@@ -1,0 +1,33 @@
+appId: com.trinitromusic.cuecontrol
+---
+# Enter License Key Sub-flow
+# Called when license key prompt appears
+
+- tapOn:
+    id: "go-to-settings-button"
+
+# Wait for settings screen to load
+- extendedWaitUntil:
+    visible:
+      id: "settings-license-input"
+    timeout: 10000
+
+- tapOn:
+    id: "settings-license-input"
+- inputText: "DJRQ-Q448-YJQS-RKXJ"
+
+# Dismiss keyboard by pressing Done/Return
+- pressKey: Enter
+
+# Save the license key
+- tapOn:
+    text: "Save"
+
+# Dismiss any alert
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Go back to queue
+- tapOn:
+    id: "settings-close-button"
