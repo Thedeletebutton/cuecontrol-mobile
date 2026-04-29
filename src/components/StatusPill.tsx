@@ -32,7 +32,7 @@ export function StatusPill({ played, onPress, disabled, isPending }: StatusPillP
   return (
     <TouchableOpacity
       testID={`status-pill-${isPending ? 'pending' : played ? 'played' : 'queued'}`}
-      style={[styles.pill, getPillStyle(), disabled && styles.disabled]}
+      style={[styles.pill, getPillStyle()]}
       onPress={onPress}
       disabled={disabled || isPending}
       activeOpacity={0.7}
@@ -64,9 +64,6 @@ const styles = StyleSheet.create({
   pillPending: {
     backgroundColor: 'rgba(247, 227, 138, 0.15)',
     borderColor: '#f7e38a',
-  },
-  disabled: {
-    opacity: 0.5,
   },
   text: {
     fontFamily: 'Helvetica Neue',

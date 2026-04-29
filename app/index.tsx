@@ -24,19 +24,38 @@ import { IS_CONFIGURED } from '../src/config/firebase.config';
 
 export default function ModeSelection() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user, logout, login } = useAuth();
   const { setMode, loading: modeLoading, clearMode } = useAppModeContext();
   const [aboutVisible, setAboutVisible] = useState(false);
   const [supportVisible, setSupportVisible] = useState(false);
+  const [autoLoginAttempted, setAutoLoginAttempted] = useState(false);
 
   useEffect(() => {
-    // If Firebase is configured but user is not authenticated, redirect to login
-    if (!authLoading && IS_CONFIGURED && !isAuthenticated) {
+    if (authLoading || !IS_CONFIGURED) return;
+    if (isAuthenticated) return;
+
+    // Try auto-login from saved credentials before redirecting to login
+    const tryAutoLogin = async () => {
+      if (!autoLoginAttempted) {
+        setAutoLoginAttempted(true);
+        try {
+          const staySignedIn = await AsyncStorage.getItem('cuecontrol_stay_signed_in');
+          const savedCredentials = await AsyncStorage.getItem('cuecontrol_saved_credentials');
+          if (staySignedIn === 'true' && savedCredentials) {
+            const creds = JSON.parse(savedCredentials);
+            if (creds.email && creds.password) {
+              await login(creds.email, creds.password);
+              return; // Success - useEffect will re-run with isAuthenticated=true
+            }
+          }
+        } catch {
+          // Auto-login failed, fall through to login screen
+        }
+      }
       router.replace('/auth/login');
-      return;
-    }
-    // Always show mode selection after login - do NOT auto-redirect to saved mode
-  }, [isAuthenticated, authLoading]);
+    };
+    tryAutoLogin();
+  }, [isAuthenticated, authLoading, autoLoginAttempted]);
 
   const handleDJMode = async () => {
     await setMode('dj');
@@ -122,7 +141,7 @@ export default function ModeSelection() {
             />
             <Text style={styles.title}>CueControl</Text>
             <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-            <Text style={styles.version}>Version 16.0.0</Text>
+            <Text style={styles.version}>Version 23.0.0</Text>
             <TouchableOpacity
               style={styles.supportButton}
               onPress={() => setSupportVisible(true)}
@@ -281,8 +300,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   setupText: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
+    fontWeight: '800',
     color: colors.text.secondary,
+    letterSpacing: 1,
     marginTop: spacing.lg,
     textAlign: 'center',
   },
@@ -317,7 +339,8 @@ const styles = StyleSheet.create({
   modeDesc: {
     fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
+    fontWeight: '800',
     color: colors.text.secondary,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
 });

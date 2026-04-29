@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../../src/context/AuthContext';
@@ -17,8 +18,9 @@ import { useAppModeContext } from '../../src/context/AppModeContext';
 import { AboutModal } from '../../src/components/AboutModal';
 import { ViewerSettingsModal } from '../../src/components/ViewerSettingsModal';
 import { RequestCard } from '../../src/components/RequestCard';
+import { EditRequestModal } from '../../src/components/EditRequestModal';
 import { useViewerRequests, useViewerNextStream } from '../../src/hooks/useViewerRequests';
-import { lookupDJByHandle, subscribeToCurrentRequester, setCurrentLicenseKey } from '../../src/services/requests';
+import { lookupDJByHandle, subscribeToCurrentRequester, setCurrentLicenseKey, updateRequest } from '../../src/services/requests';
 import { getFirebaseDatabase, initializeFirebase } from '../../src/services/firebase';
 import { FIREBASE_CONFIG, IS_CONFIGURED } from '../../src/config/firebase.config';
 import { colors, typography, spacing } from '../../src/constants/theme';
@@ -31,9 +33,19 @@ const SAVE_DJ_HANDLE_KEY = '@cuecontrol_save_dj_handle';
 const SAVE_USERNAME_KEY = '@cuecontrol_save_username';
 const LABEL_FONT_SIZE_KEY = '@cuecontrol_viewer_label_font_size';
 const INPUT_FONT_SIZE_KEY = '@cuecontrol_viewer_input_font_size';
-const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
-const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
-const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
+const VIEWER_COLUMN_WIDTH_KEY = '@cuecontrol_viewer_column_width';
+const VIEWER_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_viewer_content_padding_left';
+const VIEWER_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_viewer_content_padding_right';
+const VIEWER_HEADER_FONT_SIZE_KEY = '@cuecontrol_viewer_header_font_size';
+const VIEWER_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_viewer_requester_font_size';
+const VIEWER_TRACK_FONT_SIZE_KEY = '@cuecontrol_viewer_track_font_size';
+const VIEWER_HEADER_ROW_HEIGHT_KEY = '@cuecontrol_viewer_header_row_height';
+const VIEWER_TOPBAR_HEIGHT_KEY = '@cuecontrol_viewer_topbar_height';
+const VIEWER_COUNTS_ROW_HEIGHT_KEY = '@cuecontrol_viewer_counts_row_height';
+const VIEWER_ROW_HEIGHT_KEY = '@cuecontrol_viewer_row_height';
+const VIEWER_REQUESTER_SECTION_HEIGHT_KEY = '@cuecontrol_viewer_requester_section_height';
+const VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY = '@cuecontrol_viewer_next_stream_header_height';
+const USERNAME_STORAGE_KEY = '@cuecontrol_username';
 const MAX_RECENT_HANDLES = 5;
 
 function capitalize(str: string): string {
@@ -60,6 +72,18 @@ export default function ViewerDashboard() {
   const [columnWidth, setColumnWidth] = useState(98);
   const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
   const [contentPaddingRight, setContentPaddingRight] = useState(8);
+  const [headerFontSize, setHeaderFontSize] = useState(15);
+  const [requesterFontSize, setRequesterFontSize] = useState(15);
+  const [trackFontSize, setTrackFontSize] = useState(15);
+  const [headerRowHeight, setHeaderRowHeight] = useState(40);
+  const [topBarHeight, setTopBarHeight] = useState(38);
+  const [countsRowHeight, setCountsRowHeight] = useState(30);
+  const [viewerRowHeight, setViewerRowHeight] = useState(70);
+  const [requesterSectionHeight, setRequesterSectionHeight] = useState(38);
+  const [nextStreamHeaderHeight, setNextStreamHeaderHeight] = useState(38);
+  const [viewerUsername, setViewerUsername] = useState('');
+  const [editingRequest, setEditingRequest] = useState<Request | null>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const { requests, loading, totalCount, unplayedCount, playedCount } = useViewerRequests(licenseKey);
   const { requests: nextStreamRequests, count: nextStreamCount } = useViewerNextStream(licenseKey);
@@ -78,40 +102,62 @@ export default function ViewerDashboard() {
     }
   }, [licenseKey]);
 
-  // Load saved settings on mount
-  useEffect(() => {
-    const loadSavedData = async () => {
-      try {
-        const savedDjHandle = await AsyncStorage.getItem(DJ_HANDLE_STORAGE);
-        const savedSaveDjHandle = await AsyncStorage.getItem(SAVE_DJ_HANDLE_KEY);
-        const savedSaveUsername = await AsyncStorage.getItem(SAVE_USERNAME_KEY);
-        const savedLabelFontSize = await AsyncStorage.getItem(LABEL_FONT_SIZE_KEY);
-        const savedInputFontSize = await AsyncStorage.getItem(INPUT_FONT_SIZE_KEY);
+  // Reload settings every time the screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      const loadSavedData = async () => {
+        try {
+          const savedDjHandle = await AsyncStorage.getItem(DJ_HANDLE_STORAGE);
+          const savedSaveDjHandle = await AsyncStorage.getItem(SAVE_DJ_HANDLE_KEY);
+          const savedSaveUsername = await AsyncStorage.getItem(SAVE_USERNAME_KEY);
+          const savedLabelFontSize = await AsyncStorage.getItem(LABEL_FONT_SIZE_KEY);
+          const savedInputFontSize = await AsyncStorage.getItem(INPUT_FONT_SIZE_KEY);
 
-        const savedRecentHandles = await AsyncStorage.getItem(RECENT_HANDLES_STORAGE);
-        const savedColumnWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
-        const savedPaddingLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
-        const savedPaddingRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
+          const savedRecentHandles = await AsyncStorage.getItem(RECENT_HANDLES_STORAGE);
+          const savedColumnWidth = await AsyncStorage.getItem(VIEWER_COLUMN_WIDTH_KEY);
+          const savedPaddingLeft = await AsyncStorage.getItem(VIEWER_CONTENT_PADDING_LEFT_KEY);
+          const savedPaddingRight = await AsyncStorage.getItem(VIEWER_CONTENT_PADDING_RIGHT_KEY);
+          const savedHeaderFontSize = await AsyncStorage.getItem(VIEWER_HEADER_FONT_SIZE_KEY);
+          const savedRequesterFontSize = await AsyncStorage.getItem(VIEWER_REQUESTER_FONT_SIZE_KEY);
+          const savedTrackFontSize = await AsyncStorage.getItem(VIEWER_TRACK_FONT_SIZE_KEY);
+          const savedHeaderRowHeight = await AsyncStorage.getItem(VIEWER_HEADER_ROW_HEIGHT_KEY);
+          const savedTopBarHeight = await AsyncStorage.getItem(VIEWER_TOPBAR_HEIGHT_KEY);
+          const savedCountsRowHeight = await AsyncStorage.getItem(VIEWER_COUNTS_ROW_HEIGHT_KEY);
+          const savedRowHeight = await AsyncStorage.getItem(VIEWER_ROW_HEIGHT_KEY);
+          const savedRequesterSectionHeight = await AsyncStorage.getItem(VIEWER_REQUESTER_SECTION_HEIGHT_KEY);
+          const savedNextStreamHeaderHeight = await AsyncStorage.getItem(VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY);
+          const savedUsername = await AsyncStorage.getItem(USERNAME_STORAGE_KEY);
 
-        if (savedSaveDjHandle !== null) setSaveDjHandle(savedSaveDjHandle === 'true');
-        if (savedSaveUsername !== null) setSaveUsername(savedSaveUsername === 'true');
-        if (savedLabelFontSize) setLabelFontSize(parseInt(savedLabelFontSize, 10));
-        if (savedInputFontSize) setInputFontSize(parseInt(savedInputFontSize, 10));
-        if (savedRecentHandles) setRecentHandles(JSON.parse(savedRecentHandles));
-        if (savedColumnWidth) setColumnWidth(parseInt(savedColumnWidth, 10));
-        if (savedPaddingLeft) setContentPaddingLeft(parseInt(savedPaddingLeft, 10));
-        if (savedPaddingRight) setContentPaddingRight(parseInt(savedPaddingRight, 10));
+          if (savedUsername) setViewerUsername(savedUsername);
+          if (savedSaveDjHandle !== null) setSaveDjHandle(savedSaveDjHandle === 'true');
+          if (savedSaveUsername !== null) setSaveUsername(savedSaveUsername === 'true');
+          if (savedLabelFontSize) setLabelFontSize(parseInt(savedLabelFontSize, 10));
+          if (savedInputFontSize) setInputFontSize(parseInt(savedInputFontSize, 10));
+          if (savedRecentHandles) setRecentHandles(JSON.parse(savedRecentHandles));
+          if (savedColumnWidth) setColumnWidth(parseInt(savedColumnWidth, 10));
+          if (savedPaddingLeft) setContentPaddingLeft(parseInt(savedPaddingLeft, 10));
+          if (savedPaddingRight) setContentPaddingRight(parseInt(savedPaddingRight, 10));
+          if (savedHeaderFontSize) setHeaderFontSize(parseInt(savedHeaderFontSize, 10));
+          if (savedRequesterFontSize) setRequesterFontSize(parseInt(savedRequesterFontSize, 10));
+          if (savedTrackFontSize) setTrackFontSize(parseInt(savedTrackFontSize, 10));
+          if (savedHeaderRowHeight) setHeaderRowHeight(parseInt(savedHeaderRowHeight, 10));
+          if (savedTopBarHeight) setTopBarHeight(parseInt(savedTopBarHeight, 10));
+          if (savedCountsRowHeight) setCountsRowHeight(parseInt(savedCountsRowHeight, 10));
+          if (savedRowHeight) setViewerRowHeight(parseInt(savedRowHeight, 10));
+          if (savedRequesterSectionHeight) setRequesterSectionHeight(parseInt(savedRequesterSectionHeight, 10));
+          if (savedNextStreamHeaderHeight) setNextStreamHeaderHeight(parseInt(savedNextStreamHeaderHeight, 10));
 
-        if (savedDjHandle) {
-          setDjHandle(savedDjHandle);
-          connectToStream(savedDjHandle);
+          if (savedDjHandle && !licenseKey) {
+            setDjHandle(savedDjHandle);
+            connectToStream(savedDjHandle);
+          }
+        } catch (error) {
+          console.error('Failed to load saved data:', error);
         }
-      } catch (error) {
-        console.error('Failed to load saved data:', error);
-      }
-    };
-    loadSavedData();
-  }, []);
+      };
+      loadSavedData();
+    }, [licenseKey])
+  );
 
   const connectToStream = async (handle: string) => {
     const normalized = handle.toLowerCase().trim();
@@ -186,6 +232,18 @@ export default function ViewerDashboard() {
     await logout();
     await clearMode();
     router.replace('/auth/login');
+  };
+
+  const handleEdit = (request: Request) => {
+    setEditingRequest(request);
+    setEditModalVisible(true);
+  };
+
+  const handleEditSubmit = async (
+    id: number,
+    updates: { request?: string; notes?: string }
+  ) => {
+    await updateRequest(id, updates);
   };
 
   const renderHeader = () => (
@@ -287,7 +345,7 @@ export default function ViewerDashboard() {
   };
 
   const renderCounts = () => (
-    <View style={styles.countsRow}>
+    <View style={[styles.countsRow, { height: s(countsRowHeight) }]}>
       <Text style={styles.summaryText}>
         Total<Text style={styles.colon}>:</Text> <Text style={styles.summaryValue}>{totalCount}</Text>
       </Text>
@@ -301,13 +359,13 @@ export default function ViewerDashboard() {
   );
 
   const renderColumnHeaders = () => (
-    <View style={styles.headerRow}>
+    <View style={[styles.headerRow, { minHeight: s(headerRowHeight) }]}>
       <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
-        <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
-        <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
+        <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>REQUESTED BY:</Text>
+        <Text style={[styles.headerSubText, { fontSize: headerFontSize }]} numberOfLines={1}>ARTIST - TRACK:</Text>
       </View>
       <View style={[styles.headerCell, styles.statusHeaderLast, { width: s(columnWidth) }]}>
-        <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
+        <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>STATUS:</Text>
       </View>
     </View>
   );
@@ -391,7 +449,7 @@ export default function ViewerDashboard() {
       {renderStreamBar()}
 
       {/* Section Title */}
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { height: s(topBarHeight) }]}>
         <Text style={styles.sectionTitle}>TRACK REQUESTS:</Text>
       </View>
 
@@ -411,28 +469,43 @@ export default function ViewerDashboard() {
               request={item}
               index={index}
               mode="viewer"
+              viewerUsername={viewerUsername}
+              onEdit={handleEdit}
               columnWidth={columnWidth}
               contentPaddingLeft={contentPaddingLeft}
               contentPaddingRight={contentPaddingRight}
+              requesterFontSize={requesterFontSize}
+              trackFontSize={trackFontSize}
+              rowHeight={viewerRowHeight}
             />
           )}
           ListEmptyComponent={
             <View style={styles.emptyListContainer}>
               <Text style={styles.emptyListTitle}>NO REQUESTS YET</Text>
               <Text style={styles.emptyListText}>
-                Be the first to submit a request!
+                SEND YOUR REQUESTS IN CHAT USING
               </Text>
+              <Text style={styles.emptyListCommand}>!request - Artist/Track</Text>
             </View>
           }
           ListFooterComponent={
             <>
               {/* Next Stream Section */}
-              <View style={styles.nextStreamHeader}>
+              <View style={styles.sectionBorder} />
+              <View style={styles.sectionBorder} />
+              <View style={[styles.nextStreamHeader, { height: s(nextStreamHeaderHeight) }]}>
                 <Text style={styles.nextStreamTitle}>NEXT STREAM:</Text>
               </View>
-              <View style={styles.nextStreamCountsRow}>
+              <View style={styles.sectionBorder} />
+              <View style={[styles.nextStreamCountsRow, { height: s(countsRowHeight) }]}>
                 <Text style={styles.nextStreamCount}>
                   Total<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamCount}</Text>
+                </Text>
+                <Text style={styles.nextStreamCount}>
+                  Unplayed<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamRequests.filter(r => !r.played).length}</Text>
+                </Text>
+                <Text style={styles.nextStreamCount}>
+                  Played<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamRequests.filter(r => r.played).length}</Text>
                 </Text>
               </View>
 
@@ -456,13 +529,16 @@ export default function ViewerDashboard() {
                     columnWidth={columnWidth}
                     contentPaddingLeft={contentPaddingLeft}
                     contentPaddingRight={contentPaddingRight}
+                    requesterFontSize={requesterFontSize}
+                    trackFontSize={trackFontSize}
+                    rowHeight={viewerRowHeight}
                   />
                 ))
               )}
 
               {/* Requested By Section */}
               <View style={styles.sectionBorder} />
-              <View style={styles.requesterSection}>
+              <View style={[styles.requesterSection, { height: s(requesterSectionHeight) }]}>
                 <Text style={styles.requesterLabel}>REQUESTED BY:</Text>
                 <Text style={[styles.requesterName, !currentRequester && { color: colors.text.primary }]}>
                   {currentRequester ? currentRequester.username : '—'}
@@ -503,6 +579,15 @@ export default function ViewerDashboard() {
         }}
         userEmail={user?.email || null}
         onSignOut={handleSignOut}
+      />
+      <EditRequestModal
+        visible={editModalVisible}
+        request={editingRequest}
+        onClose={() => {
+          setEditModalVisible(false);
+          setEditingRequest(null);
+        }}
+        onSubmit={handleEditSubmit}
       />
     </View>
     </SafeAreaView>
@@ -641,10 +726,12 @@ const styles = StyleSheet.create({
   connectButton: {
     backgroundColor: colors.accent.primary,
     paddingHorizontal: s(12),
-    height: s(30),
+    height: s(26),
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: 0,
+    borderWidth: s(2),
+    borderColor: colors.border,
   },
   connectButtonDisabled: {
     opacity: 0.5,
@@ -872,6 +959,15 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     textAlign: 'center',
   },
+  emptyListCommand: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: fs(28),
+    fontWeight: '800',
+    letterSpacing: 1,
+    color: colors.status.error,
+    textAlign: 'center',
+    marginTop: spacing.xs,
+  },
   nextStreamHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -880,8 +976,6 @@ const styles = StyleSheet.create({
     paddingRight: spacing.sm,
     height: s(38),
     backgroundColor: colors.background.main,
-    borderBottomWidth: s(2),
-    borderBottomColor: colors.border,
   },
   nextStreamTitle: {
     fontFamily: 'Helvetica Neue',

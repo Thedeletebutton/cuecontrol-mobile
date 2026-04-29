@@ -156,9 +156,11 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   title: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.lg,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text.primary,
+    letterSpacing: 1,
   },
   closeButton: {
     padding: spacing.xs,
@@ -167,15 +169,20 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
   },
   label: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.sm,
+    fontWeight: '800',
     color: colors.text.secondary,
+    letterSpacing: 1,
     marginBottom: spacing.xs,
     textTransform: 'uppercase',
   },
   readonlyValue: {
+    fontFamily: 'Helvetica Neue',
     fontSize: typography.sizes.md,
     color: colors.accent.primary,
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 1,
     marginBottom: spacing.lg,
   },
   input: {
@@ -193,8 +200,11 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   error: {
+    fontFamily: 'Helvetica Neue',
     color: colors.status.error,
     fontSize: typography.sizes.sm,
+    fontWeight: '800',
+    letterSpacing: 1,
     marginBottom: spacing.md,
   },
   submitButton: {
@@ -207,8 +217,10 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   submitButtonText: {
+    fontFamily: 'Helvetica Neue',
     color: colors.text.primary,
     fontSize: typography.sizes.md,
-    fontWeight: '600',
+    fontWeight: '800',
+    letterSpacing: 1,
   },
 });

@@ -19,18 +19,42 @@ import { useAuth } from '../../src/context/AuthContext';
 import { useAppModeContext } from '../../src/context/AppModeContext';
 import { useLicense } from '../../src/context/LicenseContext';
 import { AboutModal } from '../../src/components/AboutModal';
+import { SettingRow } from '../../src/components/SettingRow';
 import { setCurrentLicenseKey, registerDJHandle, getDJHandle } from '../../src/services/requests';
 import { colors, typography, spacing } from '../../src/constants/theme';
 import { s, fs } from '../../src/utils/responsive';
 
-type SettingsTab = 'license' | 'display' | 'account';
+type SettingsTab = 'license' | 'admin' | 'account';
 
+// DJ Dashboard AsyncStorage keys
 const DJ_HEADER_FONT_SIZE_KEY = '@cuecontrol_dj_header_font_size';
 const DJ_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_dj_requester_font_size';
 const DJ_TRACK_FONT_SIZE_KEY = '@cuecontrol_dj_track_font_size';
 const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
 const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
 const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
+const DJ_TITLEBAR_RIGHT_WIDTH_KEY = '@cuecontrol_dj_titlebar_right_width';
+const DJ_TOPBAR_RIGHT_WIDTH_KEY = '@cuecontrol_dj_topbar_right_width';
+const DJ_HEADER_ROW_HEIGHT_KEY = '@cuecontrol_dj_header_row_height';
+const DJ_TOPBAR_HEIGHT_KEY = '@cuecontrol_dj_topbar_height';
+const DJ_COUNTS_ROW_HEIGHT_KEY = '@cuecontrol_dj_counts_row_height';
+const DJ_ROW_HEIGHT_KEY = '@cuecontrol_dj_row_height';
+const DJ_REQUESTER_SECTION_HEIGHT_KEY = '@cuecontrol_dj_requester_section_height';
+const DJ_NEXT_STREAM_HEADER_HEIGHT_KEY = '@cuecontrol_dj_next_stream_header_height';
+
+// Viewer Dashboard AsyncStorage keys
+const VIEWER_HEADER_FONT_SIZE_KEY = '@cuecontrol_viewer_header_font_size';
+const VIEWER_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_viewer_requester_font_size';
+const VIEWER_TRACK_FONT_SIZE_KEY = '@cuecontrol_viewer_track_font_size';
+const VIEWER_COLUMN_WIDTH_KEY = '@cuecontrol_viewer_column_width';
+const VIEWER_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_viewer_content_padding_left';
+const VIEWER_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_viewer_content_padding_right';
+const VIEWER_HEADER_ROW_HEIGHT_KEY = '@cuecontrol_viewer_header_row_height';
+const VIEWER_TOPBAR_HEIGHT_KEY = '@cuecontrol_viewer_topbar_height';
+const VIEWER_COUNTS_ROW_HEIGHT_KEY = '@cuecontrol_viewer_counts_row_height';
+const VIEWER_ROW_HEIGHT_KEY = '@cuecontrol_viewer_row_height';
+const VIEWER_REQUESTER_SECTION_HEIGHT_KEY = '@cuecontrol_viewer_requester_section_height';
+const VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY = '@cuecontrol_viewer_next_stream_header_height';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -47,43 +71,100 @@ export default function SettingsScreen() {
   const [handleInput, setHandleInput] = useState('');
   const [savingHandle, setSavingHandle] = useState(false);
 
-  // Display settings
-  const [headerFontSize, setHeaderFontSize] = useState(11);
-  const [requesterFontSize, setRequesterFontSize] = useState(12);
-  const [trackFontSize, setTrackFontSize] = useState(12);
-  const [columnWidth, setColumnWidth] = useState(98);
-  const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
-  const [contentPaddingRight, setContentPaddingRight] = useState(8);
+  // Collapsible section state
+  const [djExpanded, setDjExpanded] = useState(true);
+  const [viewerExpanded, setViewerExpanded] = useState(false);
 
-  // Load display settings
+  // DJ Dashboard settings
+  const [djHeaderFontSize, setDjHeaderFontSize] = useState(11);
+  const [djRequesterFontSize, setDjRequesterFontSize] = useState(12);
+  const [djTrackFontSize, setDjTrackFontSize] = useState(12);
+  const [djColumnWidth, setDjColumnWidth] = useState(98);
+  const [djContentPaddingLeft, setDjContentPaddingLeft] = useState(5);
+  const [djContentPaddingRight, setDjContentPaddingRight] = useState(8);
+  const [djTitleBarRightWidth, setDjTitleBarRightWidth] = useState(98);
+  const [djTopBarRightWidth, setDjTopBarRightWidth] = useState(98);
+  const [djHeaderRowHeight, setDjHeaderRowHeight] = useState(70);
+  const [djTopBarHeight, setDjTopBarHeight] = useState(38);
+  const [djCountsRowHeight, setDjCountsRowHeight] = useState(30);
+  const [djRowHeight, setDjRowHeight] = useState(70);
+  const [djRequesterSectionHeight, setDjRequesterSectionHeight] = useState(38);
+  const [djNextStreamHeaderHeight, setDjNextStreamHeaderHeight] = useState(38);
+
+  // Viewer Dashboard settings
+  const [viewerHeaderFontSize, setViewerHeaderFontSize] = useState(15);
+  const [viewerRequesterFontSize, setViewerRequesterFontSize] = useState(15);
+  const [viewerTrackFontSize, setViewerTrackFontSize] = useState(15);
+  const [viewerColumnWidth, setViewerColumnWidth] = useState(98);
+  const [viewerContentPaddingLeft, setViewerContentPaddingLeft] = useState(5);
+  const [viewerContentPaddingRight, setViewerContentPaddingRight] = useState(8);
+  const [viewerHeaderRowHeight, setViewerHeaderRowHeight] = useState(40);
+  const [viewerTopBarHeight, setViewerTopBarHeight] = useState(38);
+  const [viewerCountsRowHeight, setViewerCountsRowHeight] = useState(30);
+  const [viewerRowHeight, setViewerRowHeight] = useState(70);
+  const [viewerRequesterSectionHeight, setViewerRequesterSectionHeight] = useState(38);
+  const [viewerNextStreamHeaderHeight, setViewerNextStreamHeaderHeight] = useState(38);
+
+  // Load all settings
   useEffect(() => {
-    const loadDisplaySettings = async () => {
+    const loadSettings = async () => {
       try {
-        const savedHeaderSize = await AsyncStorage.getItem(DJ_HEADER_FONT_SIZE_KEY);
-        const savedRequesterSize = await AsyncStorage.getItem(DJ_REQUESTER_FONT_SIZE_KEY);
-        const savedTrackSize = await AsyncStorage.getItem(DJ_TRACK_FONT_SIZE_KEY);
-        const savedColumnWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
-        const savedPaddingLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
-        const savedPaddingRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
+        const keys = [
+          DJ_HEADER_FONT_SIZE_KEY, DJ_REQUESTER_FONT_SIZE_KEY, DJ_TRACK_FONT_SIZE_KEY,
+          DJ_COLUMN_WIDTH_KEY, DJ_CONTENT_PADDING_LEFT_KEY, DJ_CONTENT_PADDING_RIGHT_KEY,
+          DJ_TITLEBAR_RIGHT_WIDTH_KEY, DJ_TOPBAR_RIGHT_WIDTH_KEY, DJ_HEADER_ROW_HEIGHT_KEY,
+          DJ_TOPBAR_HEIGHT_KEY, DJ_COUNTS_ROW_HEIGHT_KEY, DJ_ROW_HEIGHT_KEY,
+          DJ_REQUESTER_SECTION_HEIGHT_KEY, DJ_NEXT_STREAM_HEADER_HEIGHT_KEY,
+          VIEWER_HEADER_FONT_SIZE_KEY, VIEWER_REQUESTER_FONT_SIZE_KEY, VIEWER_TRACK_FONT_SIZE_KEY,
+          VIEWER_COLUMN_WIDTH_KEY, VIEWER_CONTENT_PADDING_LEFT_KEY, VIEWER_CONTENT_PADDING_RIGHT_KEY,
+          VIEWER_HEADER_ROW_HEIGHT_KEY, VIEWER_TOPBAR_HEIGHT_KEY, VIEWER_COUNTS_ROW_HEIGHT_KEY,
+          VIEWER_ROW_HEIGHT_KEY, VIEWER_REQUESTER_SECTION_HEIGHT_KEY, VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY,
+        ];
+        const values = await AsyncStorage.multiGet(keys);
+        const map = new Map(values);
 
-        if (savedHeaderSize) setHeaderFontSize(parseInt(savedHeaderSize, 10));
-        if (savedRequesterSize) setRequesterFontSize(parseInt(savedRequesterSize, 10));
-        if (savedTrackSize) setTrackFontSize(parseInt(savedTrackSize, 10));
-        if (savedColumnWidth) setColumnWidth(parseInt(savedColumnWidth, 10));
-        if (savedPaddingLeft) setContentPaddingLeft(parseInt(savedPaddingLeft, 10));
-        if (savedPaddingRight) setContentPaddingRight(parseInt(savedPaddingRight, 10));
+        const p = (key: string) => { const v = map.get(key); return v ? parseInt(v, 10) : null; };
+
+        // DJ settings
+        const v1 = p(DJ_HEADER_FONT_SIZE_KEY); if (v1 != null) setDjHeaderFontSize(v1);
+        const v2 = p(DJ_REQUESTER_FONT_SIZE_KEY); if (v2 != null) setDjRequesterFontSize(v2);
+        const v3 = p(DJ_TRACK_FONT_SIZE_KEY); if (v3 != null) setDjTrackFontSize(v3);
+        const v4 = p(DJ_COLUMN_WIDTH_KEY); if (v4 != null) setDjColumnWidth(v4);
+        const v5 = p(DJ_CONTENT_PADDING_LEFT_KEY); if (v5 != null) setDjContentPaddingLeft(v5);
+        const v6 = p(DJ_CONTENT_PADDING_RIGHT_KEY); if (v6 != null) setDjContentPaddingRight(v6);
+        const v7 = p(DJ_TITLEBAR_RIGHT_WIDTH_KEY); if (v7 != null) setDjTitleBarRightWidth(v7);
+        const v8 = p(DJ_TOPBAR_RIGHT_WIDTH_KEY); if (v8 != null) setDjTopBarRightWidth(v8);
+        const v9 = p(DJ_HEADER_ROW_HEIGHT_KEY); if (v9 != null) setDjHeaderRowHeight(v9);
+        const v10 = p(DJ_TOPBAR_HEIGHT_KEY); if (v10 != null) setDjTopBarHeight(v10);
+        const v11 = p(DJ_COUNTS_ROW_HEIGHT_KEY); if (v11 != null) setDjCountsRowHeight(v11);
+        const v12 = p(DJ_ROW_HEIGHT_KEY); if (v12 != null) setDjRowHeight(v12);
+        const v13 = p(DJ_REQUESTER_SECTION_HEIGHT_KEY); if (v13 != null) setDjRequesterSectionHeight(v13);
+        const v14 = p(DJ_NEXT_STREAM_HEADER_HEIGHT_KEY); if (v14 != null) setDjNextStreamHeaderHeight(v14);
+
+        // Viewer settings
+        const v15 = p(VIEWER_HEADER_FONT_SIZE_KEY); if (v15 != null) setViewerHeaderFontSize(v15);
+        const v16 = p(VIEWER_REQUESTER_FONT_SIZE_KEY); if (v16 != null) setViewerRequesterFontSize(v16);
+        const v17 = p(VIEWER_TRACK_FONT_SIZE_KEY); if (v17 != null) setViewerTrackFontSize(v17);
+        const v18 = p(VIEWER_COLUMN_WIDTH_KEY); if (v18 != null) setViewerColumnWidth(v18);
+        const v19 = p(VIEWER_CONTENT_PADDING_LEFT_KEY); if (v19 != null) setViewerContentPaddingLeft(v19);
+        const v20 = p(VIEWER_CONTENT_PADDING_RIGHT_KEY); if (v20 != null) setViewerContentPaddingRight(v20);
+        const v21 = p(VIEWER_HEADER_ROW_HEIGHT_KEY); if (v21 != null) setViewerHeaderRowHeight(v21);
+        const v22 = p(VIEWER_TOPBAR_HEIGHT_KEY); if (v22 != null) setViewerTopBarHeight(v22);
+        const v23 = p(VIEWER_COUNTS_ROW_HEIGHT_KEY); if (v23 != null) setViewerCountsRowHeight(v23);
+        const v24 = p(VIEWER_ROW_HEIGHT_KEY); if (v24 != null) setViewerRowHeight(v24);
+        const v25 = p(VIEWER_REQUESTER_SECTION_HEIGHT_KEY); if (v25 != null) setViewerRequesterSectionHeight(v25);
+        const v26 = p(VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY); if (v26 != null) setViewerNextStreamHeaderHeight(v26);
       } catch (error) {
-        console.error('Failed to load display settings:', error);
+        console.error('Failed to load settings:', error);
       }
     };
-    loadDisplaySettings();
+    loadSettings();
   }, []);
 
   useEffect(() => {
     if (licenseKey) {
       setLicenseInput(licenseKey);
       setCurrentLicenseKey(licenseKey);
-      // Load existing handle
       loadDJHandle(licenseKey);
     }
   }, [licenseKey]);
@@ -192,7 +273,6 @@ export default function SettingsScreen() {
           text: 'Sign Out',
           style: 'destructive',
           onPress: async () => {
-            // Clear saved credentials to prevent auto-login
             await AsyncStorage.multiRemove([
               'cuecontrol_saved_credentials',
               'cuecontrol_stay_signed_in',
@@ -223,7 +303,6 @@ export default function SettingsScreen() {
 
     try {
       await Linking.openURL(mailtoUrl);
-      // Show confirmation popup
       Alert.alert(
         'Request Sent',
         'Please check your email for your license key. It may take up to 24 hours to receive your key.',
@@ -234,12 +313,17 @@ export default function SettingsScreen() {
     }
   };
 
+  // Helper to save a setting
+  const saveSetting = async (key: string, value: number) => {
+    await AsyncStorage.setItem(key, value.toString());
+  };
+
   return (
     <View style={styles.container}>
       {/* Custom header matching desktop style */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>CueControl Settings</Text>
+          <Text style={styles.headerTitle}>CueControl - Settings</Text>
           <View style={styles.headerButtons}>
             <TouchableOpacity
               style={[styles.headerButton, styles.infoButton]}
@@ -269,11 +353,11 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'display' && styles.tabActive]}
-          onPress={() => setActiveTab('display')}
+          style={[styles.tab, activeTab === 'admin' && styles.tabActive]}
+          onPress={() => setActiveTab('admin')}
         >
-          <Text style={[styles.tabText, activeTab === 'display' && styles.tabTextActive]}>
-            Display
+          <Text style={[styles.tabText, activeTab === 'admin' && styles.tabTextActive]}>
+            Admin
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -299,288 +383,244 @@ export default function SettingsScreen() {
               </View>
 
               <View style={styles.licenseContainer}>
-            <Text style={styles.licenseLabel}>
-              Enter your CueControl license key:
-            </Text>
-
-            <TextInput
-              testID="settings-license-input"
-              style={styles.licenseInput}
-              value={licenseInput}
-              onChangeText={handleLicenseInputChange}
-              placeholder="DJRQ-XXXX-XXXX-XXXX"
-              placeholderTextColor={colors.text.muted}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              maxLength={19}
-              editable={true}
-              selectTextOnFocus={true}
-            />
-
-            <View style={styles.licenseButtonRow}>
-              <TouchableOpacity
-                style={styles.validateButton}
-                onPress={handleValidateLicense}
-              >
-                <Text style={styles.validateButtonText}>Validate</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.licenseRowSaveButton, saving && styles.buttonDisabled]}
-                onPress={handleSaveLicense}
-                disabled={saving}
-              >
-                <Text style={styles.saveButtonText}>
-                  {saving ? 'Saving...' : 'Save'}
+                <Text style={styles.licenseLabel}>
+                  Enter your CueControl license key:
                 </Text>
-              </TouchableOpacity>
-            </View>
 
-            <View style={styles.divider} />
-            <Text style={styles.requestLabel}>Don't have a license key?</Text>
-            <TouchableOpacity style={styles.requestButton} onPress={handleRequestLicenseKey}>
-              <Ionicons name="mail-outline" size={s(18)} color={colors.text.primary} />
-              <Text style={styles.requestButtonText}>Request a License Key</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {licenseKey && isValidFormat && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Your Stream ID</Text>
-            </View>
-
-            <View style={styles.licenseContainer}>
-              <Text style={styles.licenseLabel}>
-                Set a Stream ID that viewers can use to find you (instead of sharing your license key):
-              </Text>
-
-              <View style={styles.handleInputContainer}>
-                <Text style={styles.handlePrefix}>@</Text>
                 <TextInput
-                  testID="settings-handle-input"
-                  style={styles.handleInput}
-                  value={handleInput}
-                  onChangeText={(text) => setHandleInput(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                  placeholder="your_stream_id"
+                  testID="settings-license-input"
+                  style={styles.licenseInput}
+                  value={licenseInput}
+                  onChangeText={handleLicenseInputChange}
+                  placeholder="DJRQ-XXXX-XXXX-XXXX"
                   placeholderTextColor={colors.text.muted}
-                  autoCapitalize="none"
+                  autoCapitalize="characters"
                   autoCorrect={false}
-                  maxLength={20}
+                  maxLength={19}
+                  editable={true}
+                  selectTextOnFocus={true}
                 />
-              </View>
 
-              <TouchableOpacity
-                testID="settings-save-handle-button"
-                style={[styles.saveButton, savingHandle && styles.buttonDisabled]}
-                onPress={handleSaveHandle}
-                disabled={savingHandle}
-              >
-                <Ionicons name="save-outline" size={s(18)} color={colors.text.primary} />
-                <Text style={styles.saveButtonText}>
-                  {savingHandle ? 'Saving...' : 'Save Stream ID'}
-                </Text>
-              </TouchableOpacity>
-
-              {djHandle && (
-                <>
-                  <View style={styles.divider} />
-                  <Text style={styles.shareLabel}>Share with viewers:</Text>
-                  <TouchableOpacity style={styles.copyButton} onPress={handleCopyHandle}>
-                    <Ionicons name="copy-outline" size={s(18)} color={colors.accent.primary} />
-                    <Text style={styles.copyButtonText}>@{djHandle}</Text>
+                <View style={styles.licenseButtonRow}>
+                  <TouchableOpacity
+                    style={styles.validateButton}
+                    onPress={handleValidateLicense}
+                  >
+                    <Text style={styles.validateButtonText}>Validate</Text>
                   </TouchableOpacity>
-                  <Text style={styles.handleHint}>
-                    Viewers enter this Stream ID in the app to send you requests
-                  </Text>
-                </>
-              )}
+
+                  <TouchableOpacity
+                    style={[styles.licenseRowSaveButton, saving && styles.buttonDisabled]}
+                    onPress={handleSaveLicense}
+                    disabled={saving}
+                  >
+                    <Text style={styles.saveButtonText}>
+                      {saving ? 'Saving...' : 'Save'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.divider} />
+                <Text style={styles.requestLabel}>Don't have a license key?</Text>
+                <TouchableOpacity style={styles.requestButton} onPress={handleRequestLicenseKey}>
+                  <Ionicons name="mail-outline" size={s(18)} color={colors.text.primary} />
+                  <Text style={styles.requestButtonText}>Request a License Key</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
+
+            {licenseKey && isValidFormat && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Your Stream ID</Text>
+                </View>
+
+                <View style={styles.licenseContainer}>
+                  <Text style={styles.licenseLabel}>
+                    Set a Stream ID that viewers can use to find you (instead of sharing your license key):
+                  </Text>
+
+                  <View style={styles.handleInputContainer}>
+                    <Text style={styles.handlePrefix}>@</Text>
+                    <TextInput
+                      testID="settings-handle-input"
+                      style={styles.handleInput}
+                      value={handleInput}
+                      onChangeText={(text) => setHandleInput(text.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                      placeholder="your_stream_id"
+                      placeholderTextColor={colors.text.muted}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      maxLength={20}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    testID="settings-save-handle-button"
+                    style={[styles.saveButton, savingHandle && styles.buttonDisabled]}
+                    onPress={handleSaveHandle}
+                    disabled={savingHandle}
+                  >
+                    <Ionicons name="save-outline" size={s(18)} color={colors.text.primary} />
+                    <Text style={styles.saveButtonText}>
+                      {savingHandle ? 'Saving...' : 'Save Stream ID'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {djHandle && (
+                    <>
+                      <View style={styles.divider} />
+                      <Text style={styles.shareLabel}>Share with viewers:</Text>
+                      <TouchableOpacity style={styles.copyButton} onPress={handleCopyHandle}>
+                        <Ionicons name="copy-outline" size={s(18)} color={colors.accent.primary} />
+                        <Text style={styles.copyButtonText}>@{djHandle}</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.handleHint}>
+                        Viewers enter this Stream ID in the app to send you requests
+                      </Text>
+                    </>
+                  )}
+                </View>
+              </View>
+            )}
           </>
         )}
 
-        {activeTab === 'display' && (
+        {activeTab === 'admin' && (
           <>
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Font Sizes</Text>
-              </View>
+            {/* DJ Dashboard collapsible section */}
+            <TouchableOpacity
+              style={styles.collapsibleHeader}
+              onPress={() => setDjExpanded(!djExpanded)}
+            >
+              <Text style={styles.collapsibleTitle}>DJ Dashboard</Text>
+              <Ionicons
+                name={djExpanded ? 'chevron-up' : 'chevron-down'}
+                size={s(18)}
+                color={colors.accent.primary}
+              />
+            </TouchableOpacity>
 
-              <View style={styles.displayContainer}>
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Header Font Size</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(8, headerFontSize - 1);
-                        setHeaderFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{headerFontSize}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(18, headerFontSize + 1);
-                        setHeaderFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_HEADER_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+            {djExpanded && (
+              <>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Font Sizes</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Header Font Size" value={djHeaderFontSize} min={8} max={20} step={1}
+                      onChange={(v) => { setDjHeaderFontSize(v); saveSetting(DJ_HEADER_FONT_SIZE_KEY, v); }} />
+                    <SettingRow label="Requester Font Size" value={djRequesterFontSize} min={10} max={20} step={1}
+                      onChange={(v) => { setDjRequesterFontSize(v); saveSetting(DJ_REQUESTER_FONT_SIZE_KEY, v); }} />
+                    <SettingRow label="Track Font Size" value={djTrackFontSize} min={10} max={20} step={1} isLast
+                      onChange={(v) => { setDjTrackFontSize(v); saveSetting(DJ_TRACK_FONT_SIZE_KEY, v); }} />
                   </View>
                 </View>
 
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Requester Font Size</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(10, requesterFontSize - 1);
-                        setRequesterFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{requesterFontSize}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(20, requesterFontSize + 1);
-                        setRequesterFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_REQUESTER_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Column & Padding</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Column Width" value={djColumnWidth} min={70} max={140} step={2}
+                      onChange={(v) => { setDjColumnWidth(v); saveSetting(DJ_COLUMN_WIDTH_KEY, v); }} />
+                    <SettingRow label="Content Padding Left" value={djContentPaddingLeft} min={0} max={20} step={1}
+                      onChange={(v) => { setDjContentPaddingLeft(v); saveSetting(DJ_CONTENT_PADDING_LEFT_KEY, v); }} />
+                    <SettingRow label="Content Padding Right" value={djContentPaddingRight} min={0} max={20} step={1}
+                      onChange={(v) => { setDjContentPaddingRight(v); saveSetting(DJ_CONTENT_PADDING_RIGHT_KEY, v); }} />
+                    <SettingRow label="Title Bar Right Width" value={djTitleBarRightWidth} min={70} max={140} step={2}
+                      onChange={(v) => { setDjTitleBarRightWidth(v); saveSetting(DJ_TITLEBAR_RIGHT_WIDTH_KEY, v); }} />
+                    <SettingRow label="Top Bar Right Width" value={djTopBarRightWidth} min={70} max={140} step={2} isLast
+                      onChange={(v) => { setDjTopBarRightWidth(v); saveSetting(DJ_TOPBAR_RIGHT_WIDTH_KEY, v); }} />
                   </View>
                 </View>
 
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Track Font Size</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(10, trackFontSize - 1);
-                        setTrackFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{trackFontSize}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(20, trackFontSize + 1);
-                        setTrackFontSize(newSize);
-                        await AsyncStorage.setItem(DJ_TRACK_FONT_SIZE_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Heights</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Header Row Height" value={djHeaderRowHeight} min={40} max={120} step={2}
+                      onChange={(v) => { setDjHeaderRowHeight(v); saveSetting(DJ_HEADER_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Top Bar Height" value={djTopBarHeight} min={25} max={60} step={2}
+                      onChange={(v) => { setDjTopBarHeight(v); saveSetting(DJ_TOPBAR_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Counts Row Height" value={djCountsRowHeight} min={20} max={50} step={2}
+                      onChange={(v) => { setDjCountsRowHeight(v); saveSetting(DJ_COUNTS_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Row Height" value={djRowHeight} min={40} max={120} step={2}
+                      onChange={(v) => { setDjRowHeight(v); saveSetting(DJ_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Requester Section Height" value={djRequesterSectionHeight} min={25} max={60} step={2}
+                      onChange={(v) => { setDjRequesterSectionHeight(v); saveSetting(DJ_REQUESTER_SECTION_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Next Stream Header Height" value={djNextStreamHeaderHeight} min={25} max={60} step={2} isLast
+                      onChange={(v) => { setDjNextStreamHeaderHeight(v); saveSetting(DJ_NEXT_STREAM_HEADER_HEIGHT_KEY, v); }} />
                   </View>
                 </View>
-              </View>
-            </View>
+              </>
+            )}
 
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Column & Padding</Text>
-              </View>
+            {/* Viewer Dashboard collapsible section */}
+            <TouchableOpacity
+              style={styles.collapsibleHeader}
+              onPress={() => setViewerExpanded(!viewerExpanded)}
+            >
+              <Text style={styles.collapsibleTitle}>Viewer Dashboard</Text>
+              <Ionicons
+                name={viewerExpanded ? 'chevron-up' : 'chevron-down'}
+                size={s(18)}
+                color={colors.accent.primary}
+              />
+            </TouchableOpacity>
 
-              <View style={styles.displayContainer}>
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Column Width</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(70, columnWidth - 2);
-                        setColumnWidth(newSize);
-                        await AsyncStorage.setItem(DJ_COLUMN_WIDTH_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{columnWidth}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(140, columnWidth + 2);
-                        setColumnWidth(newSize);
-                        await AsyncStorage.setItem(DJ_COLUMN_WIDTH_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+            {viewerExpanded && (
+              <>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Font Sizes</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Header Font Size" value={viewerHeaderFontSize} min={8} max={20} step={1}
+                      onChange={(v) => { setViewerHeaderFontSize(v); saveSetting(VIEWER_HEADER_FONT_SIZE_KEY, v); }} />
+                    <SettingRow label="Requester Font Size" value={viewerRequesterFontSize} min={10} max={20} step={1}
+                      onChange={(v) => { setViewerRequesterFontSize(v); saveSetting(VIEWER_REQUESTER_FONT_SIZE_KEY, v); }} />
+                    <SettingRow label="Track Font Size" value={viewerTrackFontSize} min={10} max={20} step={1} isLast
+                      onChange={(v) => { setViewerTrackFontSize(v); saveSetting(VIEWER_TRACK_FONT_SIZE_KEY, v); }} />
                   </View>
                 </View>
 
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Content Padding Left</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(0, contentPaddingLeft - 1);
-                        setContentPaddingLeft(newSize);
-                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_LEFT_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{contentPaddingLeft}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(20, contentPaddingLeft + 1);
-                        setContentPaddingLeft(newSize);
-                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_LEFT_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Column & Padding</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Column Width" value={viewerColumnWidth} min={70} max={140} step={2}
+                      onChange={(v) => { setViewerColumnWidth(v); saveSetting(VIEWER_COLUMN_WIDTH_KEY, v); }} />
+                    <SettingRow label="Content Padding Left" value={viewerContentPaddingLeft} min={0} max={20} step={1}
+                      onChange={(v) => { setViewerContentPaddingLeft(v); saveSetting(VIEWER_CONTENT_PADDING_LEFT_KEY, v); }} />
+                    <SettingRow label="Content Padding Right" value={viewerContentPaddingRight} min={0} max={20} step={1} isLast
+                      onChange={(v) => { setViewerContentPaddingRight(v); saveSetting(VIEWER_CONTENT_PADDING_RIGHT_KEY, v); }} />
                   </View>
                 </View>
 
-                <View style={styles.fontSizeRow}>
-                  <Text style={styles.fontSizeLabel}>Content Padding Right</Text>
-                  <View style={styles.fontSizeControls}>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.max(0, contentPaddingRight - 1);
-                        setContentPaddingRight(newSize);
-                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_RIGHT_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
-                    <Text style={styles.fontSizeValue}>{contentPaddingRight}px</Text>
-                    <TouchableOpacity
-                      style={styles.fontSizeButton}
-                      onPress={async () => {
-                        const newSize = Math.min(20, contentPaddingRight + 1);
-                        setContentPaddingRight(newSize);
-                        await AsyncStorage.setItem(DJ_CONTENT_PADDING_RIGHT_KEY, newSize.toString());
-                      }}
-                    >
-                      <Ionicons name="add" size={s(16)} color={colors.accent.primary} />
-                    </TouchableOpacity>
+                <View style={styles.section}>
+                  <View style={styles.sectionHeader}>
+                    <Text style={styles.sectionTitle}>Heights</Text>
+                  </View>
+                  <View style={styles.displayContainer}>
+                    <SettingRow label="Header Row Height" value={viewerHeaderRowHeight} min={30} max={100} step={2}
+                      onChange={(v) => { setViewerHeaderRowHeight(v); saveSetting(VIEWER_HEADER_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Top Bar Height" value={viewerTopBarHeight} min={25} max={60} step={2}
+                      onChange={(v) => { setViewerTopBarHeight(v); saveSetting(VIEWER_TOPBAR_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Counts Row Height" value={viewerCountsRowHeight} min={20} max={50} step={2}
+                      onChange={(v) => { setViewerCountsRowHeight(v); saveSetting(VIEWER_COUNTS_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Row Height" value={viewerRowHeight} min={40} max={120} step={2}
+                      onChange={(v) => { setViewerRowHeight(v); saveSetting(VIEWER_ROW_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Requester Section Height" value={viewerRequesterSectionHeight} min={25} max={60} step={2}
+                      onChange={(v) => { setViewerRequesterSectionHeight(v); saveSetting(VIEWER_REQUESTER_SECTION_HEIGHT_KEY, v); }} />
+                    <SettingRow label="Next Stream Header Height" value={viewerNextStreamHeaderHeight} min={25} max={60} step={2} isLast
+                      onChange={(v) => { setViewerNextStreamHeaderHeight(v); saveSetting(VIEWER_NEXT_STREAM_HEADER_HEIGHT_KEY, v); }} />
                   </View>
                 </View>
-              </View>
-            </View>
+              </>
+            )}
           </>
         )}
 
@@ -648,8 +688,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: colors.background.main,
-    borderTopWidth: s(2),
-    borderTopColor: colors.border,
     borderBottomWidth: s(2),
     borderBottomColor: colors.border,
   },
@@ -685,22 +723,8 @@ const styles = StyleSheet.create({
   infoButton: {
     borderColor: colors.accent.primary,
   },
-  infoButtonText: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.accent.primary,
-    fontSize: fs(15),
-    fontWeight: '800',
-    letterSpacing: 1,
-  },
   closeButton: {
     borderColor: colors.status.error,
-  },
-  closeButtonText: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.status.error,
-    fontSize: fs(15),
-    fontWeight: '800',
-    letterSpacing: 1,
   },
   tabBar: {
     flexDirection: 'row',
@@ -749,6 +773,26 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
     fontWeight: '800',
     color: colors.text.muted,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  collapsibleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    backgroundColor: colors.background.main,
+    borderBottomWidth: s(2),
+    borderBottomColor: colors.border,
+    borderTopWidth: s(2),
+    borderTopColor: colors.border,
+  },
+  collapsibleTitle: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: fs(18),
+    fontWeight: '800',
+    color: colors.accent.primary,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -963,45 +1007,6 @@ const styles = StyleSheet.create({
   displayContainer: {
     padding: spacing.lg,
     backgroundColor: colors.background.row,
-  },
-  fontSizeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  fontSizeLabel: {
-    fontFamily: 'Helvetica Neue',
-    fontSize: fs(15),
-    fontWeight: '800',
-    color: colors.text.primary,
-    letterSpacing: 1,
-  },
-  fontSizeControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  fontSizeButton: {
-    width: s(25),
-    height: s(25),
-    borderWidth: s(2),
-    borderColor: colors.accent.primary,
-    borderRadius: 0,
-    backgroundColor: colors.background.main,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fontSizeValue: {
-    fontFamily: 'Helvetica Neue',
-    color: colors.text.primary,
-    fontSize: fs(15),
-    fontWeight: '800',
-    letterSpacing: 1,
-    minWidth: s(50),
-    textAlign: 'center',
   },
   saveSettingsContainer: {
     padding: spacing.md,

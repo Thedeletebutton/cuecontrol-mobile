@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRequests } from '../../src/hooks/useRequests';
 import { useNextStream } from '../../src/hooks/useNextStream';
@@ -46,9 +47,20 @@ import { colors, typography, spacing } from '../../src/constants/theme';
 import { Request } from '../../src/types/request';
 import { s, fs } from '../../src/utils/responsive';
 
+const DJ_HEADER_FONT_SIZE_KEY = '@cuecontrol_dj_header_font_size';
+const DJ_REQUESTER_FONT_SIZE_KEY = '@cuecontrol_dj_requester_font_size';
+const DJ_TRACK_FONT_SIZE_KEY = '@cuecontrol_dj_track_font_size';
 const DJ_COLUMN_WIDTH_KEY = '@cuecontrol_dj_column_width';
 const DJ_CONTENT_PADDING_LEFT_KEY = '@cuecontrol_dj_content_padding_left';
 const DJ_CONTENT_PADDING_RIGHT_KEY = '@cuecontrol_dj_content_padding_right';
+const DJ_TITLEBAR_RIGHT_WIDTH_KEY = '@cuecontrol_dj_titlebar_right_width';
+const DJ_TOPBAR_RIGHT_WIDTH_KEY = '@cuecontrol_dj_topbar_right_width';
+const DJ_HEADER_ROW_HEIGHT_KEY = '@cuecontrol_dj_header_row_height';
+const DJ_TOPBAR_HEIGHT_KEY = '@cuecontrol_dj_topbar_height';
+const DJ_COUNTS_ROW_HEIGHT_KEY = '@cuecontrol_dj_counts_row_height';
+const DJ_ROW_HEIGHT_KEY = '@cuecontrol_dj_row_height';
+const DJ_REQUESTER_SECTION_HEIGHT_KEY = '@cuecontrol_dj_requester_section_height';
+const DJ_NEXT_STREAM_HEADER_HEIGHT_KEY = '@cuecontrol_dj_next_stream_header_height';
 
 export default function QueueScreen() {
   const router = useRouter();
@@ -95,26 +107,61 @@ export default function QueueScreen() {
   const [aboutVisible, setAboutVisible] = useState(false);
   const [djHandle, setDjHandle] = useState<string | null>(null);
   const [currentRequester, setCurrentRequesterState] = useState<{ username: string; requestId: number; timestamp: number } | null>(null);
+  const [headerFontSize, setHeaderFontSize] = useState(15);
+  const [requesterFontSize, setRequesterFontSize] = useState(15);
+  const [trackFontSize, setTrackFontSize] = useState(15);
   const [columnWidth, setColumnWidth] = useState(98);
   const [contentPaddingLeft, setContentPaddingLeft] = useState(5);
   const [contentPaddingRight, setContentPaddingRight] = useState(8);
+  const [titleBarRightWidth, setTitleBarRightWidth] = useState(98);
+  const [topBarRightWidth, setTopBarRightWidth] = useState(98);
+  const [headerRowHeight, setHeaderRowHeight] = useState(70);
+  const [topBarHeight, setTopBarHeight] = useState(38);
+  const [countsRowHeight, setCountsRowHeight] = useState(30);
+  const [rowHeight, setRowHeight] = useState(70);
+  const [requesterSectionHeight, setRequesterSectionHeight] = useState(38);
+  const [nextStreamHeaderHeight, setNextStreamHeaderHeight] = useState(38);
 
-  // Load layout settings
-  useEffect(() => {
-    const loadLayoutSettings = async () => {
-      try {
-        const savedWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
-        const savedPadLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
-        const savedPadRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
-        if (savedWidth) setColumnWidth(parseInt(savedWidth, 10));
-        if (savedPadLeft) setContentPaddingLeft(parseInt(savedPadLeft, 10));
-        if (savedPadRight) setContentPaddingRight(parseInt(savedPadRight, 10));
-      } catch (error) {
-        console.error('Failed to load layout settings:', error);
-      }
-    };
-    loadLayoutSettings();
-  }, []);
+  // Reload layout settings every time the screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      const loadLayoutSettings = async () => {
+        try {
+          const savedHeaderFontSize = await AsyncStorage.getItem(DJ_HEADER_FONT_SIZE_KEY);
+          const savedRequesterFontSize = await AsyncStorage.getItem(DJ_REQUESTER_FONT_SIZE_KEY);
+          const savedTrackFontSize = await AsyncStorage.getItem(DJ_TRACK_FONT_SIZE_KEY);
+          const savedWidth = await AsyncStorage.getItem(DJ_COLUMN_WIDTH_KEY);
+          const savedPadLeft = await AsyncStorage.getItem(DJ_CONTENT_PADDING_LEFT_KEY);
+          const savedPadRight = await AsyncStorage.getItem(DJ_CONTENT_PADDING_RIGHT_KEY);
+          const savedTitleBarRightWidth = await AsyncStorage.getItem(DJ_TITLEBAR_RIGHT_WIDTH_KEY);
+          const savedTopBarRightWidth = await AsyncStorage.getItem(DJ_TOPBAR_RIGHT_WIDTH_KEY);
+          const savedHeaderRowHeight = await AsyncStorage.getItem(DJ_HEADER_ROW_HEIGHT_KEY);
+          const savedTopBarHeight = await AsyncStorage.getItem(DJ_TOPBAR_HEIGHT_KEY);
+          const savedCountsRowHeight = await AsyncStorage.getItem(DJ_COUNTS_ROW_HEIGHT_KEY);
+          const savedRowHeight = await AsyncStorage.getItem(DJ_ROW_HEIGHT_KEY);
+          const savedRequesterSectionHeight = await AsyncStorage.getItem(DJ_REQUESTER_SECTION_HEIGHT_KEY);
+          const savedNextStreamHeaderHeight = await AsyncStorage.getItem(DJ_NEXT_STREAM_HEADER_HEIGHT_KEY);
+          if (savedHeaderFontSize) setHeaderFontSize(parseInt(savedHeaderFontSize, 10));
+          if (savedRequesterFontSize) setRequesterFontSize(parseInt(savedRequesterFontSize, 10));
+          if (savedTrackFontSize) setTrackFontSize(parseInt(savedTrackFontSize, 10));
+          if (savedWidth) setColumnWidth(parseInt(savedWidth, 10));
+          if (savedPadLeft) setContentPaddingLeft(parseInt(savedPadLeft, 10));
+          if (savedPadRight) setContentPaddingRight(parseInt(savedPadRight, 10));
+          if (savedTitleBarRightWidth) setTitleBarRightWidth(parseInt(savedTitleBarRightWidth, 10));
+          if (savedTopBarRightWidth) setTopBarRightWidth(parseInt(savedTopBarRightWidth, 10));
+          if (savedHeaderRowHeight) setHeaderRowHeight(parseInt(savedHeaderRowHeight, 10));
+          if (savedTopBarHeight) setTopBarHeight(parseInt(savedTopBarHeight, 10));
+          if (savedCountsRowHeight) setCountsRowHeight(parseInt(savedCountsRowHeight, 10));
+          if (savedRowHeight) setRowHeight(parseInt(savedRowHeight, 10));
+          if (savedRequesterSectionHeight) setRequesterSectionHeight(parseInt(savedRequesterSectionHeight, 10));
+          if (savedNextStreamHeaderHeight) setNextStreamHeaderHeight(parseInt(savedNextStreamHeaderHeight, 10));
+        } catch (error) {
+          console.error('Failed to load layout settings:', error);
+        }
+      };
+      loadLayoutSettings();
+    }, [])
+  );
 
   // Subscribe to current requester
   useEffect(() => {
@@ -331,7 +378,7 @@ export default function QueueScreen() {
           {djHandle && <Text style={styles.channelName}>{djHandle.charAt(0).toUpperCase() + djHandle.slice(1)}'s </Text>}
           CueControl
         </Text>
-        <View style={[styles.headerButtons, { width: s(columnWidth) }]}>
+        <View style={[styles.headerButtons, { width: s(titleBarRightWidth) }]}>
           <TouchableOpacity
             style={[styles.iconButton, styles.infoButton]}
             onPress={() => setAboutVisible(true)}
@@ -390,9 +437,9 @@ export default function QueueScreen() {
       {renderHeader()}
 
       {/* Top bar with title and actions */}
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { height: s(topBarHeight) }]}>
         <Text style={styles.sectionTitle}>TRACK REQUESTS:</Text>
-        <View style={[styles.actionButtons, { width: s(columnWidth) }]}>
+        <View style={[styles.actionButtons, { width: s(topBarRightWidth) }]}>
           <TouchableOpacity
             testID="queue-add-button"
             style={[styles.iconButton, styles.addButton]}
@@ -418,7 +465,7 @@ export default function QueueScreen() {
       </View>
 
       {/* Counts row */}
-      <View style={styles.countsRow}>
+      <View style={[styles.countsRow, { height: s(countsRowHeight) }]}>
         <Text style={styles.summaryText}>
           Total<Text style={styles.colon}>:</Text> <Text testID="queue-total-count" style={styles.summaryValue}>{totalCount}</Text>
         </Text>
@@ -431,14 +478,14 @@ export default function QueueScreen() {
       </View>
 
       {/* Column Headers */}
-      <View style={styles.headerRow}>
+      <View style={[styles.headerRow, { minHeight: s(headerRowHeight) }]}>
         <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
-          <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
-          <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
+          <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>REQUESTED BY:</Text>
+          <Text style={[styles.headerSubText, { fontSize: headerFontSize }]} numberOfLines={1}>ARTIST - TRACK:</Text>
         </View>
         <View style={[styles.headerCell, styles.rightHeader, { width: s(columnWidth) }]}>
-          <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
-          <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
+          <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>STATUS:</Text>
+          <Text style={[styles.headerSubText, { fontSize: headerFontSize }]} numberOfLines={1}>OPTIONS:</Text>
         </View>
       </View>
 
@@ -464,6 +511,9 @@ export default function QueueScreen() {
               columnWidth={columnWidth}
               contentPaddingLeft={contentPaddingLeft}
               contentPaddingRight={contentPaddingRight}
+              requesterFontSize={requesterFontSize}
+              trackFontSize={trackFontSize}
+              rowHeight={rowHeight}
             />
           );
         }}
@@ -500,31 +550,40 @@ export default function QueueScreen() {
                 columnWidth={columnWidth}
                 contentPaddingLeft={contentPaddingLeft}
                 contentPaddingRight={contentPaddingRight}
+                requesterFontSize={requesterFontSize}
+                trackFontSize={trackFontSize}
+                rowHeight={rowHeight}
               />
             ))}
 
             {/* Next Stream Section */}
             <View style={styles.sectionBorder} />
             <View style={styles.sectionBorder} />
-            <View style={styles.nextStreamHeader}>
+            <View style={[styles.nextStreamHeader, { height: s(nextStreamHeaderHeight) }]}>
               <Text style={styles.nextStreamTitle}>NEXT STREAM:</Text>
             </View>
             <View style={styles.sectionBorder} />
-            <View style={styles.nextStreamCountsRow}>
+            <View style={[styles.nextStreamCountsRow, { height: s(countsRowHeight) }]}>
               <Text style={styles.nextStreamCount}>
                 Total<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamCount}</Text>
+              </Text>
+              <Text style={styles.nextStreamCount}>
+                Unplayed<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamRequests.filter(r => !r.played).length}</Text>
+              </Text>
+              <Text style={styles.nextStreamCount}>
+                Played<Text style={styles.colon}>:</Text> <Text style={styles.nextStreamCountValue}>{nextStreamRequests.filter(r => r.played).length}</Text>
               </Text>
             </View>
 
             {/* Next Stream Column Headers */}
-            <View style={styles.headerRow}>
+            <View style={[styles.headerRow, { minHeight: s(headerRowHeight) }]}>
               <View style={[styles.headerCell, styles.contentHeader, { paddingLeft: s(contentPaddingLeft), paddingRight: s(contentPaddingRight) }]}>
-                <Text style={styles.headerText} numberOfLines={1}>REQUESTED BY:</Text>
-                <Text style={styles.headerSubText} numberOfLines={1}>ARTIST - TRACK:</Text>
+                <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>REQUESTED BY:</Text>
+                <Text style={[styles.headerSubText, { fontSize: headerFontSize }]} numberOfLines={1}>ARTIST - TRACK:</Text>
               </View>
               <View style={[styles.headerCell, styles.rightHeader, { width: s(columnWidth) }]}>
-                <Text style={styles.headerText} numberOfLines={1}>STATUS:</Text>
-                <Text style={styles.headerSubText} numberOfLines={1}>OPTIONS:</Text>
+                <Text style={[styles.headerText, { fontSize: headerFontSize }]} numberOfLines={1}>STATUS:</Text>
+                <Text style={[styles.headerSubText, { fontSize: headerFontSize }]} numberOfLines={1}>OPTIONS:</Text>
               </View>
             </View>
 
@@ -552,22 +611,29 @@ export default function QueueScreen() {
                   columnWidth={columnWidth}
                   contentPaddingLeft={contentPaddingLeft}
                   contentPaddingRight={contentPaddingRight}
+                  requesterFontSize={requesterFontSize}
+                  trackFontSize={trackFontSize}
+                  rowHeight={rowHeight}
                 />
               ))
             )}
 
             {/* Requested By Section */}
             <View style={styles.sectionBorder} />
-            <View style={styles.requesterSection}>
-              <Text style={styles.requesterLabel}>REQUESTED BY:</Text>
-              <Text style={[styles.requesterName, !currentRequester && { color: colors.text.primary }]}>{currentRequester ? currentRequester.username : '—'}</Text>
+            <View style={[styles.requesterSection, { height: s(requesterSectionHeight) }]}>
+              <View style={styles.requesterContent}>
+                <Text style={styles.requesterLabel}>REQUESTED BY:</Text>
+                <Text style={[styles.requesterName, !currentRequester && { color: colors.text.primary }]}>{currentRequester ? currentRequester.username : '—'}</Text>
+              </View>
               {currentRequester && (
-                <TouchableOpacity
-                  style={styles.requesterClearButton}
-                  onPress={() => clearCurrentRequester()}
-                >
-                  <Text style={styles.requesterClearText}>Clear</Text>
-                </TouchableOpacity>
+                <View style={styles.requesterClearCell}>
+                  <TouchableOpacity
+                    style={styles.requesterClearButton}
+                    onPress={() => clearCurrentRequester()}
+                  >
+                    <Text style={styles.requesterClearText}>Clear</Text>
+                  </TouchableOpacity>
+                </View>
               )}
             </View>
             <View style={styles.sectionBorder} />
@@ -959,11 +1025,23 @@ const styles = StyleSheet.create({
   requesterSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: s(5),
-    paddingRight: spacing.sm,
     height: s(38),
     backgroundColor: colors.background.main,
+  },
+  requesterContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: s(5),
     gap: s(8),
+  },
+  requesterClearCell: {
+    width: s(98),
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    borderLeftWidth: s(2),
+    borderLeftColor: colors.border,
   },
   sectionBorder: {
     height: s(2),
@@ -985,12 +1063,14 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   requesterClearButton: {
-    paddingHorizontal: s(12),
-    paddingVertical: s(4),
+    width: s(72),
+    height: s(26),
+    borderRadius: s(13),
     borderWidth: s(2),
     borderColor: colors.status.error,
-    borderRadius: 0,
     backgroundColor: colors.background.main,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   requesterClearText: {
     fontSize: fs(15),

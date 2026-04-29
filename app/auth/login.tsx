@@ -69,20 +69,16 @@ export default function LoginScreen() {
         const creds = JSON.parse(savedCredentials);
         setEmail(creds.email || '');
 
-        // Auto-login if credentials are saved
+        // Auto-login if credentials are saved (backup - primary auto-login is in index.tsx)
         if (creds.email && creds.password) {
           setIsAutoLogging(true);
           try {
             await login(creds.email, creds.password);
             router.replace('/');
           } catch (err) {
-            // Clear saved credentials if auto-login fails
-            await AsyncStorage.multiRemove([
-              STORAGE_KEYS.SAVED_CREDENTIALS,
-              STORAGE_KEYS.STAY_SIGNED_IN,
-            ]);
-            setStaySignedIn(false);
-            setLocalError('Session expired. Please sign in again.');
+            // Don't clear credentials on failure - only clear on explicit sign-out
+            // This preserves "stay signed in" across transient network errors
+            setLocalError('Could not auto-login. Please sign in manually.');
           }
           setIsAutoLogging(false);
         }
@@ -184,7 +180,7 @@ export default function LoginScreen() {
               </View>
               <Text style={styles.title}>CueControl</Text>
               <Text style={styles.subtitle}>Live Requests, Without the Chaos.</Text>
-              <Text style={styles.version}>Version 16.0.0</Text>
+              <Text style={styles.version}>Version 23.0.0</Text>
             </View>
 
             <View style={styles.form}>

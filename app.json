@@ -2,7 +2,7 @@
   "expo": {
     "name": "CueControl",
     "slug": "cuecontrol-mobile",
-    "version": "16.0.0",
+    "version": "23.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.trinitromusic.cuecontrol",
-      "buildNumber": "13",
+      "buildNumber": "15",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -44,6 +44,12 @@
       "eas": {
         "projectId": "d38dd0bd-96d4-4d5f-9c1f-5cb017d01b59"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d38dd0bd-96d4-4d5f-9c1f-5cb017d01b59"
     }
   }
 }

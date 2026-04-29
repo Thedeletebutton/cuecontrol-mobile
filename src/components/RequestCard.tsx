@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, spacing } from '../constants/theme';
 import { StatusPill } from './StatusPill';
+import { ScrollingText } from './ScrollingText';
 import { Request } from '../types/request';
 import { s, fs } from '../utils/responsive';
 
@@ -21,9 +22,13 @@ interface RequestCardProps {
   drag?: () => void;
   isActive?: boolean;
   mode?: 'dj' | 'viewer';
+  viewerUsername?: string;
   columnWidth?: number;
   contentPaddingLeft?: number;
   contentPaddingRight?: number;
+  requesterFontSize?: number;
+  trackFontSize?: number;
+  rowHeight?: number;
 }
 
 export function RequestCard({
@@ -41,11 +46,17 @@ export function RequestCard({
   drag,
   isActive,
   mode = 'dj',
+  viewerUsername,
   columnWidth,
   contentPaddingLeft,
   contentPaddingRight,
+  requesterFontSize,
+  trackFontSize,
+  rowHeight,
 }: RequestCardProps) {
   const isViewer = mode === 'viewer';
+  const canViewerEdit = isViewer && viewerUsername && !request.played && !isNextStream &&
+    request.username?.toLowerCase() === viewerUsername.toLowerCase();
 
   const handleStatusPress = () => {
     if (request.played) {
@@ -83,7 +94,7 @@ export function RequestCard({
     : 'Anonymous';
 
   return (
-    <View testID={`request-card-${request.id}`} style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive]}>
+    <View testID={`request-card-${request.id}`} style={[styles.row, index % 2 === 1 && styles.rowAlt, isViewer && request.starred && styles.rowStarred, isActive && styles.rowActive, rowHeight != null && { height: s(rowHeight) }]}>
       {/* Content column: Requester + Track — long press to drag (DJ only) */}
       <TouchableOpacity
         accessibilityLabel={`${capitalizedUsername}, ${request.request}`}
@@ -98,25 +109,23 @@ export function RequestCard({
             <Ionicons name="star" size={s(18)} color="#ffc107" />
           </View>
         )}
-        <Text style={[styles.username, request.played && styles.textPlayed]} numberOfLines={1}>
+        <Text style={[styles.username, request.played && styles.textPlayed, requesterFontSize != null && { fontSize: requesterFontSize }]} numberOfLines={1}>
           {capitalizedUsername}
         </Text>
         <View style={styles.trackRow}>
-          <Text
-            style={[styles.track, request.played && styles.textPlayed]}
-            numberOfLines={1}
-          >
-            {request.request}
-          </Text>
+          <ScrollingText
+            text={request.request}
+            style={[styles.track, request.played && styles.textPlayed, trackFontSize != null && { fontSize: trackFontSize }]}
+          />
         </View>
       </TouchableOpacity>
 
-      {/* Notes indicator — DJ only, positioned between content and star */}
-      {!isViewer && request.notes ? (
+      {/* Notes button — DJ only, positioned between content and star */}
+      {!isViewer && (
         <TouchableOpacity onPress={() => onEdit?.(request)} style={styles.notesIndicator}>
-          <Ionicons name="document-text" size={s(16)} color={colors.text.grey} />
+          <Ionicons name="document-text" size={s(16)} color={request.notes ? colors.text.grey : colors.text.muted} style={!request.notes ? { opacity: 0.4 } : undefined} />
         </TouchableOpacity>
-      ) : null}
+      )}
 
       {/* Star button — DJ only, positioned between content and right column */}
       {!isViewer && (
@@ -139,6 +148,16 @@ export function RequestCard({
             disabled={isViewer}
             isPending={isNextStream}
           />
+          {canViewerEdit && (
+            <TouchableOpacity
+              testID={`request-edit-${request.id}`}
+              accessibilityLabel="Edit your request"
+              style={[styles.actionButton, styles.editButton, { marginTop: s(3) }]}
+              onPress={() => onEdit?.(request)}
+            >
+              <Ionicons name="pencil" size={s(14)} color={colors.accent.primary} />
+            </TouchableOpacity>
+          )}
         </View>
       ) : (
         <View style={[styles.cell, styles.rightColumn, columnWidth != null && { width: s(columnWidth) }]}>
@@ -277,7 +296,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     color: colors.text.secondary,
     textAlign: 'left',
-    flex: 1,
   },
   textPlayed: {
     color: colors.status.played,
