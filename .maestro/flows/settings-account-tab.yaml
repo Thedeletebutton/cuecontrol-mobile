@@ -1,0 +1,102 @@
+appId: com.trinitromusic.cuecontrol
+---
+# DJ Settings - Account Tab
+# Tests: Switch to account tab, verify user email, verify sign out button
+
+- launchApp
+
+# Dismiss Expo dev menu overlay if present
+- swipe:
+    start: "50%,60%"
+    end: "50%,95%"
+    duration: 300
+- tapOn:
+    point: "50%,10%"
+    optional: true
+
+# Navigate to DJ mode
+- extendedWaitUntil:
+    visible:
+      id: "dj-mode-button"
+    timeout: 15000
+
+- tapOn:
+    id: "dj-mode-button"
+
+# Handle license if needed
+- runFlow:
+    when:
+      visible: "License Key Required"
+    file: enter-license.yaml
+
+# Wait for queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 10000
+
+# Open settings
+- tapOn:
+    id: "queue-settings-button"
+
+- extendedWaitUntil:
+    visible:
+      text: "CueControl - Settings"
+    timeout: 10000
+
+# Switch to Account tab
+- tapOn:
+    id: "settings-tab-account"
+
+# Verify account section loads
+- extendedWaitUntil:
+    visible:
+      text: "Account"
+    timeout: 5000
+
+# Verify user email is displayed
+- assertVisible:
+    id: "settings-account-email"
+
+# Verify "Signed in" status is shown
+- assertVisible:
+    text: "Signed in"
+
+# Verify sign out button exists
+- assertVisible:
+    id: "settings-signout-button"
+
+# Tap sign out (will show confirmation alert)
+- tapOn:
+    id: "settings-signout-button"
+
+# Verify the confirmation alert appears
+- extendedWaitUntil:
+    visible:
+      text: "Are you sure you want to sign out?"
+    timeout: 5000
+
+# Cancel the sign out (don't actually sign out)
+- tapOn:
+    text: "Cancel"
+
+# Verify we're still on settings after cancelling
+- assertVisible:
+    id: "settings-signout-button"
+
+# Switch back to License tab to verify tab switching works
+- tapOn:
+    id: "settings-tab-license"
+
+- assertVisible:
+    id: "settings-license-input"
+
+# Close settings
+- tapOn:
+    id: "settings-close-button"
+
+# Verify we're back on the queue
+- extendedWaitUntil:
+    visible:
+      text: "TRACK REQUESTS:"
+    timeout: 5000

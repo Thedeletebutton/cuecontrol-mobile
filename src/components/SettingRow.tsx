@@ -13,6 +13,7 @@ interface SettingRowProps {
   suffix?: string;
   onChange: (value: number) => void;
   isLast?: boolean;
+  testID?: string;
 }
 
 export function SettingRow({
@@ -24,19 +25,22 @@ export function SettingRow({
   suffix = 'px',
   onChange,
   isLast = false,
+  testID,
 }: SettingRowProps) {
   return (
-    <View style={[styles.row, isLast && styles.rowLast]}>
+    <View testID={testID} style={[styles.row, isLast && styles.rowLast]}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.controls}>
         <TouchableOpacity
+          testID={testID ? `${testID}-minus` : undefined}
           style={styles.button}
           onPress={() => onChange(Math.max(min, value - step))}
         >
           <Ionicons name="remove" size={s(16)} color={colors.accent.primary} />
         </TouchableOpacity>
-        <Text style={styles.value}>{value}{suffix}</Text>
+        <Text testID={testID ? `${testID}-value` : undefined} style={styles.value}>{value}{suffix}</Text>
         <TouchableOpacity
+          testID={testID ? `${testID}-plus` : undefined}
           style={styles.button}
           onPress={() => onChange(Math.min(max, value + step))}
         >

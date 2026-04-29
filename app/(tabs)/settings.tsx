@@ -345,6 +345,7 @@ export default function SettingsScreen() {
       {/* Tab Bar */}
       <View style={styles.tabBar}>
         <TouchableOpacity
+          testID="settings-tab-license"
           style={[styles.tab, activeTab === 'license' && styles.tabActive]}
           onPress={() => setActiveTab('license')}
         >
@@ -353,6 +354,7 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="settings-tab-admin"
           style={[styles.tab, activeTab === 'admin' && styles.tabActive]}
           onPress={() => setActiveTab('admin')}
         >
@@ -361,6 +363,7 @@ export default function SettingsScreen() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="settings-tab-account"
           style={[styles.tab, activeTab === 'account' && styles.tabActive]}
           onPress={() => setActiveTab('account')}
         >
@@ -403,6 +406,7 @@ export default function SettingsScreen() {
 
                 <View style={styles.licenseButtonRow}>
                   <TouchableOpacity
+                    testID="settings-validate-button"
                     style={styles.validateButton}
                     onPress={handleValidateLicense}
                   >
@@ -410,6 +414,7 @@ export default function SettingsScreen() {
                   </TouchableOpacity>
 
                   <TouchableOpacity
+                    testID="settings-save-license-button"
                     style={[styles.licenseRowSaveButton, saving && styles.buttonDisabled]}
                     onPress={handleSaveLicense}
                     disabled={saving}
@@ -490,6 +495,7 @@ export default function SettingsScreen() {
           <>
             {/* DJ Dashboard collapsible section */}
             <TouchableOpacity
+              testID="settings-dj-dashboard-header"
               style={styles.collapsibleHeader}
               onPress={() => setDjExpanded(!djExpanded)}
             >
@@ -508,11 +514,11 @@ export default function SettingsScreen() {
                     <Text style={styles.sectionTitle}>Font Sizes</Text>
                   </View>
                   <View style={styles.displayContainer}>
-                    <SettingRow label="Header Font Size" value={djHeaderFontSize} min={8} max={20} step={1}
+                    <SettingRow testID="dj-header-font-size" label="Header Font Size" value={djHeaderFontSize} min={8} max={20} step={1}
                       onChange={(v) => { setDjHeaderFontSize(v); saveSetting(DJ_HEADER_FONT_SIZE_KEY, v); }} />
-                    <SettingRow label="Requester Font Size" value={djRequesterFontSize} min={10} max={20} step={1}
+                    <SettingRow testID="dj-requester-font-size" label="Requester Font Size" value={djRequesterFontSize} min={10} max={20} step={1}
                       onChange={(v) => { setDjRequesterFontSize(v); saveSetting(DJ_REQUESTER_FONT_SIZE_KEY, v); }} />
-                    <SettingRow label="Track Font Size" value={djTrackFontSize} min={10} max={20} step={1} isLast
+                    <SettingRow testID="dj-track-font-size" label="Track Font Size" value={djTrackFontSize} min={10} max={20} step={1} isLast
                       onChange={(v) => { setDjTrackFontSize(v); saveSetting(DJ_TRACK_FONT_SIZE_KEY, v); }} />
                   </View>
                 </View>
@@ -540,7 +546,7 @@ export default function SettingsScreen() {
                     <Text style={styles.sectionTitle}>Heights</Text>
                   </View>
                   <View style={styles.displayContainer}>
-                    <SettingRow label="Header Row Height" value={djHeaderRowHeight} min={40} max={120} step={2}
+                    <SettingRow testID="dj-header-row-height" label="Header Row Height" value={djHeaderRowHeight} min={40} max={120} step={2}
                       onChange={(v) => { setDjHeaderRowHeight(v); saveSetting(DJ_HEADER_ROW_HEIGHT_KEY, v); }} />
                     <SettingRow label="Top Bar Height" value={djTopBarHeight} min={25} max={60} step={2}
                       onChange={(v) => { setDjTopBarHeight(v); saveSetting(DJ_TOPBAR_HEIGHT_KEY, v); }} />
@@ -559,6 +565,7 @@ export default function SettingsScreen() {
 
             {/* Viewer Dashboard collapsible section */}
             <TouchableOpacity
+              testID="settings-viewer-dashboard-header"
               style={styles.collapsibleHeader}
               onPress={() => setViewerExpanded(!viewerExpanded)}
             >
@@ -635,7 +642,7 @@ export default function SettingsScreen() {
                 <View style={styles.accountInfo}>
                   <Ionicons name="person-circle" size={s(48)} color={colors.accent.primary} />
                   <View style={styles.accountDetails}>
-                    <Text style={styles.accountEmail}>{user?.email || 'Not signed in'}</Text>
+                    <Text testID="settings-account-email" style={styles.accountEmail}>{user?.email || 'Not signed in'}</Text>
                     <Text style={styles.accountStatus}>Signed in</Text>
                   </View>
                 </View>
@@ -657,7 +664,7 @@ export default function SettingsScreen() {
 
         {/* Save Settings Button */}
         <View style={styles.saveSettingsContainer}>
-          <TouchableOpacity style={styles.saveSettingsButton} onPress={handleBack}>
+          <TouchableOpacity testID="settings-save-button" style={styles.saveSettingsButton} onPress={handleBack}>
             <Ionicons name="checkmark" size={s(20)} color={colors.text.primary} />
             <Text style={styles.saveSettingsButtonText}>Save Settings</Text>
           </TouchableOpacity>
